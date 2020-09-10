@@ -1,0 +1,89 @@
+{
+  "name": "optics.js",
+  "description": "Lenses, Prisms and Traversals in JavaScript!",
+  "homepage": "https://nicedoc.io/kutyel/optics-js",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": {
+    "name": "Flavio Corpa",
+    "email": "flavio.corpa@47deg.com",
+    "url": "https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kutyel/optics-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kutyel/optics-js/issues"
+  },
+  "keywords": [
+    "fp",
+    "lenses",
+    "optics",
+    "prisms",
+    "traversals"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "conventional-github-releaser": "latest",
+    "coveralls": "latest",
+    "finepack": "latest",
+    "git-authors-cli": "latest",
+    "git-dirty": "latest",
+    "husky": "latest",
+    "jest": "latest",
+    "lint-staged": "latest",
+    "npm-check-updates": "latest",
+    "standard-version": "latest"
+  },
+  "engines": {
+    "node": ">= 10"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "lint": "",
+    "postrelease": "npm run release:tags && npm run release:github && npm publish",
+    "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors",
+    "pretest": "npm run lint",
+    "release": "git-authors-cli finepack && git add package.json && standard-version -a",
+    "release:github": "conventional-github-releaser -p angular",
+    "release:tags": "git push --follow-tags origin master",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "update": "ncu -u",
+    "update:check": "ncu -- --error-level 2"
+  },
+  "license": "MIT",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "package.json": [
+      "finepack"
+    ]
+  }
+}
