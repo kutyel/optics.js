@@ -4,7 +4,6 @@
 node_modules
 npm-debug.log
 .node_history
-yarn.lock
 package-lock.json
 
 ############################
