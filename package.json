@@ -60,7 +60,7 @@
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin master",
-    "test": "jest --coverage",
+    "test": "jest",
     "test:watch": "jest --watch",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"
