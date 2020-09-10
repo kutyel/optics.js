@@ -1,12 +1,13 @@
 import { curry } from './functions'
 import { setter } from './Setter'
+import { affineFold } from './AffineFold'
 import { getter } from './Getter'
+import { affineTraversal } from './AffineTraversal'
 import { lens } from './Lens'
-
 
 // iso, prism, /lens,
 // review, /affinetraversal, /getter,
-// affinefold, traversal, fold, /setter
+// /affinefold, traversal, fold, /setter
 const ocompose2 = (optic1, optic2) => {
   // start from most specific (iso) to less specific (getter, setter, review)
   if ('asLens' in optic1 && 'asLens' in optic2) {
@@ -31,6 +32,18 @@ const ocompose2 = (optic1, optic2) => {
     const o1 = optic1.asGetter
     const o2 = optic2.asGetter
     return getter(x => o2.get(o1.get(x)))
+  } else if ('asAffineFold' in optic1 && 'asAffineFold' in optic2) {
+    const o1 = optic1.asAffineFold
+    const o2 = optic2.asAffineFold
+    return affineFold(
+      x => {
+        const v = o1.preview(x)
+        if (v === null) {
+          return null
+        } else {
+          return o2.preview(v)
+        }
+      })
   } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
@@ -45,8 +58,15 @@ const ocompose2 = (optic1, optic2) => {
  */
 export const ocompose = (...optics) => optics.reduce(ocompose2)
 
+/**
+ * Optics composition!
+ *
+ * @param  {...any} fns - Comma-separated list of optics to be composed
+ */
+export const path = ocompose
+
 // preview : AffineFold s a → s → Maybe a
-export const preview = curry((optic, obj) => optic.asAffineFold.get(obj))
+export const preview = curry((optic, obj) => optic.asAffineFold.preview(obj))
 
 // view : Getter s a → s → a
 export const view = curry((optic, obj) => optic.asGetter.get(obj))

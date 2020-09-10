@@ -1,4 +1,4 @@
-import { ocompose, view, set, over} from '../src/operations'
+import { path, preview, view, set, over} from '../src/operations'
 import { prop, assoc } from '../src/functions'
 import { lens, lensProp, lensIndex } from '../src/Lens'
 
@@ -15,6 +15,7 @@ describe('Lens', () => {
     const lense = lens(propName, assocName)
 
     expect(view(lense, user)).toBe('Flavio')
+    expect(preview(lense, user)).toBe('Flavio')
     expect(set(lense, 'Alejandro', user)).toEqual({ id: 1, name: 'Alejandro' })
   })
 
@@ -37,10 +38,9 @@ describe('Lens', () => {
   })
 
   test.skip('lenses should compose', () => {
-    const friendsL = lensProp('friends')
-    const idx0 = lensIndex(0)
-    const firstFriendL = ocompose(friendsL, idx0)
+    const firstFriendL = path(lensProp('friends'), lensIndex(0))
 
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
+    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
 })
