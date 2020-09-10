@@ -1,42 +1,34 @@
 import { curry, prop, assoc } from './functions'
-import { getter } from './Getter'
-import { affineTraversal } from './AffineTraversal'
 import { affineFold } from './AffineFold'
 import { setter } from './Setter'
 
-class lensT {
-  constructor(get, set) {
-    this.get = get
+class affineTraversalT {
+  constructor(preview, set) {
+    this.preview = preview
     this.set = set
   }
 
-  // derived operations
-  view = this.get
-  over = (f, obj) => this.set(f(this.get(obj)), obj)
+  over = (f, obj) => {
+    const v = this.preview(obj)
+    if (v === null) {
+      return obj
+    } else {
+      return this.set(f(v), obj)
+    }
+  }
 
   // setter = over + set
   get asSetter() {
     return setter(this.over)
   }
 
-  // affine traversal = preview + set
-  get asAffineTraversal() {
-    return affineTraversal(this.get, this.set)
-  }
-
-  // getter = get
-  get asGetter() {
-    return getter(this.get)
-  }
-
   // affine fold = preview
   get asAffineFold() {
-    return affineFold(this.get)
+    return affineFold(this.preview)
   }
-  preview = this.get
 
   // itself
-  get asLens() {
+  get asAffineTraversal() {
     return this
   }
 }

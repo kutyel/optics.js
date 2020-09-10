@@ -20,16 +20,3 @@ export const prop = curry((key, obj) => obj[key])
 
 // assoc : String -> a -> {k: v} -> {k: v}
 export const assoc = curry((key, val, obj) => ({ ...obj, [key]: val }))
-
-/**
- * The important stuff
- */
-
-// view : Lens s a → s → a
-export const view = curry((lens, obj) => lens.get(obj))
-
-// set : Lens s a → a → s → s
-export const set = curry((lens, val, obj) => lens.set(val, obj))
-
-// over : Lens s a → (a → a) → s → s
-export const over = curry((lens, f, obj) => lens.set(f(lens.get(obj)), obj))
