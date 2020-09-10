@@ -26,14 +26,13 @@ $ npm install optics.js --save
 ## Usage
 
 ```js
-import { Lens, Prism, Traversal } from 'optics-js'
+import { lens, lensFrom } from 'optics-js'
 
-// TODO: => do something!!
+const shoppingList = { pie: 3, milk: 6 }
+lensFrom('milk').over(x => x + 1, shoppingList)
 ```
 
 ## License
 
-**optics-js** © [Flavio Corpa](https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf), released under the [MIT](https://github.com/kutyel/optics-js/blob/master/LICENSE.md) License.<br>
-Authored and maintained by [Flavio Corpa](https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf) with help from [contributors](https://github.com/kutyel/optics-js/contributors).
-
-> GitHub [Flavio Corpa](https://github.com/kutyel) · Twitter [@kutyel](https://twitter.com/kutyel)
+**optics-js** © [Flavio Corpa](https://twitter.com/FlavioCorpa) and [Alejandro Serrano](https://twitter.com/trupill), released under the [MIT](https://github.com/kutyel/optics-js/blob/master/LICENSE.md) License.<br>
+Authored and maintained by [Flavio Corpa](https://twitter.com/FlavioCorpa) and [Alejandro Serrano](https://twitter.com/trupill) with help from [contributors](https://github.com/kutyel/optics-js/contributors).

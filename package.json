@@ -4,14 +4,21 @@
   "homepage": "https://nicedoc.io/kutyel/optics-js",
   "version": "0.0.0",
   "main": "index.js",
-  "author": {
-    "name": "Flavio Corpa",
-    "email": "flavio.corpa@47deg.com",
-    "url": "https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf"
-  },
+  "contributors": [
+    {
+      "name": "Flavio Corpa",
+      "email": "flavio.corpa@47deg.com",
+      "url": "https://twitter.com/FlavioCorpa"
+    },
+    {
+      "name": "Alejandro Serrano",
+      "email": "alejandro.serrano@47deg.com",
+      "url": "https://twitter.com/trupill"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kutyel/optics-js.git"
+    "url": "git+https://github.com/kutyel/optics-js.git"
   },
   "bugs": {
     "url": "https://github.com/kutyel/optics-js/issues"
