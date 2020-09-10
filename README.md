@@ -26,7 +26,8 @@ $ npm install optics.js --save
 ```js
 import { Lens, Prism, Traversal } from 'optics.js'
 
-// TODO: => do something!!
+const shoppingList = { pie: 3, milk: 6 }
+lensFrom('milk').over((x) => x + 1, shoppingList)
 ```
 
 ## License

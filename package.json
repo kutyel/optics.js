@@ -4,11 +4,18 @@
   "homepage": "https://nicedoc.io/kutyel/optics-js",
   "version": "0.0.0",
   "main": "index.js",
-  "author": {
-    "name": "Flavio Corpa",
-    "email": "flavio.corpa@47deg.com",
-    "url": "https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf"
-  },
+  "contributors": [
+    {
+      "name": "Flavio Corpa",
+      "email": "flavio.corpa@47deg.com",
+      "url": "https://twitter.com/FlavioCorpa"
+    },
+    {
+      "name": "Alejandro Serrano",
+      "email": "alejandro.serrano@47deg.com",
+      "url": "https://twitter.com/trupill"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kutyel/optics-js.git"
@@ -54,7 +61,7 @@
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin master",
-    "test": "jest --coverage",
+    "test": "jest",
     "test:watch": "jest --watch",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"

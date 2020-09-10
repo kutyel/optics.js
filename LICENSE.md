@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright © 2020 Flavio Corpa <flavio.corpa@47deg.com> (47deg.com/assets/pdf/mu-haskell-hs-2020.pdf)
+Copyright © 2020 Flavio Corpa <flavio.corpa@47deg.com> and Alejandro Serrano <alejandro.serrano@47deg.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
