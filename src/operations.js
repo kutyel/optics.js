@@ -16,7 +16,7 @@ const ocompose2 = (optic1, optic2) => {
   // combine two previews
   let combinePreviews = (p1, p2) => x => {
     const v = p1.preview(x)
-    return v === null ? null : p2.preview(v)
+    return v === undefined ? undefined : p2.preview(v)
   }
 
   // start from most specific (iso) to less specific (fold, setter, review)
