@@ -1,4 +1,4 @@
-import { curry, prop, assoc } from './functions'
+import { curry } from './functions'
 import { affineFold } from './AffineFold'
 import { setter } from './Setter'
 
@@ -29,11 +29,5 @@ class affineTraversalT {
   }
 }
 
-// lens : (s → a) → ((a, s) → s) → Lens s a
-export const lens = curry((get, set) => new lensT(get, set))
-
-// lensProp : String → Lens s a
-export const lensProp = (key) => lens(prop(key), assoc(key))
-
-// lensIndex : Number → Lens s a
-export const lensIndex = (index) => lens(prop(index), assoc(index))
+// lens : (s → Maybe a) → ((a, s) → s) → AffineTraversal s a
+export const affineTraversal = curry((preview, set) => new affineTraversalT(preview, set))
