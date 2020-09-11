@@ -10,11 +10,7 @@ class affineTraversalT {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    if (v === null) {
-      return obj
-    } else {
-      return this.set(f(v), obj)
-    }
+    return v === null ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set

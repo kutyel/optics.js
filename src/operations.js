@@ -21,11 +21,7 @@ const ocompose2 = (optic1, optic2) => {
     return affineTraversal(
       x => {
         const v = o1.preview(x)
-        if (v === null) {
-          return null
-        } else {
-          return o2.preview(v)
-        }
+        return v === null ? null : o2.preview(v)
       },
       (v, x) => o1.over(inner => o2.set(v, inner), x))
   } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
@@ -38,11 +34,7 @@ const ocompose2 = (optic1, optic2) => {
     return affineFold(
       x => {
         const v = o1.preview(x)
-        if (v === null) {
-          return null
-        } else {
-          return o2.preview(v)
-        }
+        return v === null ? null : o2.preview(v)
       })
   } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
