@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-class setterT {
+class SetterT {
   constructor(over) {
     this.over = over
   }
@@ -15,4 +15,4 @@ class setterT {
 }
 
 // setter : ((a → a, s) → s) → Setter s a
-export const setter = curry((over) => new setterT(over))
+export const setter = curry((over) => new SetterT(over))

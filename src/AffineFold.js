@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-class affineFoldT {
+class AffineFoldT {
   constructor(preview) {
     this.preview = preview
   }
@@ -12,4 +12,4 @@ class affineFoldT {
 }
 
 // affineFold : (s → Maybe a) → AffineFold s a
-export const affineFold = curry((preview) => new affineFoldT(preview))
+export const affineFold = curry((preview) => new AffineFoldT(preview))

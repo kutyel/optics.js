@@ -2,7 +2,7 @@ import { curry } from './functions'
 import { affineFold } from './AffineFold'
 import { setter } from './Setter'
 
-class affineTraversalT {
+class AffineTraversalT {
   constructor(preview, set) {
     this.preview = preview
     this.set = set
@@ -30,4 +30,4 @@ class affineTraversalT {
 }
 
 // lens : (s → Maybe a) → ((a, s) → s) → AffineTraversal s a
-export const affineTraversal = curry((preview, set) => new affineTraversalT(preview, set))
+export const affineTraversal = curry((preview, set) => new AffineTraversalT(preview, set))

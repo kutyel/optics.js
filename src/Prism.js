@@ -4,7 +4,7 @@ import { affineTraversal } from './AffineTraversal'
 import { setter } from './Setter'
 import { reviewer } from './Reviewer'
 
-class prismT {
+class PrismT {
   constructor(preview, set, review) {
     this.preview = preview
     this.set = set
@@ -43,4 +43,4 @@ class prismT {
 }
 
 // prism : (s → Maybe a) → ((a, s) → s) → (a → s) → Prism s a
-export const prism = curry((preview, set, review) => new prismT(preview, set, review))
+export const prism = curry((preview, set, review) => new PrismT(preview, set, review))

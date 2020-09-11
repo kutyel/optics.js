@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-class getterT {
+class GetterT {
   constructor(get) {
     this.get = get
   }
@@ -20,4 +20,4 @@ class getterT {
 }
 
 // getter : (s → a) → Getter s a
-export const getter = curry((get) => new getterT(get))
+export const getter = curry((get) => new GetterT(get))

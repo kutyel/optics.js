@@ -4,7 +4,7 @@ import { affineTraversal } from './AffineTraversal'
 import { affineFold } from './AffineFold'
 import { setter } from './Setter'
 
-class lensT {
+class LensT {
   constructor(get, set) {
     this.get = get
     this.set = set
@@ -42,7 +42,7 @@ class lensT {
 }
 
 // lens : (s → a) → ((a, s) → s) → Lens s a
-export const lens = curry((get, set) => new lensT(get, set))
+export const lens = curry((get, set) => new LensT(get, set))
 
 // lensProp : String → Lens s a
 export const lensProp = (key) => lens(prop(key), assoc(key))
