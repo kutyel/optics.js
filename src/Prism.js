@@ -13,7 +13,7 @@ class PrismT {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return v === undefined ? obj : this.set(f(v), obj)
+    return v === null ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set

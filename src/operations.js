@@ -16,7 +16,7 @@ const ocompose2 = (optic1, optic2) => {
   // combine two previews
   let combinePreviews = (p1, p2) => x => {
     const v = p1.preview(x)
-    return v === undefined ? undefined : p2.preview(v)
+    return v === null ? null : p2.preview(v)
   }
 
   // start from most specific (iso) to less specific (fold, setter, review)
@@ -62,14 +62,14 @@ const ocompose2 = (optic1, optic2) => {
  *
  * @param  {...any} fns - Comma-separated list of optics to be composed
  */
-export const ocompose = (...optics) => optics.reduce(ocompose2)
+export const composeOptics = (...optics) => optics.reduce(ocompose2)
 
 /**
  * Optics composition!
  *
  * @param  {...any} fns - Comma-separated list of optics to be composed
  */
-export const path = ocompose
+export const path = composeOptics
 
 // preview : AffineFold s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asAffineFold.preview(obj))
