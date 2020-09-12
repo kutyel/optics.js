@@ -15,8 +15,8 @@ export const curry = (f, arity = f.length, ...args) =>
  */
 export const compose = (...fns) => (args) => fns.reduceRight((x, f) => f(x), args)
 
-// prop : s -> {s: a} -> TODO: Maybe a
-export const prop = curry((key, obj) => obj[key])
+// prop : s -> {s: a} -> Maybe a
+export const prop = curry((key, obj) => key in obj ? obj[key] : null)
 
 // assoc : String -> a -> {k: v} -> {k: v}
-export const assoc = curry((key, val, obj) => ({ ...obj, [key]: val }))
+export const assoc = curry((key, val, obj) => key in obj ? { ...obj, [key]: val } : obj)

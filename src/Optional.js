@@ -1,4 +1,4 @@
-import { curry } from './functions'
+import { curry, prop, assoc } from './functions'
 import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
 
@@ -31,3 +31,9 @@ class OptionalT {
 
 // optional : (s → Maybe a) → ((a, s) → s) → Optional s a
 export const optional = curry((preview, set) => new OptionalT(preview, set))
+
+// optionalProp : String → Optional s a
+export const optionalProp = (key) => optional(prop(key), assoc(key))
+
+// optionalIndex : Number → Optional s a
+export const optionalIndex = (index) => optional(prop(index), assoc(index))
