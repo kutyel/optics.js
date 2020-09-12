@@ -1,7 +1,7 @@
 import { curry, prop, assoc } from './functions'
 import { getter } from './Getter'
-import { affineTraversal } from './AffineTraversal'
-import { affineFold } from './AffineFold'
+import { optional } from './Optional'
+import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
 
 class LensT {
@@ -19,9 +19,9 @@ class LensT {
     return setter(this.over)
   }
 
-  // affine traversal = preview + set
-  get asAffineTraversal() {
-    return affineTraversal(this.get, this.set)
+  // optional = preview + set
+  get asOptional() {
+    return optional(this.get, this.set)
   }
 
   // getter = get
@@ -29,9 +29,9 @@ class LensT {
     return getter(this.get)
   }
 
-  // affine fold = preview
-  get asAffineFold() {
-    return affineFold(this.get)
+  // partial getter = preview
+  get asPartialGetter() {
+    return partialGetter(this.get)
   }
   preview = this.get
 

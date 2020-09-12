@@ -1,8 +1,8 @@
 import { curry, prop, assoc } from './functions'
-import { affineFold } from './AffineFold'
-import { affineTraversal } from './AffineTraversal'
-import { setter } from './Setter'
+import { optional } from './Optional'
+import { partialGetter } from './PartialGetter'
 import { reviewer } from './Reviewer'
+import { setter } from './Setter'
 
 class PrismT {
   constructor(preview, set, review) {
@@ -21,14 +21,14 @@ class PrismT {
     return setter(this.over)
   }
 
-  // affine fold = preview
-  get asAffineFold() {
-    return affineFold(this.preview)
+  // partial getter = preview
+  get asPartialGetter() {
+    return partialGetter(this.preview)
   }
 
-  // affine traversal = preview + set
-  get asAffineTraversal() {
-    return affineTraversal(this.preview, this.set)
+  // optional = preview + set
+  get asOptional() {
+    return optional(this.preview, this.set)
   }
 
   // reviewer = review

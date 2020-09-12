@@ -1,8 +1,8 @@
 import { curry } from './functions'
-import { affineFold } from './AffineFold'
+import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
 
-class AffineTraversalT {
+class OptionalT {
   constructor(preview, set) {
     this.preview = preview
     this.set = set
@@ -18,16 +18,16 @@ class AffineTraversalT {
     return setter(this.over)
   }
 
-  // affine fold = preview
-  get asAffineFold() {
-    return affineFold(this.preview)
+  // partial getter = preview
+  get asPartialGetter() {
+    return partialGetter(this.preview)
   }
 
   // itself
-  get asAffineTraversal() {
+  get asOptional() {
     return this
   }
 }
 
-// lens : (s → Maybe a) → ((a, s) → s) → AffineTraversal s a
-export const affineTraversal = curry((preview, set) => new AffineTraversalT(preview, set))
+// optional : (s → Maybe a) → ((a, s) → s) → Optional s a
+export const optional = curry((preview, set) => new OptionalT(preview, set))

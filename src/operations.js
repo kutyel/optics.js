@@ -1,8 +1,8 @@
 import { curry } from './functions'
-import { affineFold } from './AffineFold'
-import { affineTraversal } from './AffineTraversal'
 import { getter } from './Getter'
 import { lens } from './Lens'
+import { optional } from './Optional'
+import { previewer } from './PartialGetter'
 import { prism } from './Prism'
 import { reviewer } from './Reviewer'
 import { setter } from './Setter'
@@ -32,20 +32,20 @@ const ocompose2 = (optic1, optic2) => {
       combinePreviews(o1.preview, o2.preview),
       (v, x) => o1.over(inner => o2.set(v, inner), x),
       x => o2.review(o1.review(x)))
-  } else if ('asAffineTraversal' in optic1 && 'asAffineTraversal' in optic2) {
-    const o1 = optic1.asAffineTraversal
-    const o2 = optic2.asAffineTraversal
-    return affineTraversal(
+  } else if ('asOptional' in optic1 && 'asOptional' in optic2) {
+    const o1 = optic1.asOptional
+    const o2 = optic2.asOptional
+    return optional(
       combinePreviews(o1.preview, o2.preview),
       (v, x) => o1.over(inner => o2.set(v, inner), x))
   } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
     const o1 = optic1.asGetter
     const o2 = optic2.asGetter
     return getter(x => o2.get(o1.get(x)))
-  } else if ('asAffineFold' in optic1 && 'asAffineFold' in optic2) {
-    const o1 = optic1.asAffineFold
-    const o2 = optic2.asAffineFold
-    return affineFold(combinePreviews(o1.preview, o2.preview))
+  } else if ('asPartialGetter' in optic1 && 'asPartialGetter' in optic2) {
+    const o1 = optic1.asPartialGetter
+    const o2 = optic2.asPartialGetter
+    return partialGetter(combinePreviews(o1.preview, o2.preview))
   } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
@@ -72,7 +72,7 @@ export const composeOptics = (...optics) => optics.reduce(ocompose2)
 export const path = composeOptics
 
 // preview : AffineFold s a → s → Maybe a
-export const preview = curry((optic, obj) => optic.asAffineFold.preview(obj))
+export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))
 
 // view : Getter s a → s → a
 export const view = curry((optic, obj) => optic.asGetter.get(obj))

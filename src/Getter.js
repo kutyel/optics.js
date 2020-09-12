@@ -1,4 +1,5 @@
 import { curry } from './functions'
+import { partialGetter } from './PartialGetter'
 
 class GetterT {
   constructor(get) {
@@ -7,9 +8,9 @@ class GetterT {
 
   view = this.get
 
-  // affine fold = preview
-  get asAffineFold() {
-    return affineFold(this.get)
+  // partial getter = preview
+  get asPartialGetter() {
+    return partialGetter(this.get)
   }
   preview = this.get
 
