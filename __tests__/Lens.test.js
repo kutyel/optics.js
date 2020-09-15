@@ -1,11 +1,10 @@
+import { prop, assoc, toUpper } from '../src/functions'
 import { lens, lensProp, lensIndex } from '../src/Lens'
-import { view, set, over, prop, assoc, compose, curry } from '../src/functions'
+import { optics, preview, view, set, over } from '../src/operations'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
 const userWithFriends = { ...user, friends }
-
-const toUpper = (str) => str.toUpperCase()
 
 describe('Lens', () => {
   test('lens should build a lens', () => {
@@ -14,6 +13,7 @@ describe('Lens', () => {
     const lense = lens(propName, assocName)
 
     expect(view(lense, user)).toBe('Flavio')
+    expect(preview(lense, user)).toBe('Flavio')
     expect(set(lense, 'Alejandro', user)).toEqual({ id: 1, name: 'Alejandro' })
   })
 
@@ -35,19 +35,10 @@ describe('Lens', () => {
     expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
   })
 
-  test('curry should curry functions', () => {
-    // TODO: move this test to another folder
-    const cubed = (num, exp) => num ** exp
-
-    const curried = curry(cubed)
-    expect(curried(5)(3)).toBe(125)
-  })
-
-  test.skip('TODO: lenses should compose', () => {
-    const friendsL = lensProp('friends')
-    const idx0 = lensIndex(0)
-    const firstFriendL = compose(friendsL, idx0)
+  test('lenses should compose', () => {
+    const firstFriendL = optics(lensProp('friends'), lensIndex(0))
 
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
+    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
 })

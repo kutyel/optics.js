@@ -1,4 +1,9 @@
-'use strict'
-
 export * from './src/functions'
+export * from './src/Getter'
 export * from './src/Lens'
+export * from './src/operations'
+export * from './src/Optional'
+export * from './src/PartialGetter'
+export * from './src/Prism'
+export * from './src/Reviewer'
+export * from './src/Setter'
