@@ -2,7 +2,7 @@
   "name": "optics.js",
   "description": "Lenses, Prisms and Traversals in JavaScript!",
   "homepage": "https://nicedoc.io/kutyel/optics-js",
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "main": "index.js",
   "contributors": [
     {
