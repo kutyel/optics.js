@@ -13,6 +13,5 @@ node_js:
 before_script:
   - npm prune
 after_success:
-  - npm run cover
   - npm run coverage
   - npm run semantic-release

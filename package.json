@@ -55,7 +55,6 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
-    "cover": "nyc --reporter=lcov npm t",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "",
@@ -66,7 +65,7 @@
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin master",
     "semantic-release": "semantic-release",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"
@@ -86,10 +85,10 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
+        "branches": 20,
+        "functions": 50,
+        "lines": 50,
+        "statements": 50
       }
     },
     "testEnvironment": "node"
