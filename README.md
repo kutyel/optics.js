@@ -15,6 +15,8 @@
   <br>
 </p>
 
+Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) package
+
 ## Install
 
 ```bash
@@ -24,11 +26,12 @@ $ npm install optics.js --save
 ## Usage
 
 ```js
-import { lensProp, over } from 'optics.js'
+import { optic, over } from 'optics.js'
 
-const shoppingList = { pie: 3, milk: 6 }
+const shoppingList = { pie: 3, milk: { whole: 6, skimmed: 3 } }
 
-over(lensProp('milk'), (x) => x + 1, shoppingList) // > { pie: 3, milk: 7 }
+over(optic('milk', 'whole'), (x) => x + 1, shoppingList)
+  // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
 ```
 
 ## License

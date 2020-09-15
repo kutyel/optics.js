@@ -4,7 +4,7 @@ import { setter } from './Setter'
 import { curry } from './functions'
 import { lens, prop } from './Lens'
 import { reviewer } from './Reviewer'
-import { optional } from './Optional'
+import { optional, optionalProp, optionalIndex } from './Optional'
 import { partialGetter } from './PartialGetter'
 
 // combine two previews
@@ -14,13 +14,27 @@ const combinePreviews = (p1, p2) => (x) => {
 }
 
 /**
- * iso/prism/lens/affinetraversal/getter/affinefold/traversal/reviewer/fold/setter
+ * Compose two optics
  *
  * @param {*} optic1
  * @param {*} optic2
  */
 const compose2Optics = (optic1, optic2) => {
-  // start from most specific (iso) to less specific (fold, setter, review)
+  // turn strings and numbers into proper optics
+  if (typeof optic1 == 'string' || optic1 instanceof String) {
+    return compose2Optics(optionalProp(optic1), optic2)
+  }
+  if (typeof optic1 == 'number') {
+    return compose2Optics(optionalIndex(optic1), optic2)
+  }
+  if (typeof optic2 == 'string' || optic2 instanceof String) {
+    return compose2Optics(optic1, optionalProp(optic2))
+  }
+  if (typeof optic2 == 'number') {
+    return compose2Optics(optic1, optionalIndex(optic2))
+  }
+
+  // start from most specific (iso) to less specific (fold, setter, reviewer)
   if ('asLens' in optic1 && 'asLens' in optic2) {
     const o1 = optic1.asLens
     const o2 = optic2.asLens

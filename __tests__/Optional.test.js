@@ -39,4 +39,10 @@ describe('Optional', () => {
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
+
+  test('optionals should be created by optic', () => {
+    const firstFriendL = optic('friends', 0)
+
+    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
 })
