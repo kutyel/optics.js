@@ -2,7 +2,7 @@
   "name": "optics.js",
   "description": "Lenses, Prisms and Traversals in JavaScript!",
   "homepage": "https://nicedoc.io/kutyel/optics-js",
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "main": "index.js",
   "contributors": [
     {
@@ -45,6 +45,7 @@
     "jest": "^26.4.2",
     "lint-staged": "^10.3.0",
     "npm-check-updates": "^9.0.1",
+    "nyc": "^15.1.0",
     "semantic-release": "^17.1.1",
     "standard-version": "^9.0.0"
   },
@@ -54,6 +55,7 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
+    "cover": "nyc --reporter=lcov npm t",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "",
