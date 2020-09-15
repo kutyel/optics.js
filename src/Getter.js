@@ -1,7 +1,7 @@
 import { curry } from './functions'
 import { partialGetter } from './PartialGetter'
 
-export class Getter {
+class Getter {
   constructor(get) {
     this.get = get
   }

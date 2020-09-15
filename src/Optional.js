@@ -1,8 +1,11 @@
 import { setter } from './Setter'
 import { partialGetter } from './PartialGetter'
-import { curry, prop, assoc } from './functions'
+import { curry, prop, assoc, isNil } from './functions'
 
-export class Optional {
+/**
+ * AKA: Affine Traversal
+ */
+class Optional {
   constructor(preview, set) {
     this.preview = preview
     this.set = set
@@ -10,7 +13,7 @@ export class Optional {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return !v ? obj : this.set(f(v), obj)
+    return isNil(v) ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set

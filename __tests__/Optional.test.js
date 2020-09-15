@@ -1,5 +1,5 @@
 import { prop, assoc, toUpper } from '../src/functions'
-import { optics, preview, set, over } from '../src/operations'
+import { optic, preview, set, over } from '../src/operations'
 import { optional, optionalProp, optionalIndex } from '../src/Optional'
 
 const friends = ['Alejandro']
@@ -34,9 +34,8 @@ describe('Optional', () => {
     expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
   })
 
-  // TODO: fix this
-  test.skip('optionals should compose', () => {
-    const firstFriendL = optics(optionalProp('friends'), optionalIndex(0))
+  test('optionals should compose', () => {
+    const firstFriendL = optic(optionalProp('friends'), optionalIndex(0))
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })

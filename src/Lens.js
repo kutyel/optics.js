@@ -4,7 +4,7 @@ import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { curry, prop, assoc } from './functions'
 
-export class Lens {
+class Lens {
   constructor(get, set) {
     this.get = get
     this.set = set

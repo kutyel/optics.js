@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-export class Reviewer {
+class Reviewer {
   constructor(review) {
     this.review = review
   }

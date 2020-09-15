@@ -85,10 +85,10 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 20,
+        "branches": 40,
         "functions": 50,
-        "lines": 50,
-        "statements": 50
+        "lines": 60,
+        "statements": 60
       }
     },
     "testEnvironment": "node"

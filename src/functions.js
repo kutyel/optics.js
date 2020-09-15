@@ -23,3 +23,6 @@ export const assoc = curry((key, val, obj) => (key in obj ? { ...obj, [key]: val
 
 // toUpper : String -> String
 export const toUpper = (str) => str.toUpperCase()
+
+// isNil : Nullable a => a -> Boolean
+export const isNil = (x) => x === null || x === undefined

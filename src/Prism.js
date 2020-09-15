@@ -1,10 +1,10 @@
 import { setter } from './Setter'
-import { curry } from './functions'
+import { curry, isNil } from './functions'
 import { optional } from './Optional'
 import { reviewer } from './Reviewer'
 import { partialGetter } from './PartialGetter'
 
-export class Prism {
+class Prism {
   constructor(preview, set, review) {
     this.preview = preview
     this.set = set
@@ -13,7 +13,7 @@ export class Prism {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return !v ? obj : this.set(f(v), obj)
+    return isNil(v) ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set

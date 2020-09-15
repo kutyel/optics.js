@@ -1,6 +1,6 @@
 import { prop, assoc, toUpper } from '../src/functions'
 import { lens, lensProp, lensIndex } from '../src/Lens'
-import { optics, preview, view, set, over } from '../src/operations'
+import { optic, preview, view, set, over } from '../src/operations'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
@@ -36,7 +36,7 @@ describe('Lens', () => {
   })
 
   test('lenses should compose', () => {
-    const firstFriendL = optics(lensProp('friends'), lensIndex(0))
+    const firstFriendL = optic(lensProp('friends'), lensIndex(0))
 
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')

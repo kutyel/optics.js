@@ -1,14 +1,17 @@
+import { lens } from './Lens'
+import { prism } from './Prism'
+import { getter } from './Getter'
+import { setter } from './Setter'
 import { curry } from './functions'
-import { Lens, lens } from './Lens'
-import { Prism, prism } from './Prism'
-import { Getter, getter } from './Getter'
-import { Setter, setter } from './Setter'
-import { Reviewer, reviewer } from './Reviewer'
-import { Optional, optional } from './Optional'
+import { reviewer } from './Reviewer'
+import { optional } from './Optional'
 import { PartialGetter } from './PartialGetter'
 
 // combine two previews
-const combinePreviews = (p1, p2) => (x) => p1.preview(x) && p2.preview(v)
+const combinePreviews = (p1, p2) => (x) => {
+  const v = p1(x)
+  return v === null ? null : p2(v)
+}
 
 /**
  * iso/prism/lens/affinetraversal/getter/affinefold/traversal/reviewer/fold/setter
@@ -18,14 +21,14 @@ const combinePreviews = (p1, p2) => (x) => p1.preview(x) && p2.preview(v)
  */
 const compose2Optics = (optic1, optic2) => {
   // start from most specific (iso) to less specific (fold, setter, review)
-  if (optic1 instanceof Lens && optic2 instanceof Lens) {
+  if ('asLens' in optic1 && 'asLens' in optic2) {
     const o1 = optic1.asLens
     const o2 = optic2.asLens
     return lens(
       (x) => o2.get(o1.get(x)),
       (v, x) => o1.over((inner) => o2.set(v, inner), x),
     )
-  } else if (optic1 instanceof Prism && optic2 instanceof Prism) {
+  } else if ('asPrism' in optic1 && 'asPrism' in optic2) {
     const o1 = optic1.asPrism
     const o2 = optic2.asPrism
     return prism(
@@ -33,25 +36,25 @@ const compose2Optics = (optic1, optic2) => {
       (v, x) => o1.over((inner) => o2.set(v, inner), x),
       (x) => o2.review(o1.review(x)),
     )
-  } else if (optic1 instanceof Optional && optic2 instanceof Optional) {
+  } else if ('asOptional' in optic1 && 'asOptional' in optic2) {
     const o1 = optic1.asOptional
     const o2 = optic2.asOptional
     return optional(combinePreviews(o1.preview, o2.preview), (v, x) =>
       o1.over((inner) => o2.set(v, inner), x),
     )
-  } else if (optic1 instanceof Getter && optic2 instanceof Getter) {
+  } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
     const o1 = optic1.asGetter
     const o2 = optic2.asGetter
     return getter((x) => o2.get(o1.get(x)))
-  } else if (optic1 instanceof PartialGetter && optic2 instanceof PartialGetter) {
+  } else if ('asPartialGetter' in optic1 && 'asPartialGetter' in optic2) {
     const o1 = optic1.asPartialGetter
     const o2 = optic2.asPartialGetter
     return partialGetter(combinePreviews(o1.preview, o2.preview))
-  } else if (optic1 instanceof Setter && optic2 instanceof Setter) {
+  } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
     return setter((f, x) => o2.over((inner) => o1.over(f, inner), x))
-  } else if (optic1 instanceof Reviewer && optic2 instanceof Reviewer) {
+  } else if ('asReviewer' in optic1 && 'asReviewer' in optic2) {
     const o1 = optic1.asReviewer
     const o2 = optic2.asReviewer
     return reviewer((x) => o2.review(o1.review(x)))
@@ -70,7 +73,7 @@ export const composeOptics = (...optics) => optics.reduce(compose2Optics)
  *
  * @param  {...any} fns - Comma-separated list of optics to be composed
  */
-export const optics = composeOptics
+export const optic = composeOptics
 
 // preview : AffineFold s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))

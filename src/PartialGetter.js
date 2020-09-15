@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-export class PartialGetter {
+class PartialGetter {
   constructor(preview) {
     this.preview = preview
   }

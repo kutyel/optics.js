@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-export class Setter {
+class Setter {
   constructor(over) {
     this.over = over
   }
