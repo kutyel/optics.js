@@ -56,7 +56,6 @@
     "clean": "rm -rf node_modules",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "",
     "postrelease": "npm run release:tags && npm run release:github && npm publish",
     "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors",
