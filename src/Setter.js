@@ -6,7 +6,7 @@ class Setter {
   }
 
   // derived operations
-  set = (val, x) => this.over((_) => val, x)
+  set = (val, x) => this.over(() => val, x)
 
   // itself
   get asSetter() {

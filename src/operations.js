@@ -5,7 +5,7 @@ import { setter } from './Setter'
 import { curry } from './functions'
 import { reviewer } from './Reviewer'
 import { optional } from './Optional'
-import { PartialGetter } from './PartialGetter'
+import { partialGetter } from './PartialGetter'
 
 // combine two previews
 const combinePreviews = (p1, p2) => (x) => {
