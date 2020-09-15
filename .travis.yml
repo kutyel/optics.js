@@ -1,5 +1,17 @@
 language: node_js
+branches:
+  only:
+    - master
+cache:
+  diretories:
+    - node_modules
+notifications:
+  email: false
 node_js:
-  - "node"
-  - "lts/*"
-after_success: npm run coverage
+  - 'node'
+  - 'lts/*'
+before_script:
+  - npm prune
+after_success:
+  - npm run coverage
+  - npm run semantic-release

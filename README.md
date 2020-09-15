@@ -32,7 +32,7 @@ lensFrom('milk').over((x) => x + 1, shoppingList)
 
 ## License
 
-**optics.js** © [Flavio Corpa](https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf), released under the [MIT](https://github.com/kutyel/optics.js/blob/master/LICENSE.md) License.<br>
-Authored and maintained by [Flavio Corpa](https://www.47deg.com/assets/pdf/mu-haskell-hs-2020.pdf) with help from [contributors](https://github.com/kutyel/optics.js/contributors).
+**optics.js** © [Flavio Corpa](https://twitter.com/FlavioCorpa), released under the [MIT](https://github.com/kutyel/optics.js/blob/master/LICENSE.md) License.<br>
+Authored and maintained by [Flavio Corpa](https://twitter.com/FlavioCorpa) and [Alejandro Serrano](https://twitter.com/trupill) with help from [contributors](https://github.com/kutyel/optics.js/contributors).
 
 > GitHub [Flavio Corpa](https://github.com/kutyel) · Twitter [@kutyel](https://twitter.com/kutyel)
