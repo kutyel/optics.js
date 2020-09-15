@@ -1,10 +1,10 @@
-import { curry, prop, assoc } from './functions'
-import { optional } from './Optional'
-import { partialGetter } from './PartialGetter'
-import { reviewer } from './Reviewer'
 import { setter } from './Setter'
+import { curry } from './functions'
+import { optional } from './Optional'
+import { reviewer } from './Reviewer'
+import { partialGetter } from './PartialGetter'
 
-class PrismT {
+export class Prism {
   constructor(preview, set, review) {
     this.preview = preview
     this.set = set
@@ -13,7 +13,7 @@ class PrismT {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return v === null ? obj : this.set(f(v), obj)
+    return !v ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set
@@ -43,4 +43,4 @@ class PrismT {
 }
 
 // prism : (s → Maybe a) → ((a, s) → s) → (a → s) → Prism s a
-export const prism = curry((preview, set, review) => new PrismT(preview, set, review))
+export const prism = curry((preview, set, review) => new Prism(preview, set, review))

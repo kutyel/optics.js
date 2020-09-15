@@ -16,7 +16,10 @@ export const curry = (f, arity = f.length, ...args) =>
 export const compose = (...fns) => (args) => fns.reduceRight((x, f) => f(x), args)
 
 // prop : s -> {s: a} -> Maybe a
-export const prop = curry((key, obj) => key in obj ? obj[key] : null)
+export const prop = curry((key, obj) => (key in obj ? obj[key] : null))
 
 // assoc : String -> a -> {k: v} -> {k: v}
-export const assoc = curry((key, val, obj) => key in obj ? { ...obj, [key]: val } : obj)
+export const assoc = curry((key, val, obj) => (key in obj ? { ...obj, [key]: val } : obj))
+
+// toUpper : String -> String
+export const toUpper = (str) => str.toUpperCase()

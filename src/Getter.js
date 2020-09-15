@@ -1,7 +1,7 @@
 import { curry } from './functions'
 import { partialGetter } from './PartialGetter'
 
-class GetterT {
+export class Getter {
   constructor(get) {
     this.get = get
   }
@@ -21,4 +21,4 @@ class GetterT {
 }
 
 // getter : (s → a) → Getter s a
-export const getter = curry((get) => new GetterT(get))
+export const getter = curry((get) => new Getter(get))

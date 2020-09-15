@@ -1,8 +1,8 @@
-import { curry, prop, assoc } from './functions'
-import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
+import { partialGetter } from './PartialGetter'
+import { curry, prop, assoc } from './functions'
 
-class OptionalT {
+export class Optional {
   constructor(preview, set) {
     this.preview = preview
     this.set = set
@@ -10,7 +10,7 @@ class OptionalT {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return v === null ? obj : this.set(f(v), obj)
+    return !v ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set
@@ -30,7 +30,7 @@ class OptionalT {
 }
 
 // optional : (s → Maybe a) → ((a, s) → s) → Optional s a
-export const optional = curry((preview, set) => new OptionalT(preview, set))
+export const optional = curry((preview, set) => new Optional(preview, set))
 
 // optionalProp : String → Optional s a
 export const optionalProp = (key) => optional(prop(key), assoc(key))

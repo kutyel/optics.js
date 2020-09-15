@@ -1,14 +1,12 @@
-import { path, preview, set, over} from '../src/operations'
-import { prop, assoc } from '../src/functions'
+import { prop, assoc, toUpper } from '../src/functions'
+import { optics, preview, set, over } from '../src/operations'
 import { optional, optionalProp, optionalIndex } from '../src/Optional'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
 const userWithFriends = { ...user, friends }
 
-const toUpper = (str) => str.toUpperCase()
-
-describe('Lens', () => {
+describe('Optional', () => {
   test('optional should build a optional', () => {
     const propName = prop('name')
     const assocName = assoc('name')
@@ -36,8 +34,9 @@ describe('Lens', () => {
     expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
   })
 
+  // TODO: fix this
   test.skip('optionals should compose', () => {
-    const firstFriendL = path(optionalProp('friends'), optonalIndex(0))
+    const firstFriendL = optics(optionalProp('friends'), optionalIndex(0))
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })

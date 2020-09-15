@@ -1,12 +1,10 @@
-import { path, preview, view, set, over} from '../src/operations'
-import { prop, assoc } from '../src/functions'
+import { prop, assoc, toUpper } from '../src/functions'
 import { lens, lensProp, lensIndex } from '../src/Lens'
+import { optics, preview, view, set, over } from '../src/operations'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
 const userWithFriends = { ...user, friends }
-
-const toUpper = (str) => str.toUpperCase()
 
 describe('Lens', () => {
   test('lens should build a lens', () => {
@@ -37,8 +35,8 @@ describe('Lens', () => {
     expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
   })
 
-  test.skip('lenses should compose', () => {
-    const firstFriendL = path(lensProp('friends'), lensIndex(0))
+  test('lenses should compose', () => {
+    const firstFriendL = optics(lensProp('friends'), lensIndex(0))
 
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')

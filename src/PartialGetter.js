@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-class PartialGetterT {
+export class PartialGetter {
   constructor(preview) {
     this.preview = preview
   }
@@ -12,4 +12,4 @@ class PartialGetterT {
 }
 
 // partialGetter : (s → Maybe a) → AffineFold s a
-export const partialGetter = curry((preview) => new PartialGetterT(preview))
+export const partialGetter = curry((preview) => new PartialGetter(preview))

@@ -1,6 +1,6 @@
 import { curry } from './functions'
 
-class ReviewerT {
+export class Reviewer {
   constructor(review) {
     this.review = review
   }
@@ -12,4 +12,4 @@ class ReviewerT {
 }
 
 // reviewer : (a → s) → Prism s a
-export const reviewer = curry((review) => new ReviewerT(review))
+export const reviewer = curry((review) => new Reviewer(review))
