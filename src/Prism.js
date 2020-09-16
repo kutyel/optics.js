@@ -1,5 +1,5 @@
 import { curry } from './functions'
-import { isNotFound } from './notFound'
+import { notFound, isNotFound } from './notFound'
 import { setter } from './Setter'
 import { optional } from './Optional'
 import { reviewer } from './Reviewer'
@@ -45,3 +45,18 @@ class Prism {
 
 // prism : (s → Maybe a) → ((a, s) → s) → (a → s) → Prism s a
 export const prism = curry((preview, set, review) => new Prism(preview, set, review))
+
+const checkPresence = (mustBePresent, obj) =>
+  Object.keys(mustBePresent).every((k) => k in obj && obj[k] === mustBePresent[k])
+
+/**
+ * Check that a subset of properties with their values are present.
+ * Useful for working with Redux actions, or variants in general.
+ *
+ * @param {object} mustBePresent
+ */
+export const has = (mustBePresent) => prism(
+  (obj)         => checkPresence(mustBePresent, obj) ? obj : notFound,
+  (newObj, obj) => checkPresence(mustBePresent, obj) ? newObj : obj,
+  (newObj)      => newObj
+)
