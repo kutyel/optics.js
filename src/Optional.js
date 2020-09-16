@@ -1,6 +1,7 @@
 import { setter } from './Setter'
 import { partialGetter } from './PartialGetter'
-import { curry, get, set, isNil } from './functions'
+import { curry } from './functions'
+import { notFound, isNotFound } from './notFound'
 
 /**
  * AKA: Affine Traversal
@@ -13,7 +14,7 @@ class Optional {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return isNil(v) ? obj : this.set(f(v), obj)
+    return isNotFound(v) ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set
@@ -36,7 +37,13 @@ class Optional {
 export const optional = curry((preview, set) => new Optional(preview, set))
 
 // optionalProp : String → Optional s a
-export const optionalProp = (key) => optional(get(key), set(key))
+export const optionalProp = (key) => optional(
+  (obj)      => key in obj ? obj[key] : notFound,
+  (val, obj) => key in obj ? { ...obj, [key]: val } : obj
+)
 
-// optionalIndex : Number → Optional s a
-export const optionalIx = (index) => optional(get(index), set(index))
+// optionalIx : Number → Optional s a
+export const optionalIx = (index) => optional(
+  (obj)      => index in obj ? obj[index] : notFound,
+  (val, obj) => index in obj ? { ...obj, [index]: val } : obj
+)

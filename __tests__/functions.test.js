@@ -9,7 +9,7 @@ describe('Function Operators', () => {
     expect(exp(5)(3)).toBe(125)
   })
 
-  test('isNil -> should check if a value is null or undefined', () => {
+  /* test('isNil -> should check if a value is null or undefined', () => {
     expect(isNil(null)).toBe(true)
     expect(isNil(undefined)).toBe(true)
     expect(isNil('')).toBe(false)
@@ -17,7 +17,7 @@ describe('Function Operators', () => {
     expect(isNil(-0)).toBe(false)
     expect(isNil(false)).toBe(false)
     expect(isNil(NaN)).toBe(false)
-  })
+  }) */
 
   test('compose -> should compose N functions correctly', () => {
     const inc = (x) => x + 1

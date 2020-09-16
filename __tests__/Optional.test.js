@@ -2,6 +2,7 @@ import { optic, maybe, preview, set, over } from '../src/operations'
 import { get, set as assoc, toUpper } from '../src/functions'
 import { optional, optionalProp, optionalIx } from '../src/Optional'
 import { prop } from '../src/Lens'
+import { notFound } from '../src/notFound'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
@@ -51,6 +52,24 @@ describe('Optional', () => {
     const firstFriendL = optic(maybe(prop('friends')), maybe(0))
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
+
+  test('optionals with non-existing key should return notFound', () => {
+    const serventesioL = optionalProp('serventesio')
+
+    expect(preview(serventesioL, user)).toBe(notFound)
+  })
+
+  test('optionals with non-existing key should not change the value', () => {
+    const serventesioL = optionalProp('serventesio')
+
+    expect(over(serventesioL, toUpper, user)).toEqual(user)
+  })
+
+  test('optionals with one non-existing key should return notFound', () => {
+    const firstFriendL = optic(optionalProp('friends'), optionalIx(1000))
+
+    expect(preview(firstFriendL, userWithFriends)).toBe(notFound)
   })
 
   test('maybe should fail for wrong types', () => {

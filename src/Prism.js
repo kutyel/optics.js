@@ -1,5 +1,6 @@
+import { curry } from './functions'
+import { isNotFound } from './notFound'
 import { setter } from './Setter'
-import { curry, isNil } from './functions'
 import { optional } from './Optional'
 import { reviewer } from './Reviewer'
 import { partialGetter } from './PartialGetter'
@@ -13,7 +14,7 @@ class Prism {
 
   over = (f, obj) => {
     const v = this.preview(obj)
-    return isNil(v) ? obj : this.set(f(v), obj)
+    return isNotFound(v) ? obj : this.set(f(v), obj)
   }
 
   // setter = over + set
