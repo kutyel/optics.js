@@ -11,7 +11,7 @@
 
 <p align="center">
   <br>
-  <img src="https://hackage.haskell.org/package/optics-0.3/docs/diagrams/optics.png" alt="optics.js">
+  <img src="./optics.png" alt="optics.js">
   <br>
 </p>
 
