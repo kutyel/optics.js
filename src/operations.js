@@ -2,9 +2,9 @@ import { prism } from './Prism'
 import { getter } from './Getter'
 import { setter } from './Setter'
 import { curry } from './functions'
-import { lens, prop } from './Lens'
+import { lens, prop, ix } from './Lens'
 import { reviewer } from './Reviewer'
-import { optional, optionalProp, optionalIndex } from './Optional'
+import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 
 // combine two previews
@@ -22,17 +22,19 @@ const combinePreviews = (p1, p2) => (x) => {
 const compose2Optics = (optic1, optic2) => {
   // turn strings and numbers into proper optics
   if (typeof optic1 == 'string' || optic1 instanceof String) {
-    return compose2Optics(optionalProp(optic1), optic2)
+    return compose2Optics(prop(optic1), optic2)
   }
-  if (typeof optic1 == 'number') {
-    return compose2Optics(optionalIndex(optic1), optic2)
+  if (typeof optic1 == 'number'  && !isNaN(optic1)) {
+    return compose2Optics(ix(optic1), optic2)
   }
   if (typeof optic2 == 'string' || optic2 instanceof String) {
-    return compose2Optics(optic1, optionalProp(optic2))
+    return compose2Optics(optic1, prop(optic2))
   }
-  if (typeof optic2 == 'number') {
-    return compose2Optics(optic1, optionalIndex(optic2))
+  if (typeof optic2 == 'number' && !isNaN(optic2)) {
+    return compose2Optics(optic1, ix(optic2))
   }
+
+  // splice arrays
 
   // start from most specific (iso) to less specific (fold, setter, reviewer)
   if ('asLens' in optic1 && 'asLens' in optic2) {
@@ -78,19 +80,26 @@ const compose2Optics = (optic1, optic2) => {
 /**
  * Optics composition!
  *
- * @param  {...any} fns - Comma-separated list of optics to be composed
+ * @param  {...any} optics - Comma-separated list of optics to be composed
  */
-export const composeOptics = (...optics) => optics.reduce(compose2Optics)
+export const composeOptics = (...optics) => {
+  // flatten the arguments to account for composeOptics(['this', 'that'])
+  return optics.flat().reduce(compose2Optics)
+}
 
 /**
  * Optics composition!
  *
- * @param  {...any} fns - Comma-separated list of optics to be composed
+ * @param  {...any} optics - Comma-separated or array of optics to be composed
  */
 export const optic = composeOptics
 
-// path : [String] → Lens s a
-export const path = (xs) => optic(...xs.map((x) => prop(x)))
+/**
+ * Optics composition!
+ *
+ * @param  {...any} optics - Comma-separated or array of optics to be composed
+ */
+export const path = composeOptics
 
 // preview : AffineFold s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))
