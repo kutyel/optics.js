@@ -34,8 +34,6 @@ const compose2Optics = (optic1, optic2) => {
     return compose2Optics(optic1, ix(optic2))
   }
 
-  // splice arrays
-
   // start from most specific (iso) to less specific (fold, setter, reviewer)
   if ('asLens' in optic1 && 'asLens' in optic2) {
     const o1 = optic1.asLens
