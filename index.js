@@ -1,4 +1,3 @@
-export * from './src/functions'
 export * from './src/Getter'
 export * from './src/Lens'
 export * from './src/operations'

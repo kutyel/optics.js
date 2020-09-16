@@ -1,4 +1,8 @@
 /**
+ * This module should be private and only for internal use
+ */
+
+/**
  * Currify any function you need!
  *
  * @param {*} f - Function to be currified
@@ -15,11 +19,11 @@ export const curry = (f, arity = f.length, ...args) =>
  */
 export const compose = (...fns) => (args) => fns.reduceRight((x, f) => f(x), args)
 
-// prop : s -> {s: a} -> Maybe a
-export const prop = curry((key, obj) => (key in obj ? obj[key] : null))
+// get : s -> {s: a} -> Maybe a
+export const get = curry((key, obj) => obj[key])
 
-// assoc : String -> a -> {k: v} -> {k: v}
-export const assoc = curry((key, val, obj) => (key in obj ? { ...obj, [key]: val } : obj))
+// set : String -> a -> {k: v} -> {k: v}
+export const set = curry((key, val, obj) => (key in obj ? { ...obj, [key]: val } : obj))
 
 // toUpper : String -> String
 export const toUpper = (str) => str.toUpperCase()

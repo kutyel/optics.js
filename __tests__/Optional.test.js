@@ -1,5 +1,5 @@
-import { prop, assoc, toUpper } from '../src/functions'
 import { optic, preview, set, over } from '../src/operations'
+import { get, set as assoc, toUpper } from '../src/functions'
 import { optional, optionalProp, optionalIndex } from '../src/Optional'
 
 const friends = ['Alejandro']
@@ -8,7 +8,7 @@ const userWithFriends = { ...user, friends }
 
 describe('Optional', () => {
   test('optional should build a optional', () => {
-    const propName = prop('name')
+    const propName = get('name')
     const assocName = assoc('name')
     const lense = optional(propName, assocName)
 

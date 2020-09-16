@@ -1,8 +1,8 @@
-import { lens } from './Lens'
 import { prism } from './Prism'
 import { getter } from './Getter'
 import { setter } from './Setter'
 import { curry } from './functions'
+import { lens, prop } from './Lens'
 import { reviewer } from './Reviewer'
 import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
@@ -74,6 +74,9 @@ export const composeOptics = (...optics) => optics.reduce(compose2Optics)
  * @param  {...any} fns - Comma-separated list of optics to be composed
  */
 export const optic = composeOptics
+
+// path : [String] → Lens s a
+export const path = (xs) => optic(...xs.map((x) => prop(x)))
 
 // preview : AffineFold s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))

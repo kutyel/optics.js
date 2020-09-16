@@ -1,6 +1,6 @@
 import { setter } from './Setter'
 import { partialGetter } from './PartialGetter'
-import { curry, prop, assoc, isNil } from './functions'
+import { curry, get, set, isNil } from './functions'
 
 /**
  * AKA: Affine Traversal
@@ -36,7 +36,7 @@ class Optional {
 export const optional = curry((preview, set) => new Optional(preview, set))
 
 // optionalProp : String → Optional s a
-export const optionalProp = (key) => optional(prop(key), assoc(key))
+export const optionalProp = (key) => optional(get(key), set(key))
 
 // optionalIndex : Number → Optional s a
-export const optionalIndex = (index) => optional(prop(index), assoc(index))
+export const optionalIndex = (index) => optional(get(index), set(index))

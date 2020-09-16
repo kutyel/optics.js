@@ -1,8 +1,8 @@
 import { getter } from './Getter'
 import { setter } from './Setter'
 import { optional } from './Optional'
+import { curry, get, set } from './functions'
 import { partialGetter } from './PartialGetter'
-import { curry, prop, assoc } from './functions'
 
 class Lens {
   constructor(get, set) {
@@ -44,8 +44,8 @@ class Lens {
 // lens : (s → a) → ((a, s) → s) → Lens s a
 export const lens = curry((get, set) => new Lens(get, set))
 
-// lensProp : String → Lens s a
-export const lensProp = (key) => lens(prop(key), assoc(key))
+// prop : String → Lens s a
+export const prop = (key) => lens(get(key), set(key))
 
-// lensIndex : Number → Lens s a
-export const lensIndex = (index) => lens(prop(index), assoc(index))
+// ix : Number → Lens s a
+export const ix = (index) => lens(get(index), set(index))
