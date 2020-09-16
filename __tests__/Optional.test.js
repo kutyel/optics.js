@@ -1,6 +1,6 @@
-import { optic, preview, set, over } from '../src/operations'
+import { optic, maybe, preview, set, over } from '../src/operations'
 import { get, set as assoc, toUpper } from '../src/functions'
-import { optional, optionalProp, optionalIndex } from '../src/Optional'
+import { optional, optionalProp, optionalIx } from '../src/Optional'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
@@ -23,7 +23,7 @@ describe('Optional', () => {
   })
 
   test('optionalIndex should build a lens', () => {
-    const idx0 = optionalIndex(0)
+    const idx0 = optionalIx(0)
 
     expect(preview(idx0, friends)).toBe('Alejandro')
   })
@@ -35,13 +35,13 @@ describe('Optional', () => {
   })
 
   test('optionals should compose', () => {
-    const firstFriendL = optic(optionalProp('friends'), optionalIndex(0))
+    const firstFriendL = optic(optionalProp('friends'), optionalIx(0))
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
 
   test('optionals should be created by optic', () => {
-    const firstFriendL = optic('friends', 0)
+    const firstFriendL = optic(maybe('friends'), maybe(0))
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })

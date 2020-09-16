@@ -4,7 +4,7 @@ import { setter } from './Setter'
 import { curry } from './functions'
 import { lens, prop, ix } from './Lens'
 import { reviewer } from './Reviewer'
-import { optional } from './Optional'
+import { optional, optionalProp, optionalIx } from './Optional'
 import { partialGetter } from './PartialGetter'
 
 // combine two previews
@@ -73,12 +73,17 @@ const compose2Optics = (optic1, optic2) => {
     const o2 = optic2.asReviewer
     return reviewer((x) => o2.review(o1.review(x)))
   }
+
+  return undefined
 }
 
 /**
- * Optics composition!
+ * Create a new optic by composition.
  *
- * @param  {...any} optics - Comma-separated list of optics to be composed
+ * You can use a string or integer to directly create a lens,
+ * or wrap it with 'maybe' to create an optional
+ *
+ * @param  {...any} optics - Comma-separated or array of optics to be composed
  */
 export const composeOptics = (...optics) => {
   // flatten the arguments to account for composeOptics(['this', 'that'])
@@ -86,14 +91,20 @@ export const composeOptics = (...optics) => {
 }
 
 /**
- * Optics composition!
+ * Create a new optic by composition.
+ *
+ * You can use a string or integer to directly create a lens,
+ * or wrap it with 'maybe' to create an optional
  *
  * @param  {...any} optics - Comma-separated or array of optics to be composed
  */
 export const optic = composeOptics
 
 /**
- * Optics composition!
+ * Create a new optic by composition.
+ *
+ * You can use a string or integer to directly create a lens,
+ * or wrap it with 'maybe' to create an optional
  *
  * @param  {...any} optics - Comma-separated or array of optics to be composed
  */
@@ -113,3 +124,18 @@ export const over = curry((optic, f, obj) => optic.asSetter.over(f, obj))
 
 // review : Reviewer s a → a → s
 export const review = curry((optic, obj) => optic.asReviewer.review(obj))
+
+// maybe : (String | Int | Lens s a) -> Optional s a
+export const maybe = (optic) => {
+  if (typeof optic == 'string' || optic instanceof String) {
+    return optionalProp(optic)
+  }
+  if (typeof optic == 'number' && !isNaN(optic)) {
+    return optionalIx(optic)
+  }
+  if ('asLens' in optic) {
+    const l = optic.asLens
+    return optional(l.get, l.set)
+  }
+  return undefined
+}

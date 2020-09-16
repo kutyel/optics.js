@@ -26,11 +26,16 @@ $ npm install optics.js --save
 ## Usage
 
 ```js
-import { optic, over } from 'optics.js'
+import { optic, maybe, over } from 'optics.js'
 
 const shoppingList = { pie: 3, milk: { whole: 6, skimmed: 3 } }
 
+// just use the name of the properties to create a lens
 over(optic('milk', 'whole'), (x) => x + 1, shoppingList)
+  // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
+
+// if you are not sure, use 'maybe'
+over(optic(maybe('milk'), maybe('whole')), (x) => x + 1, shoppingList)
   // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
 ```
 

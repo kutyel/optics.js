@@ -39,4 +39,4 @@ export const optional = curry((preview, set) => new Optional(preview, set))
 export const optionalProp = (key) => optional(get(key), set(key))
 
 // optionalIndex : Number → Optional s a
-export const optionalIndex = (index) => optional(get(index), set(index))
+export const optionalIx = (index) => optional(get(index), set(index))
