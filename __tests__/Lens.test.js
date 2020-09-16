@@ -41,4 +41,10 @@ describe('Lens', () => {
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
+
+  test('Lens.asOptional -> should convert to an Optional correctly', () => {
+    const ageOptional = prop('age').asOptional.asSetter
+
+    expect(set(ageOptional, 29, user)).toEqual(user)
+  })
 })
