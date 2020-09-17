@@ -63,11 +63,11 @@ const compose2Optics = (optic1, optic2) => {
   return undefined
 }
 
-const upgradePrimitiveToOptic = (optic) => {
+const toOptic = (optic) => {
   if (typeof optic == 'string' || optic instanceof String) {
     return prop(optic)
   }
-  if (typeof optic == 'number'  && !isNaN(optic)) {
+  if (typeof optic == 'number' && !isNaN(optic)) {
     return ix(optic)
   }
   // any other case means it was already an optic
@@ -81,11 +81,10 @@ const upgradePrimitiveToOptic = (optic) => {
  * or wrap it with 'maybe' to create an optional
  *
  * @param  {...any} optics - Comma-separated or array of optics to be composed
+ *
+ * flatten the arguments to account for composeOptics(['this', 'that'])
  */
-export const composeOptics = (...optics) => {
-  // flatten the arguments to account for composeOptics(['this', 'that'])
-  return optics.flat().map(upgradePrimitiveToOptic).reduce(compose2Optics)
-}
+export const composeOptics = (...optics) => optics.flat().map(toOptic).reduce(compose2Optics)
 
 /**
  * Create a new optic by composition.
