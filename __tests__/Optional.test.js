@@ -1,6 +1,7 @@
 import { optic, maybe, preview, set, over } from '../src/operations'
 import { get, set as assoc, toUpper } from '../src/functions'
 import { optional, optionalProp, optionalIx } from '../src/Optional'
+import { prop } from '../src/Lens'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
@@ -44,5 +45,15 @@ describe('Optional', () => {
     const firstFriendL = optic(maybe('friends'), maybe(0))
 
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
+
+  test('optionals should be created by optic', () => {
+    const firstFriendL = optic(maybe(prop('friends')), maybe(0))
+
+    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
+
+  test('maybe should fail for wrong types', () => {
+    expect(maybe([1,2])).toBe(undefined)
   })
 })
