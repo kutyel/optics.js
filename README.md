@@ -9,35 +9,107 @@
 
 > Lenses, Prisms and Traversals in JavaScript!
 
+Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) package
+
+- [Meet it!](#meet-it)
+- [Install it!](#install-it)
+- [Use it!](#use-it)
+    - [Amount of values](#amount-of-values)
+    - [Builders](#builders)
+    - [The whole hierarchy](#the-whole-hierarchy)
+
+## Meet it!
+
+Optics provide a _language_ for data _access_ and _manipulation_ in a concise and compositional way. It excels when you want to code in an _immutable_ way.
+
+There are very few moving parts in `optics.js`, the power comes from the ability to create long combinations or _paths_ by composing small primitive optics. Let's look at an example:
+
+```js
+import { optic, maybe, view, over } from 'optics.js'
+
+const wholeMilk = optic('milk', maybe('whole'))
+```
+
+In most cases, the `optic` function will be your starting point. It takes any amount of arguments describing primitive optics, and fuses them together. In this case, we are creating an optic which accesses the `milk` key, and then accesses the `whole` key if available (notice that the name is wrapped with `maybe`).
+
+Intuitively, optics simply point to one (or more) positions within your data. You can then _operate_ at that position in a particular piece of data. In the following example we obtain the value within the shopping list, and then increment it.
+
+```js
+const shoppingList = { pie: 3, milk: { whole: 6, skimmed: 3 } }
+
+view(wholeMilk, shoppingList)  // > 6
+over(wholeMilk, (x) => x + 1, shoppingList)
+  // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
+```
+
+As mentioned above, the result of `over` is a _fresh_ object, so immutability is guaranteed.
+
+## Get it!
+
+```bash
+$ npm install optics.js --save
+```
+
+## Use it!
+
+As discussed while meeting the library, `optics.js` is based around a few primitive optics, which are composed using the `optic` function. Different _kinds_ of optics support different _operations_; that is one of the key ideas. You can apply those operations in two ways, depending on your preferred coding style:
+
+```js
+operation(optic, ...other args, value)
+optic.operation(...other args, value)
+```
+
+In any case, the optic always goes first, and the value to which the operation should be applied goes last.
+
+### Amount of values
+
+An optic can target zero, one, or an unrestricted amount of positions within your data. This allows us, for example, to provide an optic which targets every value within an array (unrestricted amount) or targets an optional value (zero or one). The operations are called differently depending on this fact:
+
+- `view` targets exactly _one_ value, like a property in an object which we are guaranteed to have.
+- `preview` targets _zero_ or _one_ values, which essentially amounts to an optional value, like an index in an array which may go out of bounds.
+- `reduce` and `toArray` target an _unrestricted_ amount, like the aforementioned array or the values within an object.
+
+It is always safe to treat an optic in a less restricted way. For example, if your optic targets exactly one value, you can also use `preview` or `toArray` over it.
+
+In any of the three cases you may be able to _modify_ the values targeted by the optic. You can do so in two ways:
+
+- `set` takes a single value, and _replaces_ every position pointed by the data with it.
+- `over` takes a function which is applied at each position targeted by the optic.
+
+Since we have three "levels of amounts" and two possibilities about setting (we are able or not), we get _six_ different kinds of optics, plus an additional one for setting without access. Those receive different names, as shown in the following table (names in parentheses are those used by other similar libraries.)
+
+| **`set`?** | **Exactly 1** | **0 or 1** | **Unrestricted** | **No access** |
+|-|-|-|-|-|
+| **Yes** | `Lens` | `Optional` (`AffineTraversal`) | `Traversal` | `Setter` |
+| **No** | `Getter` | `PartialGetter` (`AffineFold`) | `Fold` | does not exist |
+
+### Builders
+
+The previous six kinds of optics can only access or modify values. There is one additional capability an optic may have: being able to _create_ values. Take for example the `Optional` which accesses a certain key `k`, `maybe(k)`. If we give this optic a value, it can create a new object with that single key:
+
+```js
+import { optic, maybe, review } from 'optics.js'
+
+review(optic(maybe('say'), 'hi!')  // > { say: 'hi!' }
+```
+
+This adds yet another axis to our previous table, depending on whether when accessing you are guaranteed to have a value or not.
+
+| **Exactly 1** | **0 or 1** | **Unrestricted** | **No access** |
+|-|-|-|-
+| `Iso` | `Prism` | does not exist | `Reviewer` |
+
+### The whole hierarchy
+
+The different kinds of optics can be arranged into a hierarchy. Going up means weakening the restrictions, either by set of operations or by amount of elements.
+
 <p align="center">
   <br>
   <img src="./optics.png" alt="optics.js">
   <br>
 </p>
 
-Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) package
-
-## Install
-
-```bash
-$ npm install optics.js --save
-```
-
-## Usage
-
-```js
-import { optic, maybe, over } from 'optics.js'
-
-const shoppingList = { pie: 3, milk: { whole: 6, skimmed: 3 } }
-
-// just use the name of the properties to create a lens
-over(optic('milk', 'whole'), (x) => x + 1, shoppingList)
-  // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
-
-// if you are not sure, use 'maybe'
-over(optic(maybe('milk'), maybe('whole')), (x) => x + 1, shoppingList)
-  // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
-```
+> The image has been produced from the diagram in the [`optics`](https://hackage.haskell.org/package/optics) package.
 
 ## License
 
