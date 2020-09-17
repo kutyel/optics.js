@@ -1,7 +1,7 @@
 import { notFound } from '../src/notFound'
 import { toUpper } from '../src/functions'
 import { optic, preview, over } from '../src/operations'
-import { has } from '../src/prism'
+import { has } from '../src/Prism'
 
 const user = { id: 1, name: 'Flavio' }
 
