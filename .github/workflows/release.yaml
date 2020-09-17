@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Semantic Release
 
 on:
   push:
