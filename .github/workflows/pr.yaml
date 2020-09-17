@@ -20,7 +20,6 @@ jobs:
     - run: npm test
       env:
         CI: true
-    - run:
     - name: coveralls
       uses: coverallsapp/github-action@master
       with:
