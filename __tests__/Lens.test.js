@@ -42,6 +42,13 @@ describe('Lens', () => {
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
 
+  test('lenses should compose (using short-hand)', () => {
+    const firstFriendL = optic('friends', 0)
+
+    expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
+    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
+
   test('Lens.asOptional -> should convert to an Optional correctly', () => {
     const ageOptional = prop('age').asOptional.asSetter
 
