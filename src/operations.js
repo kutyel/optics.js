@@ -2,9 +2,9 @@ import { prism } from './Prism'
 import { getter } from './Getter'
 import { setter } from './Setter'
 import { curry } from './functions'
-import { lens, prop } from './Lens'
+import { lens, prop, ix } from './Lens'
 import { reviewer } from './Reviewer'
-import { optional } from './Optional'
+import { optional, optionalProp, optionalIx } from './Optional'
 import { partialGetter } from './PartialGetter'
 
 // combine two previews
@@ -14,13 +14,27 @@ const combinePreviews = (p1, p2) => (x) => {
 }
 
 /**
- * iso/prism/lens/affinetraversal/getter/affinefold/traversal/reviewer/fold/setter
+ * Compose two optics
  *
  * @param {*} optic1
  * @param {*} optic2
  */
 const compose2Optics = (optic1, optic2) => {
-  // start from most specific (iso) to less specific (fold, setter, review)
+  // turn strings and numbers into proper optics
+  if (typeof optic1 == 'string' || optic1 instanceof String) {
+    return compose2Optics(prop(optic1), optic2)
+  }
+  if (typeof optic1 == 'number'  && !isNaN(optic1)) {
+    return compose2Optics(ix(optic1), optic2)
+  }
+  if (typeof optic2 == 'string' || optic2 instanceof String) {
+    return compose2Optics(optic1, prop(optic2))
+  }
+  if (typeof optic2 == 'number' && !isNaN(optic2)) {
+    return compose2Optics(optic1, ix(optic2))
+  }
+
+  // start from most specific (iso) to less specific (fold, setter, reviewer)
   if ('asLens' in optic1 && 'asLens' in optic2) {
     const o1 = optic1.asLens
     const o2 = optic2.asLens
@@ -59,24 +73,42 @@ const compose2Optics = (optic1, optic2) => {
     const o2 = optic2.asReviewer
     return reviewer((x) => o2.review(o1.review(x)))
   }
+
+  return undefined
 }
 
 /**
- * Optics composition!
+ * Create a new optic by composition.
  *
- * @param  {...any} fns - Comma-separated list of optics to be composed
+ * You can use a string or integer to directly create a lens,
+ * or wrap it with 'maybe' to create an optional
+ *
+ * @param  {...any} optics - Comma-separated or array of optics to be composed
  */
-export const composeOptics = (...optics) => optics.reduce(compose2Optics)
+export const composeOptics = (...optics) => {
+  // flatten the arguments to account for composeOptics(['this', 'that'])
+  return optics.flat().reduce(compose2Optics)
+}
 
 /**
- * Optics composition!
+ * Create a new optic by composition.
  *
- * @param  {...any} fns - Comma-separated list of optics to be composed
+ * You can use a string or integer to directly create a lens,
+ * or wrap it with 'maybe' to create an optional
+ *
+ * @param  {...any} optics - Comma-separated or array of optics to be composed
  */
 export const optic = composeOptics
 
-// path : [String] → Lens s a
-export const path = (xs) => optic(...xs.map((x) => prop(x)))
+/**
+ * Create a new optic by composition.
+ *
+ * You can use a string or integer to directly create a lens,
+ * or wrap it with 'maybe' to create an optional
+ *
+ * @param  {...any} optics - Comma-separated or array of optics to be composed
+ */
+export const path = composeOptics
 
 // preview : AffineFold s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))
@@ -92,3 +124,18 @@ export const over = curry((optic, f, obj) => optic.asSetter.over(f, obj))
 
 // review : Reviewer s a → a → s
 export const review = curry((optic, obj) => optic.asReviewer.review(obj))
+
+// maybe : (String | Int | Lens s a) -> Optional s a
+export const maybe = (optic) => {
+  if (typeof optic == 'string' || optic instanceof String) {
+    return optionalProp(optic)
+  }
+  if (typeof optic == 'number' && !isNaN(optic)) {
+    return optionalIx(optic)
+  }
+  if ('asLens' in optic) {
+    const l = optic.asLens
+    return optional(l.get, l.set)
+  }
+  return undefined
+}
