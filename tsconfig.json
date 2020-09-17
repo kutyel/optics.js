@@ -1,0 +1,8 @@
+{
+  "include": ["src/**/*", "examples/**/*.ts"],
+
+  "compilerOptions": {
+    "target": "ES5",
+    "noEmit": true
+  },
+}

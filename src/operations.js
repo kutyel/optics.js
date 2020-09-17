@@ -83,7 +83,7 @@ const compose2Optics = (optic1, optic2) => {
  * You can use a string or integer to directly create a lens,
  * or wrap it with 'maybe' to create an optional
  *
- * @param  {...any} optics - Comma-separated or array of optics to be composed
+ * @param optics - Comma-separated or array of optics to be composed
  */
 export const composeOptics = (...optics) => {
   // flatten the arguments to account for composeOptics(['this', 'that'])
@@ -96,7 +96,7 @@ export const composeOptics = (...optics) => {
  * You can use a string or integer to directly create a lens,
  * or wrap it with 'maybe' to create an optional
  *
- * @param  {...any} optics - Comma-separated or array of optics to be composed
+ * @param optics - Comma-separated or array of optics to be composed
  */
 export const optic = composeOptics
 
@@ -106,11 +106,15 @@ export const optic = composeOptics
  * You can use a string or integer to directly create a lens,
  * or wrap it with 'maybe' to create an optional
  *
- * @param  {...any} optics - Comma-separated or array of optics to be composed
+ * @param optics - Comma-separated or array of optics to be composed
  */
 export const path = composeOptics
 
-// preview : AffineFold s a → s → Maybe a
+export const lensPath      = composeOptics
+export const optionalPath  = composeOptics
+export const traversalPath = composeOptics
+
+// preview : PartialGetter s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))
 
 // view : Getter s a → s → a
