@@ -18,11 +18,24 @@
 Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) package
 
 - [Meet it!](#meet-it)
-- [Install it!](#install-it)
+- [Get it!](#get-it)
+- [How it is made!](#how-it-is-made)
 - [Use it!](#use-it)
   - [Amount of values](#amount-of-values)
   - [Builders](#builders)
   - [The whole hierarchy](#the-whole-hierarchy)
+
+## Get it!
+
+```bash
+$ npm install optics.js --save
+```
+
+## How it is made!
+
+If you want to know more about the implementation, you can check this talk by [myself](https://twitter.com/FlavioCorpa) at [Lambda World](https://cadiz.lambda.world/).
+
+[![lw](https://img.youtube.com/vi/IoVaArsh6tM/0.jpg)](https://www.youtube.com/watch?v=IoVaArsh6tM)
 
 ## Meet it!
 
@@ -49,12 +62,6 @@ over(wholeMilk, (x) => x + 1, shoppingList)
 ```
 
 As mentioned above, the result of `over` is a _fresh_ object, so immutability is guaranteed.
-
-## Get it!
-
-```bash
-$ npm install optics.js --save
-```
 
 ## Use it!
 
