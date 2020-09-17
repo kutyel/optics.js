@@ -39,6 +39,22 @@ over(optic(maybe('milk'), maybe('whole')), (x) => x + 1, shoppingList)
   // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
 ```
 
+### Usage from TypeScript
+
+Inference for our optics is quite difficult, mostly due to the very dynamic nature of the `optic` combinator. For that reason we require you to tell us what is the intended optic you want to obtain, and no checks are done on that fact:
+
+```ts
+const wholeMilk   // you have to annotate the optic kind
+  = optic<Optional<typeof shoppingList, number>>('milk', maybe('whole'))
+```
+
+Once you provide that information, your uses of optics are checked. For example, you can `preview` an optional, but not `view` it.
+
+```ts
+preview(wholeMilk, shoppingList)
+// view(wholeMilk, shoppingList) // does not compile
+```
+
 ## License
 
 **optics.js** © [Flavio Corpa](https://twitter.com/FlavioCorpa), released under the [MIT](https://github.com/kutyel/optics.js/blob/master/LICENSE.md) License.<br>

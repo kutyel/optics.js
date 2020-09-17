@@ -4,6 +4,7 @@
   "homepage": "https://nicedoc.io/kutyel/optics.js",
   "version": "0.0.0",
   "main": "index.js",
+  "types": "index.d.ts",
   "contributors": [
     {
       "name": "Flavio Corpa",
