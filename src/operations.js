@@ -20,20 +20,6 @@ const combinePreviews = (p1, p2) => (x) => {
  * @param {*} optic2
  */
 const compose2Optics = (optic1, optic2) => {
-  // turn strings and numbers into proper optics
-  if (typeof optic1 == 'string' || optic1 instanceof String) {
-    return compose2Optics(prop(optic1), optic2)
-  }
-  if (typeof optic1 == 'number'  && !isNaN(optic1)) {
-    return compose2Optics(ix(optic1), optic2)
-  }
-  if (typeof optic2 == 'string' || optic2 instanceof String) {
-    return compose2Optics(optic1, prop(optic2))
-  }
-  if (typeof optic2 == 'number' && !isNaN(optic2)) {
-    return compose2Optics(optic1, ix(optic2))
-  }
-
   // start from most specific (iso) to less specific (fold, setter, reviewer)
   if ('asLens' in optic1 && 'asLens' in optic2) {
     const o1 = optic1.asLens
@@ -77,6 +63,17 @@ const compose2Optics = (optic1, optic2) => {
   return undefined
 }
 
+const upgradePrimitiveToOptic = (optic) => {
+  if (typeof optic == 'string' || optic instanceof String) {
+    return prop(optic)
+  }
+  if (typeof optic == 'number'  && !isNaN(optic)) {
+    return ix(optic)
+  }
+  // any other case means it was already an optic
+  return optic
+}
+
 /**
  * Create a new optic by composition.
  *
@@ -87,7 +84,7 @@ const compose2Optics = (optic1, optic2) => {
  */
 export const composeOptics = (...optics) => {
   // flatten the arguments to account for composeOptics(['this', 'that'])
-  return optics.flat().reduce(compose2Optics)
+  return optics.flat().map(upgradePrimitiveToOptic).reduce(compose2Optics)
 }
 
 /**
