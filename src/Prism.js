@@ -56,7 +56,7 @@ const checkPresence = (mustBePresent, obj) =>
  * @param {object} mustBePresent
  */
 export const has = (mustBePresent) => prism(
-  (obj)         => checkPresence(mustBePresent, obj) ? obj : notFound,
-  (newObj, obj) => checkPresence(mustBePresent, obj) ? newObj : obj,
-  (newObj)      => newObj
+  (obj)         => checkPresence(mustBePresent, obj) ? {...obj} : notFound,
+  (newObj, obj) => checkPresence(mustBePresent, obj) ? {...newObj} : {...obj},
+  (newObj)      => { return { ...newObj, ...mustBePresent } }
 )
