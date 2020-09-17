@@ -42,4 +42,10 @@ describe('Operations over Optics', () => {
 
     expect(view(hardLense, theme)).toBe(view(fontLense, theme))
   })
+
+  test('path short-hand should create the same lense as a manually defined one', () => {
+    const hardLense = optic('styles', 'CodeSurfer', 'code', 'fontFamily')
+
+    expect(view(hardLense, theme)).toBe(view(fontLense, theme))
+  })
 })
