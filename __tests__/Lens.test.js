@@ -50,8 +50,8 @@ describe('Lens', () => {
   })
 
   test('Lens.asOptional -> should convert to an Optional correctly', () => {
-    const ageOptional = prop('age').asOptional.asSetter
+    const nameOptional = prop('name').asOptional
 
-    expect(set(ageOptional, 29, user)).toEqual(user)
+    expect(preview(nameOptional, user)).toEqual('Flavio')
   })
 })
