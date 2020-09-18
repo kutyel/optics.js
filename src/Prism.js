@@ -1,9 +1,11 @@
+import { fold } from './Fold'
 import { curry } from './functions'
-import { isNotFound, notFound } from './notFound'
+import { isNotFound, notFound, notFoundToList } from './notFound'
 import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { reviewer } from './Reviewer'
 import { setter } from './Setter'
+import { traversal } from './Traversal'
 
 class Prism {
   constructor(preview, set, review) {
@@ -20,6 +22,18 @@ class Prism {
   // setter = over + set
   get asSetter() {
     return setter(this.over)
+  }
+
+  // fold = reduce + toArray
+  get asFold() {
+    return fold(this.reduce, this.toArray)
+  }
+  reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
+  toArray = (obj) => notFoundToList(this.preview(obj))
+
+  // traversal = reduce + toArray + over
+  get asTraversal() {
+    return traversal(this.reduce, this.toArray, this.over)
   }
 
   // partial getter = preview
@@ -59,5 +73,7 @@ export const has = (mustBePresent) =>
   prism(
     (obj) => (checkPresence(mustBePresent, obj) ? { ...obj } : notFound),
     (newObj, obj) => (checkPresence(mustBePresent, obj) ? { ...newObj } : { ...obj }),
-    (newObj) => ({ ...newObj, ...mustBePresent }),
+    (newObj) => {
+      return { ...newObj, ...mustBePresent }
+    },
   )

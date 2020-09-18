@@ -1,6 +1,6 @@
-import { prop } from '../src/Lens'
 import { toUpper } from '../src/functions'
-import { path, set, view, over, optic } from '../src/operations'
+import { prop } from '../src/Lens'
+import { optic, over, path, set, view } from '../src/operations'
 
 const theme = {
   styles: {

@@ -1,3 +1,4 @@
+import { fold } from './Fold'
 import { curry } from './functions'
 import { partialGetter } from './PartialGetter'
 
@@ -6,7 +7,12 @@ class Getter {
     this.get = get
   }
 
-  view = this.get
+  // fold = reduce + toArray
+  get asFold() {
+    return fold(this.reduce, this.toArray)
+  }
+  reduce = (f, i, obj) => f(i, this.get(obj))
+  toArray = (obj) => [this.get(obj)]
 
   // partial getter = preview
   get asPartialGetter() {
