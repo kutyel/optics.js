@@ -1,6 +1,6 @@
-import { notFound } from '../src/notFound'
 import { toUpper } from '../src/functions'
-import { optic, preview, review, over, toArray } from '../src/operations'
+import { notFound } from '../src/notFound'
+import { optic, over, preview, review, toArray } from '../src/operations'
 import { has } from '../src/Prism'
 
 const user = { id: 1, name: 'Flavio' }

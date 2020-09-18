@@ -1,4 +1,4 @@
-import { optic, reduce, over, toArray } from '../src/operations'
+import { optic, over, reduce, toArray } from '../src/operations'
 import { values } from '../src/Traversal'
 
 const doubleArray = [

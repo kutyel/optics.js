@@ -1,6 +1,6 @@
 import { get, set as assoc, toUpper } from '../src/functions'
 import { ix, lens, prop } from '../src/Lens'
-import { optic, toArray, preview, view, set, over } from '../src/operations'
+import { optic, over, preview, set, toArray, view } from '../src/operations'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
