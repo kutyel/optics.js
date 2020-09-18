@@ -1,17 +1,25 @@
+import { fold } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
 import { ix, lens, prop } from './Lens'
+import { isNotFound, notFound } from './notFound'
 import { optional, optionalIx, optionalProp } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { prism } from './Prism'
 import { reviewer } from './Reviewer'
 import { setter } from './Setter'
+import { traversal } from './Traversal'
 
 // combine two previews
 const combinePreviews = (p1, p2) => (x) => {
   const v = p1(x)
-  return v === null ? null : p2(v)
+  return isNotFound(v) ? notFound : p2(v)
 }
+
+// r1 comes from Fold a b => ((r -> b -> r) -> r -> a -> r)
+// r2 comes from Fold b c => ((r -> c -> r) -> r -> b -> r)
+// and we want to get Fold a c => ((r -> c -> r) -> r -> a -> r)
+const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cur), i, obj)
 
 /**
  * Compose two optics
@@ -42,6 +50,14 @@ const compose2Optics = (optic1, optic2) => {
     return optional(combinePreviews(o1.preview, o2.preview), (v, x) =>
       o1.over((inner) => o2.set(v, inner), x),
     )
+  } else if ('asTraversal' in optic1 && 'asTraversal' in optic2) {
+    const o1 = optic1.asTraversal
+    const o2 = optic2.asTraversal
+    return traversal(
+      combineReduces(o1.reduce, o2.reduce),
+      (obj) => o1.toArray(obj).flatMap((x) => o2.toArray(x)),
+      (f, x) => o2.over((inner) => o1.over(f, inner), x),
+    )
   } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
     const o1 = optic1.asGetter
     const o2 = optic2.asGetter
@@ -50,6 +66,12 @@ const compose2Optics = (optic1, optic2) => {
     const o1 = optic1.asPartialGetter
     const o2 = optic2.asPartialGetter
     return partialGetter(combinePreviews(o1.preview, o2.preview))
+  } else if ('asFold' in optic1 && 'asFold' in optic2) {
+    const o1 = optic1.asFold
+    const o2 = optic2.asFold
+    return fold(combineReduces(o1.reduce, o2.reduce), (obj) =>
+      o1.toArray(obj).flatMap((x) => o2.toArray(x)),
+    )
   } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
@@ -88,7 +110,13 @@ export const composeOptics = (...optics) => optics.flat().map(toOptic).reduce(co
 export const optic = composeOptics
 export const path = composeOptics
 
-// preview : AffineFold s a → s → Maybe a
+// reduce : Fold s a → (r -> a -> r) -> r -> s -> r
+export const reduce = curry((optic, f, i, obj) => optic.asFold.reduce(f, i, obj))
+
+// toArray : Fold s a → s → [a]
+export const toArray = curry((optic, obj) => optic.asFold.toArray(obj))
+
+// preview : Optional s a → s → Maybe a
 export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))
 
 // view : Getter s a → s → a
