@@ -1,4 +1,6 @@
+import { fold } from './Fold'
 import { curry } from './functions'
+import { notFoundToList } from './notFound'
 
 /**
  * AKA: Affine Fold
@@ -8,8 +10,15 @@ class PartialGetter {
     this.preview = preview
   }
 
+  // fold = reduce + toArray
+  get asFold() {
+    return fold(this.reduce, this.toArray)
+  }
+  reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
+  toArray = (obj) => notFoundToList(this.preview(obj))
+
   // itself
-  get asPreviewer() {
+  get asPartialGetter() {
     return this
   }
 }

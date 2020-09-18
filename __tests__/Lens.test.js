@@ -1,6 +1,6 @@
 import { get, set as assoc, toUpper } from '../src/functions'
 import { ix, lens, prop } from '../src/Lens'
-import { optic, over, preview, set, view } from '../src/operations'
+import { optic, toArray, preview, view, set, over } from '../src/operations'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
@@ -14,6 +14,7 @@ describe('Lens', () => {
     const alex = { id: 1, name: 'Alejandro' }
 
     expect(view(lense, user)).toBe('Flavio')
+    expect(lense.get(user)).toBe('Flavio')
     expect(preview(lense, user)).toBe('Flavio')
     expect(set(lense, 'Alejandro', user)).toEqual(alex)
   })
@@ -52,9 +53,38 @@ describe('Lens', () => {
 
   test('Lens.asOptional -> should convert to an Optional correctly', () => {
     const ageOptional = prop('age').asOptional
-    const nameOptional = prop('name').asOptional
-
     expect(preview(ageOptional, user)).toBeUndefined()
+  })
+
+  test('should convert to an Optional correctly', () => {
+    const nameOptional = prop('name').asOptional
     expect(preview(nameOptional, user)).toEqual('Flavio')
+    expect(nameOptional.preview(user)).toEqual('Flavio')
+  })
+
+  test('should convert to an Traversal correctly', () => {
+    const nameOptional = prop('name').asTraversal
+    expect(toArray(nameOptional, user)).toEqual(['Flavio'])
+    expect(nameOptional.toArray(user)).toEqual(['Flavio'])
+  })
+
+  test('should convert to a Getter correctly', () => {
+    const nameOptional = prop('name').asGetter
+    expect(view(nameOptional, user)).toEqual('Flavio')
+    expect(nameOptional.get(user)).toEqual('Flavio')
+  })
+
+  test('should convert to a PartialGetter correctly', () => {
+    const nameOptional = prop('name').asPartialGetter
+    expect(preview(nameOptional, user)).toEqual('Flavio')
+    expect(nameOptional.preview(user)).toEqual('Flavio')
+    expect(toArray(nameOptional, user)).toEqual(['Flavio'])
+    expect(nameOptional.toArray(user)).toEqual(['Flavio'])
+  })
+
+  test('should convert to a Fold correctly', () => {
+    const nameOptional = prop('name').asFold
+    expect(toArray(nameOptional, user)).toEqual(['Flavio'])
+    expect(nameOptional.toArray(user)).toEqual(['Flavio'])
   })
 })

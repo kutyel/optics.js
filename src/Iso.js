@@ -1,19 +1,23 @@
 import { fold } from './Fold'
-import { curry, get, set } from './functions'
+import { curry } from './functions'
 import { getter } from './Getter'
+import { lens } from './Lens'
 import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
+import { prism } from './Prism'
+import { reviewer } from './Reviewer'
 import { setter } from './Setter'
 import { traversal } from './Traversal'
 
-class Lens {
-  constructor(get, set) {
+class Iso {
+  constructor(get, review) {
     this.get = get
-    this.set = set
+    this.review = review
   }
 
   // derived operations
-  over = (f, obj) => this.set(f(this.get(obj)), obj)
+  set = (x) => this.review(x)
+  over = (f, obj) => this.review(f(this.get(obj)))
 
   // setter = over + set
   get asSetter() {
@@ -37,6 +41,16 @@ class Lens {
     return optional(this.get, this.set)
   }
 
+  // prism = preview + set + review
+  get asPrism() {
+    return prism(this.get, this.set, this.review)
+  }
+
+  // reviewer = review
+  get asReviewer() {
+    return reviewer(this.review)
+  }
+
   // getter = get
   get asGetter() {
     return getter(this.get)
@@ -48,17 +62,16 @@ class Lens {
   }
   preview = this.get
 
-  // itself
+  // lens
   get asLens() {
+    return lens(this.get, this.set)
+  }
+
+  // itself
+  get asIso() {
     return this
   }
 }
 
-// lens : (s → a) → ((a, s) → s) → Lens s a
-export const lens = curry((get, set) => new Lens(get, set))
-
-// prop : String → Lens s a
-export const prop = (key) => lens(get(key), set(key))
-
-// ix : Number → Lens s a
-export const ix = (index) => lens(get(index), set(index))
+// iso : (s → a) → (a → s) → Iso s a
+export const iso = curry((get, review) => new Iso(get, review))
