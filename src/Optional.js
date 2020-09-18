@@ -37,13 +37,15 @@ class Optional {
 export const optional = curry((preview, set) => new Optional(preview, set))
 
 // optionalProp : String → Optional s a
-export const optionalProp = (key) => optional(
-  (obj)      => key in obj ? obj[key] : notFound,
-  (val, obj) => key in obj ? { ...obj, [key]: val } : obj
-)
+export const optionalProp = (key) =>
+  optional(
+    (obj) => (key in obj ? obj[key] : notFound),
+    (val, obj) => (key in obj ? { ...obj, [key]: val } : obj),
+  )
 
 // optionalIx : Number → Optional s a
-export const optionalIx = (index) => optional(
-  (obj)      => index in obj ? obj[index] : notFound,
-  (val, obj) => index in obj ? { ...obj, [index]: val } : obj
-)
+export const optionalIx = (index) =>
+  optional(
+    (obj) => (index in obj ? obj[index] : notFound),
+    (val, obj) => (index in obj ? { ...obj, [index]: val } : obj),
+  )

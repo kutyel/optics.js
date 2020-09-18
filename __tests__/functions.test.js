@@ -1,4 +1,4 @@
-import { compose, curry, get, isNil, set, toUpper } from '../src/functions'
+import { compose, curry, get, set, toUpper } from '../src/functions'
 
 const cubed = (num, exp) => num ** exp
 const exp = curry(cubed)
@@ -8,16 +8,6 @@ describe('Function Operators', () => {
   test('curry -> should curry functions', () => {
     expect(exp(5)(3)).toBe(125)
   })
-
-  /* test('isNil -> should check if a value is null or undefined', () => {
-    expect(isNil(null)).toBe(true)
-    expect(isNil(undefined)).toBe(true)
-    expect(isNil('')).toBe(false)
-    expect(isNil(0)).toBe(false)
-    expect(isNil(-0)).toBe(false)
-    expect(isNil(false)).toBe(false)
-    expect(isNil(NaN)).toBe(false)
-  }) */
 
   test('compose -> should compose N functions correctly', () => {
     const inc = (x) => x + 1

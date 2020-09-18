@@ -73,6 +73,6 @@ describe('Optional', () => {
   })
 
   test('maybe should fail for wrong types', () => {
-    expect(maybe([1,2])).toBe(undefined)
+    expect(maybe([1, 2])).toBe(undefined)
   })
 })
