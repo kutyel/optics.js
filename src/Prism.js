@@ -1,9 +1,9 @@
 import { curry } from './functions'
-import { notFound, isNotFound } from './notFound'
-import { setter } from './Setter'
+import { isNotFound, notFound } from './notFound'
 import { optional } from './Optional'
-import { reviewer } from './Reviewer'
 import { partialGetter } from './PartialGetter'
+import { reviewer } from './Reviewer'
+import { setter } from './Setter'
 
 class Prism {
   constructor(preview, set, review) {
@@ -55,8 +55,9 @@ const checkPresence = (mustBePresent, obj) =>
  *
  * @param {object} mustBePresent
  */
-export const has = (mustBePresent) => prism(
-  (obj)         => checkPresence(mustBePresent, obj) ? {...obj} : notFound,
-  (newObj, obj) => checkPresence(mustBePresent, obj) ? {...newObj} : {...obj},
-  (newObj)      => { return { ...newObj, ...mustBePresent } }
-)
+export const has = (mustBePresent) =>
+  prism(
+    (obj) => (checkPresence(mustBePresent, obj) ? { ...obj } : notFound),
+    (newObj, obj) => (checkPresence(mustBePresent, obj) ? { ...newObj } : { ...obj }),
+    (newObj) => ({ ...newObj, ...mustBePresent }),
+  )

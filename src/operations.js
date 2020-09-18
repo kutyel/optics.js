@@ -1,11 +1,11 @@
-import { prism } from './Prism'
-import { getter } from './Getter'
-import { setter } from './Setter'
 import { curry } from './functions'
-import { lens, prop, ix } from './Lens'
-import { reviewer } from './Reviewer'
-import { optional, optionalProp, optionalIx } from './Optional'
+import { getter } from './Getter'
+import { ix, lens, prop } from './Lens'
+import { optional, optionalIx, optionalProp } from './Optional'
 import { partialGetter } from './PartialGetter'
+import { prism } from './Prism'
+import { reviewer } from './Reviewer'
+import { setter } from './Setter'
 
 // combine two previews
 const combinePreviews = (p1, p2) => (x) => {
@@ -85,25 +85,7 @@ const toOptic = (optic) => {
  * flatten the arguments to account for composeOptics(['this', 'that'])
  */
 export const composeOptics = (...optics) => optics.flat().map(toOptic).reduce(compose2Optics)
-
-/**
- * Create a new optic by composition.
- *
- * You can use a string or integer to directly create a lens,
- * or wrap it with 'maybe' to create an optional
- *
- * @param  {...any} optics - Comma-separated or array of optics to be composed
- */
 export const optic = composeOptics
-
-/**
- * Create a new optic by composition.
- *
- * You can use a string or integer to directly create a lens,
- * or wrap it with 'maybe' to create an optional
- *
- * @param  {...any} optics - Comma-separated or array of optics to be composed
- */
 export const path = composeOptics
 
 // preview : AffineFold s a → s → Maybe a

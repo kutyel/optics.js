@@ -1,5 +1,8 @@
 import { curry } from './functions'
 
+/**
+ * AKA: Affine Fold
+ */
 class PartialGetter {
   constructor(preview) {
     this.preview = preview

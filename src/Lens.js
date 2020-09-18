@@ -1,8 +1,8 @@
-import { getter } from './Getter'
-import { setter } from './Setter'
-import { optional } from './Optional'
 import { curry, get, set } from './functions'
+import { getter } from './Getter'
+import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
+import { setter } from './Setter'
 
 class Lens {
   constructor(get, set) {

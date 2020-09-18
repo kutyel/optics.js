@@ -1,6 +1,6 @@
-import { lens, prop, ix } from '../src/Lens'
 import { get, set as assoc, toUpper } from '../src/functions'
-import { optic, preview, view, set, over } from '../src/operations'
+import { ix, lens, prop } from '../src/Lens'
+import { optic, over, preview, set, view } from '../src/operations'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }
@@ -11,10 +11,11 @@ describe('Lens', () => {
     const propName = get('name')
     const assocName = assoc('name')
     const lense = lens(propName, assocName)
+    const alex = { id: 1, name: 'Alejandro' }
 
     expect(view(lense, user)).toBe('Flavio')
     expect(preview(lense, user)).toBe('Flavio')
-    expect(set(lense, 'Alejandro', user)).toEqual({ id: 1, name: 'Alejandro' })
+    expect(set(lense, 'Alejandro', user)).toEqual(alex)
   })
 
   test('prop should build a lens', () => {
@@ -50,8 +51,10 @@ describe('Lens', () => {
   })
 
   test('Lens.asOptional -> should convert to an Optional correctly', () => {
+    const ageOptional = prop('age').asOptional
     const nameOptional = prop('name').asOptional
 
+    expect(preview(ageOptional, user)).toBeUndefined()
     expect(preview(nameOptional, user)).toEqual('Flavio')
   })
 })

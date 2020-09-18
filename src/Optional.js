@@ -1,7 +1,7 @@
-import { setter } from './Setter'
-import { partialGetter } from './PartialGetter'
 import { curry } from './functions'
-import { notFound, isNotFound } from './notFound'
+import { isNotFound, notFound } from './notFound'
+import { partialGetter } from './PartialGetter'
+import { setter } from './Setter'
 
 /**
  * AKA: Affine Traversal
