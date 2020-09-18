@@ -5,6 +5,7 @@ node_modules
 npm-debug.log
 .node_history
 package-lock.json
+dist
 
 ############################
 # tmp, editor & OS files

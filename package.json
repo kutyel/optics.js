@@ -3,7 +3,10 @@
   "description": "Lenses, Prisms and Traversals in JavaScript!",
   "homepage": "https://nicedoc.io/kutyel/optics.js",
   "version": "0.0.0",
-  "main": "index.js",
+  "source": "index.js",
+  "main": "dist/optic.js",
+  "module": "dist/optic.module.js",
+  "unpkg": "dist/optic.umd.js",
   "contributors": [
     {
       "name": "Flavio Corpa",
@@ -49,21 +52,23 @@
     "husky": "^4.3.0",
     "jest": "^26.4.2",
     "lint-staged": "^10.3.0",
+    "microbundle": "^0.12.3",
     "npm-check-updates": "^9.0.1",
     "nyc": "^15.1.0",
     "semantic-release": "^17.1.1",
     "standard-version": "^9.0.0"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 12"
   },
   "scripts": {
+    "build": "microbundle",
     "clean": "rm -rf node_modules",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "lint": "eslint src/*.js",
     "postrelease": "npm run release:tags && npm run release:github && npm publish",
-    "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors",
+    "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors && npm run build",
     "pretest": "npm run lint",
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
@@ -89,10 +94,10 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 40,
-        "functions": 50,
-        "lines": 60,
-        "statements": 60
+        "branches": 64,
+        "functions": 74,
+        "lines": 73,
+        "statements": 75
       }
     },
     "testEnvironment": "node"
