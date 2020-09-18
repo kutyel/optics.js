@@ -61,7 +61,7 @@ class Prism {
 export const prism = curry((preview, set, review) => new Prism(preview, set, review))
 
 const checkPresence = (mustBePresent, obj) =>
-  Object.keys(mustBePresent).every((k) => k in obj && obj[k] === mustBePresent[k])
+  Object.keys(mustBePresent).every((k) => obj[k] && obj[k] === mustBePresent[k])
 
 /**
  * Check that a subset of properties with their values are present.
@@ -73,7 +73,5 @@ export const has = (mustBePresent) =>
   prism(
     (obj) => (checkPresence(mustBePresent, obj) ? { ...obj } : notFound),
     (newObj, obj) => (checkPresence(mustBePresent, obj) ? { ...newObj } : { ...obj }),
-    (newObj) => {
-      return { ...newObj, ...mustBePresent }
-    },
+    (newObj) => ({ ...newObj, ...mustBePresent }),
   )

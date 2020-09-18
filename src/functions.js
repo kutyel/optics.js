@@ -23,7 +23,7 @@ export const compose = (...fns) => (args) => fns.reduceRight((x, f) => f(x), arg
 export const get = curry((key, obj) => obj[key])
 
 // set : String -> a -> {k: v} -> {k: v}
-export const set = curry((key, val, obj) => (key in obj ? { ...obj, [key]: val } : obj))
+export const set = curry((key, val, obj) => (obj[key] ? { ...obj, [key]: val } : obj))
 
 // toUpper : String -> String
 export const toUpper = (str) => str.toUpperCase()
