@@ -5,6 +5,10 @@ class Reviewer {
     this.review = review
   }
 
+  get __opticType() {
+    return 'Reviewer'
+  }
+
   // itself
   get asReviewer() {
     return this

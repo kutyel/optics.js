@@ -14,6 +14,10 @@ class Optional {
     this.set = set
   }
 
+  get __opticType() {
+    return 'Optional'
+  }
+
   over = (f, obj) => {
     const v = this.preview(obj)
     return isNotFound(v) ? obj : this.set(f(v), obj)

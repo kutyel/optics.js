@@ -6,6 +6,10 @@ class Fold {
     this.toArray = toArray ?? ((obj) => reduce((acc, cur) => acc.concat(cur), [], obj))
   }
 
+  get __opticType() {
+    return 'Fold'
+  }
+
   // itself
   get asFold() {
     return this

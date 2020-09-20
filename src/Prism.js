@@ -14,6 +14,10 @@ class Prism {
     this.review = review
   }
 
+  get __opticType() {
+    return 'Prism'
+  }
+
   over = (f, obj) => {
     const v = this.preview(obj)
     return isNotFound(v) ? obj : this.set(f(v), obj)

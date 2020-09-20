@@ -9,6 +9,10 @@ class Traversal {
     this.over = over
   }
 
+  get __opticType() {
+    return 'Traversal'
+  }
+
   // setter = over + set
   get asSetter() {
     return setter(this.over)
