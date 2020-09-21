@@ -11,19 +11,21 @@ describe('going twice does not change', () => {
   })
 
   for (const k of [
-    'asLens',
-    'asPrism',
-    'asOptional',
-    'asReviewer',
-    'asTraversal',
-    'asSetter',
-    'asGetter',
-    'asPartialGetter',
-    'asFold',
+    'Lens',
+    'Prism',
+    'Optional',
+    'Reviewer',
+    'Traversal',
+    'Setter',
+    'Getter',
+    'PartialGetter',
+    'Fold',
   ]) {
     test(k, () => {
-      const o = idIso[k]
-      expect(o[k]).toBe(o)
+      const nm = 'as' + k
+      const o = idIso[nm]
+      expect(o[nm]).toBe(o)
+      expect(o.__opticType).toBe(k)
     })
   }
 })

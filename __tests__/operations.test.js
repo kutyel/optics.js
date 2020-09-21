@@ -1,6 +1,9 @@
+import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors'
 import { toUpper } from '../src/functions'
+import { getter } from '../src/Getter'
 import { prop } from '../src/Lens'
 import { optic, over, path, set, view } from '../src/operations'
+import { setter } from '../src/Setter'
 
 const theme = {
   styles: {
@@ -47,5 +50,24 @@ describe('Operations over Optics', () => {
     const hardLense = optic('styles', 'CodeSurfer', 'code', 'fontFamily')
 
     expect(view(hardLense, theme)).toBe(view(fontLense, theme))
+  })
+
+  test('incompatible optics', () => {
+    expect(() =>
+      optic(
+        setter((f, x) => f(x)),
+        getter((x) => x),
+      ),
+    ).toThrow(OpticComposeError)
+  })
+
+  test('unavailable operations', () => {
+    expect(() =>
+      set(
+        getter((x) => x),
+        1,
+        1,
+      ),
+    ).toThrow(UnavailableOpticOperationError)
   })
 })

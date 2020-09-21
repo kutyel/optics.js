@@ -12,6 +12,10 @@ class Lens {
     this.set = set
   }
 
+  get __opticType() {
+    return 'Lens'
+  }
+
   // derived operations
   over = (f, obj) => this.set(f(this.get(obj)), obj)
 

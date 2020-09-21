@@ -2,8 +2,15 @@ import { curry } from './functions'
 
 class Fold {
   constructor(reduce, toArray) {
-    this.reduce = reduce ?? ((f, i, obj) => toArray(obj).reduce(f, i))
-    this.toArray = toArray ?? ((obj) => reduce((acc, cur) => acc.concat(cur), [], obj))
+    if (!reduce) this.reduce = (f, i, obj) => toArray(obj).reduce(f, i)
+    else this.reduce = reduce
+
+    if (!toArray) this.toArray = (obj) => reduce((acc, cur) => acc.concat(cur), [], obj)
+    else this.toArray = toArray
+  }
+
+  get __opticType() {
+    return 'Fold'
   }
 
   // itself

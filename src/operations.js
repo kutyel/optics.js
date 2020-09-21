@@ -1,3 +1,4 @@
+import { OpticComposeError, UnavailableOpticOperationError } from './errors'
 import { fold } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
@@ -56,7 +57,7 @@ const compose2Optics = (optic1, optic2) => {
     return traversal(
       combineReduces(o1.reduce, o2.reduce),
       (obj) => o1.toArray(obj).flatMap((x) => o2.toArray(x)),
-      (f, x) => o2.over((inner) => o1.over(f, inner), x),
+      (f, x) => o1.over((inner) => o2.over(f, inner), x),
     )
   } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
     const o1 = optic1.asGetter
@@ -75,14 +76,14 @@ const compose2Optics = (optic1, optic2) => {
   } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
-    return setter((f, x) => o2.over((inner) => o1.over(f, inner), x))
+    return setter((f, x) => o1.over((inner) => o2.over(f, inner), x))
   } else if ('asReviewer' in optic1 && 'asReviewer' in optic2) {
     const o1 = optic1.asReviewer
     const o2 = optic2.asReviewer
     return reviewer((x) => o2.review(o1.review(x)))
   }
 
-  return undefined
+  throw new OpticComposeError(optic1.__opticType, optic2.__opticType, 'incompatible optics')
 }
 
 const toOptic = (optic) => {
@@ -111,25 +112,81 @@ export const optic = composeOptics
 export const path = composeOptics
 
 // reduce : Fold s a → (r -> a -> r) -> r -> s -> r
-export const reduce = curry((optic, f, i, obj) => optic.asFold.reduce(f, i, obj))
+export const reduce = curry((optic, f, i, obj) => {
+  if ('asFold' in optic) return optic.asFold.reduce(f, i, obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'reduce',
+      optic.__opticType,
+      'reduce is not supported by ' + optic.__opticType,
+    )
+})
 
 // toArray : Fold s a → s → [a]
-export const toArray = curry((optic, obj) => optic.asFold.toArray(obj))
+export const toArray = curry((optic, obj) => {
+  if ('asFold' in optic) return optic.asFold.toArray(obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'toArray',
+      optic.__opticType,
+      'toArray is not supported by ' + optic.__opticType,
+    )
+})
 
 // preview : Optional s a → s → Maybe a
-export const preview = curry((optic, obj) => optic.asPartialGetter.preview(obj))
+export const preview = curry((optic, obj) => {
+  if ('asPartialGetter' in optic) return optic.asPartialGetter.preview(obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'preview',
+      optic.__opticType,
+      'preview is not supported by ' + optic.__opticType,
+    )
+})
 
 // view : Getter s a → s → a
-export const view = curry((optic, obj) => optic.asGetter.get(obj))
+export const view = curry((optic, obj) => {
+  if ('asGetter' in optic) return optic.asGetter.get(obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'view/get',
+      optic.__opticType,
+      'view/get is not supported by ' + optic.__opticType,
+    )
+})
 
 // set : Setter s a → a → s → s
-export const set = curry((optic, val, obj) => optic.asSetter.set(val, obj))
+export const set = curry((optic, val, obj) => {
+  if ('asSetter' in optic) return optic.asSetter.set(val, obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'set',
+      optic.__opticType,
+      'set is not supported by ' + optic.__opticType,
+    )
+})
 
 // over : Setter s a → (a → a) → s → s
-export const over = curry((optic, f, obj) => optic.asSetter.over(f, obj))
+export const over = curry((optic, f, obj) => {
+  if ('asSetter' in optic) return optic.asSetter.over(f, obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'over',
+      optic.__opticType,
+      'over is not supported by ' + optic.__opticType,
+    )
+})
 
 // review : Reviewer s a → a → s
-export const review = curry((optic, obj) => optic.asReviewer.review(obj))
+export const review = curry((optic, obj) => {
+  if ('asReviewer' in optic) return optic.asReviewer.review(obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'review',
+      optic.__opticType,
+      'review is not supported by ' + optic.__opticType,
+    )
+})
 
 // maybe : (String | Int | Lens s a) -> Optional s a
 export const maybe = (optic) => {

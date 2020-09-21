@@ -15,6 +15,10 @@ class Iso {
     this.review = review
   }
 
+  get __opticType() {
+    return 'Iso'
+  }
+
   // derived operations
   set = (x) => this.review(x)
   over = (f, obj) => this.review(f(this.get(obj)))

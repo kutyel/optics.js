@@ -14,6 +14,10 @@ class Prism {
     this.review = review
   }
 
+  get __opticType() {
+    return 'Prism'
+  }
+
   over = (f, obj) => {
     const v = this.preview(obj)
     return isNotFound(v) ? obj : this.set(f(v), obj)
@@ -61,7 +65,7 @@ class Prism {
 export const prism = curry((preview, set, review) => new Prism(preview, set, review))
 
 const checkPresence = (mustBePresent, obj) =>
-  Object.keys(mustBePresent).every((k) => obj[k] && obj[k] === mustBePresent[k])
+  Object.keys(mustBePresent).every((k) => obj && obj[k] && obj[k] === mustBePresent[k])
 
 /**
  * Check that a subset of properties with their values are present.
@@ -72,6 +76,7 @@ const checkPresence = (mustBePresent, obj) =>
 export const has = (mustBePresent) =>
   prism(
     (obj) => (checkPresence(mustBePresent, obj) ? { ...obj } : notFound),
-    (newObj, obj) => (checkPresence(mustBePresent, obj) ? { ...newObj } : { ...obj }),
+    (newObj, obj) =>
+      checkPresence(mustBePresent, obj) ? { ...newObj, ...mustBePresent } : { ...obj },
     (newObj) => ({ ...newObj, ...mustBePresent }),
   )
