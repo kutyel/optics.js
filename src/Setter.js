@@ -5,10 +5,6 @@ class Setter {
     this.over = over
   }
 
-  get __opticType() {
-    return 'Setter'
-  }
-
   // derived operations
   set = (val, x) => this.over(() => val, x)
 

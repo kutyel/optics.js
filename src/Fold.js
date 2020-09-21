@@ -9,10 +9,6 @@ class Fold {
     else this.toArray = toArray
   }
 
-  get __opticType() {
-    return 'Fold'
-  }
-
   // itself
   get asFold() {
     return this

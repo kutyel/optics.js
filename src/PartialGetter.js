@@ -10,10 +10,6 @@ class PartialGetter {
     this.preview = preview
   }
 
-  get __opticType() {
-    return 'PartialGetter'
-  }
-
   // fold = reduce + toArray
   get asFold() {
     return fold(this.reduce, this.toArray)

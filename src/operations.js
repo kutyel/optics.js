@@ -30,14 +30,14 @@ const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cu
  */
 const compose2Optics = (optic1, optic2) => {
   // start from most specific (iso) to less specific (fold, setter, reviewer)
-  if ('asLens' in optic1 && 'asLens' in optic2) {
+  if (optic1.asLens && optic2.asLens) {
     const o1 = optic1.asLens
     const o2 = optic2.asLens
     return lens(
       (x) => o2.get(o1.get(x)),
       (v, x) => o1.over((inner) => o2.set(v, inner), x),
     )
-  } else if ('asPrism' in optic1 && 'asPrism' in optic2) {
+  } else if (optic1.asPrism && optic2.asPrism) {
     const o1 = optic1.asPrism
     const o2 = optic2.asPrism
     return prism(
@@ -45,13 +45,13 @@ const compose2Optics = (optic1, optic2) => {
       (v, x) => o1.over((inner) => o2.set(v, inner), x),
       (x) => o2.review(o1.review(x)),
     )
-  } else if ('asOptional' in optic1 && 'asOptional' in optic2) {
+  } else if (optic1.asOptional && optic2.asOptional) {
     const o1 = optic1.asOptional
     const o2 = optic2.asOptional
     return optional(combinePreviews(o1.preview, o2.preview), (v, x) =>
       o1.over((inner) => o2.set(v, inner), x),
     )
-  } else if ('asTraversal' in optic1 && 'asTraversal' in optic2) {
+  } else if (optic1.asTraversal && optic2.asTraversal) {
     const o1 = optic1.asTraversal
     const o2 = optic2.asTraversal
     return traversal(
@@ -59,31 +59,35 @@ const compose2Optics = (optic1, optic2) => {
       (obj) => o1.toArray(obj).flatMap((x) => o2.toArray(x)),
       (f, x) => o1.over((inner) => o2.over(f, inner), x),
     )
-  } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
+  } else if (optic1.asGetter && optic2.asGetter) {
     const o1 = optic1.asGetter
     const o2 = optic2.asGetter
     return getter((x) => o2.get(o1.get(x)))
-  } else if ('asPartialGetter' in optic1 && 'asPartialGetter' in optic2) {
+  } else if (optic1.asPartialGetter && optic2.asPartialGetter) {
     const o1 = optic1.asPartialGetter
     const o2 = optic2.asPartialGetter
     return partialGetter(combinePreviews(o1.preview, o2.preview))
-  } else if ('asFold' in optic1 && 'asFold' in optic2) {
+  } else if (optic1.asFold && optic2.asFold) {
     const o1 = optic1.asFold
     const o2 = optic2.asFold
     return fold(combineReduces(o1.reduce, o2.reduce), (obj) =>
       o1.toArray(obj).flatMap((x) => o2.toArray(x)),
     )
-  } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
+  } else if (optic1.asSetter && optic2.asSetter) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
     return setter((f, x) => o1.over((inner) => o2.over(f, inner), x))
-  } else if ('asReviewer' in optic1 && 'asReviewer' in optic2) {
+  } else if (optic1.asReviewer && optic2.asReviewer) {
     const o1 = optic1.asReviewer
     const o2 = optic2.asReviewer
     return reviewer((x) => o2.review(o1.review(x)))
   }
 
-  throw new OpticComposeError(optic1.__opticType, optic2.__opticType, 'incompatible optics')
+  throw new OpticComposeError(
+    optic1.constructor.name,
+    optic2.constructor.name,
+    'incompatible optics',
+  )
 }
 
 const toOptic = (optic) => {
@@ -113,78 +117,90 @@ export const path = composeOptics
 
 // reduce : Fold s a → (r -> a -> r) -> r -> s -> r
 export const reduce = curry((optic, f, i, obj) => {
-  if ('asFold' in optic) return optic.asFold.reduce(f, i, obj)
-  else
+  if (optic.asFold) {
+    return optic.asFold.reduce(f, i, obj)
+  } else {
     throw new UnavailableOpticOperationError(
       'reduce',
-      optic.__opticType,
-      'reduce is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      'reduce is not supported by ' + optic.constructor.name,
     )
+  }
 })
 
 // toArray : Fold s a → s → [a]
 export const toArray = curry((optic, obj) => {
-  if ('asFold' in optic) return optic.asFold.toArray(obj)
-  else
+  if (optic.asFold) {
+    return optic.asFold.toArray(obj)
+  } else {
     throw new UnavailableOpticOperationError(
       'toArray',
-      optic.__opticType,
-      'toArray is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      `toArray is not supported by ${optic.constructor.name}`,
     )
+  }
 })
 
 // preview : Optional s a → s → Maybe a
 export const preview = curry((optic, obj) => {
-  if ('asPartialGetter' in optic) return optic.asPartialGetter.preview(obj)
-  else
+  if (optic.asPartialGetter) {
+    return optic.asPartialGetter.preview(obj)
+  } else {
     throw new UnavailableOpticOperationError(
       'preview',
-      optic.__opticType,
-      'preview is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      `preview is not supported by ${optic.constructor.name}`,
     )
+  }
 })
 
 // view : Getter s a → s → a
 export const view = curry((optic, obj) => {
-  if ('asGetter' in optic) return optic.asGetter.get(obj)
-  else
+  if (optic.asGetter) {
+    return optic.asGetter.get(obj)
+  } else {
     throw new UnavailableOpticOperationError(
       'view/get',
-      optic.__opticType,
-      'view/get is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      'view/get is not supported by ' + optic.constructor.name,
     )
+  }
 })
 
 // set : Setter s a → a → s → s
 export const set = curry((optic, val, obj) => {
-  if ('asSetter' in optic) return optic.asSetter.set(val, obj)
-  else
+  if (optic.asSetter) {
+    return optic.asSetter.set(val, obj)
+  } else {
     throw new UnavailableOpticOperationError(
       'set',
-      optic.__opticType,
-      'set is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      'set is not supported by ' + optic.constructor.name,
     )
+  }
 })
 
 // over : Setter s a → (a → a) → s → s
 export const over = curry((optic, f, obj) => {
-  if ('asSetter' in optic) return optic.asSetter.over(f, obj)
-  else
+  if (optic.asSetter) {
+    return optic.asSetter.over(f, obj)
+  } else {
     throw new UnavailableOpticOperationError(
       'over',
-      optic.__opticType,
-      'over is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      'over is not supported by ' + optic.constructor.name,
     )
+  }
 })
 
 // review : Reviewer s a → a → s
 export const review = curry((optic, obj) => {
-  if ('asReviewer' in optic) return optic.asReviewer.review(obj)
+  if (optic.asReviewer) return optic.asReviewer.review(obj)
   else
     throw new UnavailableOpticOperationError(
       'review',
-      optic.__opticType,
-      'review is not supported by ' + optic.__opticType,
+      optic.constructor.name,
+      'review is not supported by ' + optic.constructor.name,
     )
 })
 
@@ -196,7 +212,7 @@ export const maybe = (optic) => {
   if (typeof optic == 'number' && !isNaN(optic)) {
     return optionalIx(optic)
   }
-  if ('asLens' in optic) {
+  if (optic.asLens) {
     const l = optic.asLens
     return optional(l.get, l.set)
   }

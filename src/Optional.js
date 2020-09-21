@@ -14,10 +14,6 @@ class Optional {
     this.set = set
   }
 
-  get __opticType() {
-    return 'Optional'
-  }
-
   over = (f, obj) => {
     const v = this.preview(obj)
     return isNotFound(v) ? obj : this.set(f(v), obj)
@@ -57,19 +53,13 @@ export const optional = curry((preview, set) => new Optional(preview, set))
 // optionalProp : String → Optional s a
 export const optionalProp = (key) =>
   optional(
-    (obj) => {
-      if (key in obj) return obj[key]
-      else return notFound
-    },
+    (obj) => obj[key] || notFound,
     (val, obj) => (obj[key] ? { ...obj, [key]: val } : obj),
   )
 
 // optionalIx : Number → Optional s a
 export const optionalIx = (index) =>
   optional(
-    (obj) => {
-      if (index in obj) return obj[index]
-      else return notFound
-    },
+    (obj) => obj[index] || notFound,
     (val, obj) => (obj[index] ? { ...obj, [index]: val } : obj),
   )

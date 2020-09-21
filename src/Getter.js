@@ -7,10 +7,6 @@ class Getter {
     this.get = get
   }
 
-  get __opticType() {
-    return 'Getter'
-  }
-
   // fold = reduce + toArray
   get asFold() {
     return fold(this.reduce, this.toArray)
