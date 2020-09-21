@@ -57,7 +57,7 @@ const compose2Optics = (optic1, optic2) => {
     return traversal(
       combineReduces(o1.reduce, o2.reduce),
       (obj) => o1.toArray(obj).flatMap((x) => o2.toArray(x)),
-      (f, x) => o2.over((inner) => o1.over(f, inner), x),
+      (f, x) => o1.over((inner) => o2.over(f, inner), x),
     )
   } else if ('asGetter' in optic1 && 'asGetter' in optic2) {
     const o1 = optic1.asGetter
@@ -76,7 +76,7 @@ const compose2Optics = (optic1, optic2) => {
   } else if ('asSetter' in optic1 && 'asSetter' in optic2) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
-    return setter((f, x) => o2.over((inner) => o1.over(f, inner), x))
+    return setter((f, x) => o1.over((inner) => o2.over(f, inner), x))
   } else if ('asReviewer' in optic1 && 'asReviewer' in optic2) {
     const o1 = optic1.asReviewer
     const o2 = optic2.asReviewer
