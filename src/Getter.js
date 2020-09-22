@@ -5,20 +5,22 @@ import { partialGetter } from './PartialGetter'
 class Getter {
   constructor(get) {
     this.get = get
+
+    // derived operations
+    this.reduce = (f, i, obj) => f(i, this.get(obj))
+    this.toArray = (obj) => [this.get(obj)]
+    this.preview = this.get
   }
 
   // fold = reduce + toArray
   get asFold() {
     return fold(this.reduce, this.toArray)
   }
-  reduce = (f, i, obj) => f(i, this.get(obj))
-  toArray = (obj) => [this.get(obj)]
 
   // partial getter = preview
   get asPartialGetter() {
     return partialGetter(this.get)
   }
-  preview = this.get
 
   // itself
   get asGetter() {

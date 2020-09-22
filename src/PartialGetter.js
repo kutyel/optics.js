@@ -8,14 +8,16 @@ import { notFoundToList } from './notFound'
 class PartialGetter {
   constructor(preview) {
     this.preview = preview
+
+    // derived operations
+    this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
+    this.toArray = (obj) => notFoundToList(this.preview(obj))
   }
 
   // fold = reduce + toArray
   get asFold() {
     return fold(this.reduce, this.toArray)
   }
-  reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
-  toArray = (obj) => notFoundToList(this.preview(obj))
 
   // itself
   get asPartialGetter() {

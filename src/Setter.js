@@ -3,10 +3,10 @@ import { curry } from './functions'
 class Setter {
   constructor(over) {
     this.over = over
-  }
 
-  // derived operations
-  set = (val, x) => this.over(() => val, x)
+    // derived operations
+    this.set = (val, x) => this.over(() => val, x)
+  }
 
   // itself
   get asSetter() {
