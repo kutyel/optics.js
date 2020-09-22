@@ -77,6 +77,11 @@ describe('Lens', () => {
     expect(set(nameL, 'flop', {})).toEqual({ flip: { mix: 'flop' } })
   })
 
+  test('over over alter at two level', () => {
+    const nameL = optic(alter('flip'), alter('mix'))
+    expect(over(nameL, () => 1, {})).toEqual({ flip: { mix: 1 } })
+  })
+
   test('Lens.asOptional -> should convert to an Optional correctly', () => {
     const ageOptional = prop('age').asOptional
     expect(preview(ageOptional, user)).toBeUndefined()
