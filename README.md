@@ -17,9 +17,9 @@
 
 Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) package
 
-- [Meet it!](#meet-it)
 - [Get it!](#get-it)
 - [How it is made!](#how-it-is-made)
+- [Meet it!](#meet-it)
 - [Use it!](#use-it)
   - [Amount of values](#amount-of-values)
   - [Builders](#builders)
@@ -39,7 +39,39 @@ If you want to know more about the implementation, you can check this talk by [m
 
 ## Meet it!
 
+```js
+import { has, maybe, optic, values } from 'optics.js'
+
+const people = [
+  {
+    name: {
+      first: 'Alejandro',
+      last: 'Serrano',
+    },
+    birthmonth: 'april',
+    age: 32,
+  },
+  {
+    name: {
+      first: 'Flavio',
+      last: 'Corpa',
+    },
+    birthmonth: 'april',
+    age: 29,
+  },
+  { name: { first: 'Laura' }, birthmonth: 'august', age: 27 },
+]
+
+const firstNameTraversal = optic(values, 'name', 'first').toArray(people)
+const lastNameOptional = optic(values, 'name', maybe('last')).toArray(people)
+const o = optic(values, has({ birthmonth: 'april' }), 'age')
+const ageTraversal = o.toArray(people)
+const agePlus1Traversal = o.over((x) => x + 1, people)
+```
+
 Optics provide a _language_ for data _access_ and _manipulation_ in a concise and compositional way. It excels when you want to code in an _immutable_ way.
+
+[![intro](https://img.youtube.com/vi/tbNi-ykYev8/0.jpg)](https://www.youtube.com/watch?v=tbNi-ykYev8)
 
 There are very few moving parts in `optics.js`, the power comes from the ability to create long combinations or _paths_ by composing small primitive optics. Let's look at an example:
 
