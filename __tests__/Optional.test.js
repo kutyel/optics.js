@@ -1,8 +1,8 @@
 import { get, set as assoc, toUpper } from '../src/functions'
 import { prop } from '../src/Lens'
 import { notFound } from '../src/notFound'
-import { maybe, optic, over, preview, set } from '../src/operations'
-import { optional, optionalIx, optionalProp } from '../src/Optional'
+import { optic, over, preview, set } from '../src/operations'
+import { maybe, optional, optionalIx, optionalProp } from '../src/Optional'
 
 const friends = ['Alejandro']
 const user = { id: 1, name: 'Flavio' }

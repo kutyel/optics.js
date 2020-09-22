@@ -1,5 +1,6 @@
 import { get, set as assoc, toUpper } from '../src/functions'
-import { ix, lens, prop } from '../src/Lens'
+import { alter, ix, lens, prop } from '../src/Lens'
+import { notFound } from '../src/notFound'
 import { optic, over, preview, set, toArray, view } from '../src/operations'
 
 const friends = ['Alejandro']
@@ -49,6 +50,31 @@ describe('Lens', () => {
 
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
+
+  test('alter should build a lens', () => {
+    const nameL = alter('name')
+    expect(view(nameL, user)).toBe('Flavio')
+  })
+
+  test('over should lift a function over an alter lens', () => {
+    const nameL = alter('name')
+    expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
+  })
+
+  test('set over alter should create a property', () => {
+    const nameL = alter('flip')
+    expect(set(nameL, 'flop', user)).toEqual({ ...user, flip: 'flop' })
+  })
+
+  test('alter should return not found', () => {
+    const nameL = optic(alter('flip'), alter('mix'))
+    expect(view(nameL, {})).toEqual(notFound)
+  })
+
+  test('set over alter at two level', () => {
+    const nameL = optic(alter('flip'), alter('mix'))
+    expect(set(nameL, 'flop', {})).toEqual({ flip: { mix: 'flop' } })
   })
 
   test('Lens.asOptional -> should convert to an Optional correctly', () => {

@@ -64,3 +64,18 @@ export const optionalIx = (index) =>
     (obj) => obj[index] || notFound,
     (val, obj) => (obj[index] ? { ...obj, [index]: val } : obj),
   )
+
+// maybe : (String | Int | Lens s a) -> Optional s a
+export const maybe = (optic) => {
+  if (typeof optic == 'string' || optic instanceof String) {
+    return optionalProp(optic)
+  }
+  if (typeof optic == 'number' && !isNaN(optic)) {
+    return optionalIx(optic)
+  }
+  if (optic.asLens) {
+    const l = optic.asLens
+    return optional(l.get, l.set)
+  }
+  return undefined
+}

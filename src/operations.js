@@ -4,7 +4,7 @@ import { curry } from './functions'
 import { getter } from './Getter'
 import { ix, lens, prop } from './Lens'
 import { isNotFound, notFound } from './notFound'
-import { optional, optionalIx, optionalProp } from './Optional'
+import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { prism } from './Prism'
 import { reviewer } from './Reviewer'
@@ -203,18 +203,3 @@ export const review = curry((optic, obj) => {
       'review is not supported by ' + optic.constructor.name,
     )
 })
-
-// maybe : (String | Int | Lens s a) -> Optional s a
-export const maybe = (optic) => {
-  if (typeof optic == 'string' || optic instanceof String) {
-    return optionalProp(optic)
-  }
-  if (typeof optic == 'number' && !isNaN(optic)) {
-    return optionalIx(optic)
-  }
-  if (optic.asLens) {
-    const l = optic.asLens
-    return optional(l.get, l.set)
-  }
-  return undefined
-}

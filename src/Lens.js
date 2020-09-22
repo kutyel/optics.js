@@ -1,6 +1,7 @@
 import { fold } from './Fold'
 import { curry, get, set } from './functions'
 import { getter } from './Getter'
+import { isNotFound, notFound } from './notFound'
 import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
@@ -62,3 +63,18 @@ export const prop = (key) => lens(get(key), set(key))
 
 // ix : Number → Lens s a
 export const ix = (index) => lens(get(index), set(index))
+
+// alter : String → Lens (Maybe s) (Maybe a)
+export const alter = (key) =>
+  lens(
+    (obj) => (isNotFound(obj) ? notFound : obj[key] || notFound),
+    (val, obj) => {
+      if (isNotFound(val)) {
+        var newObj = { ...obj }
+        delete newObj[key]
+        return newObj
+      } else {
+        return { ...obj, [key]: val }
+      }
+    },
+  )
