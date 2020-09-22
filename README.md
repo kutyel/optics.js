@@ -6,6 +6,7 @@
 [![Dependency status](https://img.shields.io/david/kutyel/optics.js.svg?style=flat-square)](https://david-dm.org/kutyel/optics.js)
 [![Dev Dependencies Status](https://img.shields.io/david/dev/kutyel/optics.js.svg?style=flat-square)](https://david-dm.org/kutyel/optics.js#info=devDependencies)
 [![NPM Status](https://img.shields.io/npm/dm/optics.js.svg?style=flat-square)](https://www.npmjs.org/package/optics.js)
+[![bundlephobia](https://flat.badgen.net/bundlephobia/minzip/optics.js)](https://bundlephobia.com/result?p=optics.js@1.3.1)
 
 > Lenses, Prisms and Traversals in JavaScript!
 
