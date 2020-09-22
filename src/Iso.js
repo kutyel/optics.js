@@ -13,11 +13,14 @@ class Iso {
   constructor(get, review) {
     this.get = get
     this.review = review
-  }
 
-  // derived operations
-  set = (x) => this.review(x)
-  over = (f, obj) => this.review(f(this.get(obj)))
+    // derived operations
+    this.set = (x) => this.review(x)
+    this.over = (f, obj) => this.review(f(this.get(obj)))
+    this.reduce = (f, i, obj) => f(i, this.get(obj))
+    this.toArray = (obj) => [this.get(obj)]
+    this.preview = this.get
+  }
 
   // setter = over + set
   get asSetter() {
@@ -28,8 +31,6 @@ class Iso {
   get asFold() {
     return fold(this.reduce, this.toArray)
   }
-  reduce = (f, i, obj) => f(i, this.get(obj))
-  toArray = (obj) => [this.get(obj)]
 
   // traversal = reduce + toArray + over
   get asTraversal() {
@@ -60,7 +61,6 @@ class Iso {
   get asPartialGetter() {
     return partialGetter(this.get)
   }
-  preview = this.get
 
   // lens
   get asLens() {
