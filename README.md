@@ -41,6 +41,8 @@ If you want to know more about the implementation, you can check this talk by [m
 
 Optics provide a _language_ for data _access_ and _manipulation_ in a concise and compositional way. It excels when you want to code in an _immutable_ way.
 
+[![intro](https://img.youtube.com/vi/tbNi-ykYev8/0.jpg)](https://www.youtube.com/watch?v=tbNi-ykYev8)
+
 There are very few moving parts in `optics.js`, the power comes from the ability to create long combinations or _paths_ by composing small primitive optics. Let's look at an example:
 
 ```js
