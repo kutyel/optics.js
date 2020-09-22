@@ -11,13 +11,15 @@ class Traversal {
     else this.toArray = toArray
 
     this.over = over
+
+    // derived operations
+    this.set = (val, x) => this.over(() => val, x)
   }
 
   // setter = over + set
   get asSetter() {
     return setter(this.over)
   }
-  set = (val, x) => this.over(() => val, x)
 
   // fold = reduce + toArray
   get asFold() {

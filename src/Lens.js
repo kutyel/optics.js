@@ -10,10 +10,13 @@ class Lens {
   constructor(get, set) {
     this.get = get
     this.set = set
-  }
 
-  // derived operations
-  over = (f, obj) => this.set(f(this.get(obj)), obj)
+    // derived operations
+    this.over = (f, obj) => this.set(f(this.get(obj)), obj)
+    this.reduce = (f, i, obj) => f(i, this.get(obj))
+    this.toArray = (obj) => [this.get(obj)]
+    this.preview = this.get
+  }
 
   // setter = over + set
   get asSetter() {
@@ -24,8 +27,6 @@ class Lens {
   get asFold() {
     return fold(this.reduce, this.toArray)
   }
-  reduce = (f, i, obj) => f(i, this.get(obj))
-  toArray = (obj) => [this.get(obj)]
 
   // traversal = reduce + toArray + over
   get asTraversal() {
@@ -46,7 +47,6 @@ class Lens {
   get asPartialGetter() {
     return partialGetter(this.get)
   }
-  preview = this.get
 
   // itself
   get asLens() {

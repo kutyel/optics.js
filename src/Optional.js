@@ -12,11 +12,14 @@ class Optional {
   constructor(preview, set) {
     this.preview = preview
     this.set = set
-  }
 
-  over = (f, obj) => {
-    const v = this.preview(obj)
-    return isNotFound(v) ? obj : this.set(f(v), obj)
+    // derived operations
+    this.over = (f, obj) => {
+      const v = this.preview(obj)
+      return isNotFound(v) ? obj : this.set(f(v), obj)
+    }
+    this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
+    this.toArray = (obj) => notFoundToList(this.preview(obj))
   }
 
   // setter = over + set
@@ -28,8 +31,6 @@ class Optional {
   get asFold() {
     return fold(this.reduce, this.toArray)
   }
-  reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
-  toArray = (obj) => notFoundToList(this.preview(obj))
 
   // traversal = reduce + toArray + over
   get asTraversal() {
