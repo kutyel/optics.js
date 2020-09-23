@@ -35,7 +35,7 @@ $ npm install optics.js --save
 
 If you want to know more about the implementation, you can check this talk by [myself](https://twitter.com/FlavioCorpa) at [Lambda World](https://cadiz.lambda.world/).
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/IoVaArsh6tM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![lw](https://img.youtube.com/vi/IoVaArsh6tM/0.jpg)](https://www.youtube.com/watch?v=IoVaArsh6tM)
 
 ## Meet it!
 
@@ -71,7 +71,7 @@ const agePlus1Traversal = o.over((x) => x + 1, people)
 
 Optics provide a _language_ for data _access_ and _manipulation_ in a concise and compositional way. It excels when you want to code in an _immutable_ way.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/tbNi-ykYev8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![intro](https://img.youtube.com/vi/tbNi-ykYev8/0.jpg)](https://www.youtube.com/watch?v=tbNi-ykYev8)
 
 There are very few moving parts in `optics.js`, the power comes from the ability to create long combinations or _paths_ by composing small primitive optics. Let's look at an example:
 
@@ -135,7 +135,7 @@ The previous six kinds of optics can only access or modify values. There is one 
 ```js
 import { review, single } from 'optics.js'
 
-review(single('say'), 'hi!')  // > { say: 'hi!' }
+review(single('say'), 'hi!') // > { say: 'hi!' }
 ```
 
 This adds yet another axis to our previous table, depending on whether when accessing you are guaranteed to have a value or not.

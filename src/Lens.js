@@ -70,11 +70,9 @@ export const alter = (key) =>
     (obj) => (isNotFound(obj) ? notFound : obj[key] || notFound),
     (val, obj) => {
       if (isNotFound(val)) {
-        // https://stackoverflow.com/a/33053362/1236540
-        /* eslint-disable no-unused-vars */
-        let { [key]: omit, ...newObj } = obj
+        // eslint-disable-next-line no-unused-vars
+        const { [key]: _, ...newObj } = obj
         return newObj
-        /* eslint-enable no-unused-vars */
       } else {
         return { ...obj, [key]: val }
       }
