@@ -3,10 +3,8 @@
   "description": "Lenses, Prisms and Traversals in JavaScript!",
   "homepage": "https://nicedoc.io/kutyel/optics.js",
   "version": "0.0.0",
-  "source": "index.js",
   "main": "dist/optic.js",
   "module": "dist/optic.module.js",
-  "unpkg": "dist/optic.umd.js",
   "contributors": [
     {
       "name": "Flavio Corpa",
@@ -39,7 +37,6 @@
     "@babel/eslint-parser": "^7.11.5",
     "@babel/eslint-plugin": "^7.11.5",
     "@babel/plugin-transform-modules-commonjs": "^7.10.4",
-    "@babel/preset-env": "^7.11.5",
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
     "conventional-github-releaser": "^3.1.5",
@@ -61,6 +58,11 @@
   "engines": {
     "node": ">= 12"
   },
+  "files": [
+    "dist",
+    "index.js",
+    "src"
+  ],
   "scripts": {
     "build": "microbundle",
     "clean": "rm -rf node_modules",
@@ -91,7 +93,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "sideEffects": false,
   "jest": {
     "coverageThreshold": {
       "global": {
@@ -107,5 +108,8 @@
     "package.json": [
       "finepack"
     ]
-  }
+  },
+  "sideEffects": false,
+  "source": "index.js",
+  "unpkg": "dist/optic.umd.js"
 }
