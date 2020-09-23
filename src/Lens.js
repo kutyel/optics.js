@@ -1,6 +1,7 @@
 import { fold } from './Fold'
-import { curry, get, set } from './functions'
+import { curry, get, set, setIndex } from './functions'
 import { getter } from './Getter'
+import { isNotFound, notFound } from './notFound'
 import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
@@ -57,8 +58,23 @@ class Lens {
 // lens : (s → a) → ((a, s) → s) → Lens s a
 export const lens = curry((get, set) => new Lens(get, set))
 
-// prop : String → Lens s a
-export const prop = (key) => lens(get(key), set(key))
-
 // ix : Number → Lens s a
-export const ix = (index) => lens(get(index), set(index))
+export const ix = (index) => lens(get(index), setIndex(index))
+
+// mustBePresent : String → Lens s a
+export const mustBePresent = (key) => lens(get(key), set(key))
+
+// alter : String → Lens (Maybe s) (Maybe a)
+export const alter = (key) =>
+  lens(
+    (obj) => (isNotFound(obj) ? notFound : obj[key] || notFound),
+    (val, obj) => {
+      if (isNotFound(val)) {
+        // eslint-disable-next-line no-unused-vars
+        const { [key]: _, ...newObj } = obj
+        return newObj
+      } else {
+        return { ...obj, [key]: val }
+      }
+    },
+  )

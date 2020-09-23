@@ -2,9 +2,9 @@ import { OpticComposeError, UnavailableOpticOperationError } from './errors'
 import { fold } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
-import { ix, lens, prop } from './Lens'
+import { alter, ix, lens } from './Lens'
 import { isNotFound, notFound } from './notFound'
-import { optional, optionalIx, optionalProp } from './Optional'
+import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
 import { prism } from './Prism'
 import { reviewer } from './Reviewer'
@@ -92,7 +92,7 @@ const compose2Optics = (optic1, optic2) => {
 
 const toOptic = (optic) => {
   if (typeof optic == 'string' || optic instanceof String) {
-    return prop(optic)
+    return alter(optic)
   }
   if (typeof optic == 'number' && !isNaN(optic)) {
     return ix(optic)
@@ -203,18 +203,3 @@ export const review = curry((optic, obj) => {
       'review is not supported by ' + optic.constructor.name,
     )
 })
-
-// maybe : (String | Int | Lens s a) -> Optional s a
-export const maybe = (optic) => {
-  if (typeof optic == 'string' || optic instanceof String) {
-    return optionalProp(optic)
-  }
-  if (typeof optic == 'number' && !isNaN(optic)) {
-    return optionalIx(optic)
-  }
-  if (optic.asLens) {
-    const l = optic.asLens
-    return optional(l.get, l.set)
-  }
-  return undefined
-}

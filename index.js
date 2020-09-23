@@ -1,3 +1,4 @@
+export * from './src/errors'
 export * from './src/Fold'
 export * from './src/functions'
 export * from './src/Getter'

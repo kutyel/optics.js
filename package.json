@@ -60,7 +60,6 @@
   },
   "files": [
     "dist",
-    "index.js",
     "src"
   ],
   "scripts": {
@@ -96,10 +95,10 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 78,
-        "functions": 76,
-        "lines": 87,
-        "statements": 81
+        "branches": 80,
+        "functions": 83,
+        "lines": 91,
+        "statements": 85
       }
     },
     "testEnvironment": "node"

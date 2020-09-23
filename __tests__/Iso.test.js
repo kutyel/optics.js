@@ -1,4 +1,5 @@
-import { iso } from '../src/Iso'
+import { iso, single } from '../src/Iso'
+import { view, review } from '../src/operations'
 
 const id = (x) => x
 const idIso = iso(id, id)
@@ -20,11 +21,19 @@ describe('Iso', () => {
   })
 
   optics.forEach((optic) => {
-    test(optic, () => {
+    test('conversion to ' + optic, () => {
       const nm = `as${optic}`
       const o = idIso[nm]
       expect(o[nm]).toBe(o)
       expect(o.constructor.name).toBe(optic)
     })
+  })
+
+  test('single obtains value', () => {
+    expect(view(single('name'), { name: 'Alex' })).toBe('Alex')
+  })
+
+  test('single obtains value', () => {
+    expect(review(single('name'), 'Alex')).toStrictEqual({ name: 'Alex' })
   })
 })
