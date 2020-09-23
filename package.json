@@ -60,6 +60,7 @@
   },
   "files": [
     "dist",
+    "index.js",
     "src"
   ],
   "scripts": {
