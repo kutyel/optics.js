@@ -1,7 +1,7 @@
 import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors'
 import { toUpper } from '../src/functions'
 import { getter } from '../src/Getter'
-import { prop } from '../src/Lens'
+import { alter } from '../src/Lens'
 import { optic, over, path, set, view } from '../src/operations'
 import { setter } from '../src/Setter'
 
@@ -41,7 +41,12 @@ describe('Operations over Optics', () => {
   })
 
   test('path should create the same lense as a manually defined one', () => {
-    const hardLense = optic(prop('styles'), prop('CodeSurfer'), prop('code'), prop('fontFamily'))
+    const hardLense = optic(
+      alter('styles'),
+      alter('CodeSurfer'),
+      alter('code'),
+      alter('fontFamily'),
+    )
 
     expect(view(hardLense, theme)).toBe(view(fontLense, theme))
   })
@@ -50,6 +55,12 @@ describe('Operations over Optics', () => {
     const hardLense = optic('styles', 'CodeSurfer', 'code', 'fontFamily')
 
     expect(view(hardLense, theme)).toBe(view(fontLense, theme))
+  })
+
+  test('path short-hand and setting creates values', () => {
+    const hardLense = optic('styles', 'CodeSurfer', 'code', 'fontFamily')
+
+    expect(set(hardLense, 'monospaced', {})).toStrictEqual(theme)
   })
 
   test('incompatible optics', () => {

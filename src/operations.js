@@ -2,7 +2,7 @@ import { OpticComposeError, UnavailableOpticOperationError } from './errors'
 import { fold } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
-import { ix, lens, prop } from './Lens'
+import { alter, ix, lens } from './Lens'
 import { isNotFound, notFound } from './notFound'
 import { optional } from './Optional'
 import { partialGetter } from './PartialGetter'
@@ -92,7 +92,7 @@ const compose2Optics = (optic1, optic2) => {
 
 const toOptic = (optic) => {
   if (typeof optic == 'string' || optic instanceof String) {
-    return prop(optic)
+    return alter(optic)
   }
   if (typeof optic == 'number' && !isNaN(optic)) {
     return ix(optic)

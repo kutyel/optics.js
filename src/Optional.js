@@ -1,5 +1,6 @@
+import { OpticCreationError } from './errors'
 import { fold } from './Fold'
-import { curry } from './functions'
+import { curry, setIndex } from './functions'
 import { isNotFound, notFound, notFoundToList } from './notFound'
 import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
@@ -62,7 +63,7 @@ export const optionalProp = (key) =>
 export const optionalIx = (index) =>
   optional(
     (obj) => obj[index] || notFound,
-    (val, obj) => (obj[index] ? { ...obj, [index]: val } : obj),
+    (val, obj) => (obj[index] ? setIndex(index, val, obj) : obj),
   )
 
 // maybe : (String | Int | Lens s a) -> Optional s a
@@ -77,5 +78,5 @@ export const maybe = (optic) => {
     const l = optic.asLens
     return optional(l.get, l.set)
   }
-  return undefined
+  throw new OpticCreationError('Optional', typeof optic + ' cannot be turned into optional')
 }

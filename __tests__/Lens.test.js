@@ -1,5 +1,5 @@
 import { get, set as assoc, toUpper } from '../src/functions'
-import { alter, ix, lens, prop } from '../src/Lens'
+import { alter, ix, lens, mustBePresent } from '../src/Lens'
 import { notFound } from '../src/notFound'
 import { optic, over, preview, set, toArray, view } from '../src/operations'
 
@@ -20,34 +20,23 @@ describe('Lens', () => {
     expect(set(lense, 'Alejandro', user)).toEqual(alex)
   })
 
-  test('prop should build a lens', () => {
-    const nameL = prop('name')
-
+  test('mustBePresent should build a lens', () => {
+    const nameL = mustBePresent('name')
     expect(view(nameL, user)).toBe('Flavio')
+  })
+
+  test('mustBePresent should lift a function over a Lens', () => {
+    const nameL = mustBePresent('name')
+    expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
   })
 
   test('ix should build a lens', () => {
     const idx0 = ix(0)
-
     expect(view(idx0, friends)).toBe('Alejandro')
   })
 
-  test('over should lift a function over a Lens', () => {
-    const nameL = prop('name')
-
-    expect(over(nameL, toUpper, user)).toEqual({ id: 1, name: 'FLAVIO' })
-  })
-
   test('lenses should compose', () => {
-    const firstFriendL = optic(prop('friends'), ix(0))
-
-    expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
-    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
-  })
-
-  test('lenses should compose (using short-hand)', () => {
-    const firstFriendL = optic('friends', 0)
-
+    const firstFriendL = optic(mustBePresent('friends'), ix(0))
     expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
     expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
   })
@@ -55,6 +44,11 @@ describe('Lens', () => {
   test('alter should build a lens', () => {
     const nameL = alter('name')
     expect(view(nameL, user)).toBe('Flavio')
+  })
+
+  test('alter over notFound works', () => {
+    const nameL = alter('name')
+    expect(view(nameL, notFound)).toBe(notFound)
   })
 
   test('over should lift a function over an alter lens', () => {
@@ -82,31 +76,55 @@ describe('Lens', () => {
     expect(over(nameL, () => 1, {})).toEqual({ flip: { mix: 1 } })
   })
 
-  test('Lens.asOptional -> should convert to an Optional correctly', () => {
-    const ageOptional = prop('age').asOptional
-    expect(preview(ageOptional, user)).toBeUndefined()
+  test('set over alter removes', () => {
+    const nameL = alter('name')
+    expect(set(nameL, notFound, user)).toStrictEqual({ id: 1 })
   })
 
-  test('should convert to an Optional correctly', () => {
-    const nameOptional = prop('name').asOptional
+  test('lenses should compose (using short-hand)', () => {
+    const firstFriendL = optic('friends', 0)
+    expect(view(firstFriendL, userWithFriends)).toBe('Alejandro')
+    expect(preview(firstFriendL, userWithFriends)).toBe('Alejandro')
+  })
+
+  test('mustBePresent as Optional returns undefined if not found', () => {
+    const ageOptional = mustBePresent('age').asOptional
+    expect(preview(ageOptional, user)).toBeUndefined()
+    expect(ageOptional.preview(user)).toBeUndefined()
+  })
+
+  test('alter as Optional returns notFound if not found', () => {
+    const ageOptional = alter('age').asOptional
+    expect(preview(ageOptional, user)).toEqual(notFound)
+    expect(ageOptional.preview(user)).toEqual(notFound)
+  })
+
+  test('mustBePresent as Optional if found', () => {
+    const nameOptional = mustBePresent('name').asOptional
+    expect(preview(nameOptional, user)).toEqual('Flavio')
+    expect(nameOptional.preview(user)).toEqual('Flavio')
+  })
+
+  test('alter as Optional if found', () => {
+    const nameOptional = alter('name').asOptional
     expect(preview(nameOptional, user)).toEqual('Flavio')
     expect(nameOptional.preview(user)).toEqual('Flavio')
   })
 
   test('should convert to an Traversal correctly', () => {
-    const nameOptional = prop('name').asTraversal
+    const nameOptional = mustBePresent('name').asTraversal
     expect(toArray(nameOptional, user)).toEqual(['Flavio'])
     expect(nameOptional.toArray(user)).toEqual(['Flavio'])
   })
 
   test('should convert to a Getter correctly', () => {
-    const nameOptional = prop('name').asGetter
+    const nameOptional = mustBePresent('name').asGetter
     expect(view(nameOptional, user)).toEqual('Flavio')
     expect(nameOptional.get(user)).toEqual('Flavio')
   })
 
   test('should convert to a PartialGetter correctly', () => {
-    const nameOptional = prop('name').asPartialGetter
+    const nameOptional = mustBePresent('name').asPartialGetter
     expect(preview(nameOptional, user)).toEqual('Flavio')
     expect(nameOptional.preview(user)).toEqual('Flavio')
     expect(toArray(nameOptional, user)).toEqual(['Flavio'])
@@ -114,7 +132,7 @@ describe('Lens', () => {
   })
 
   test('should convert to a Fold correctly', () => {
-    const nameOptional = prop('name').asFold
+    const nameOptional = mustBePresent('name').asFold
     expect(toArray(nameOptional, user)).toEqual(['Flavio'])
     expect(nameOptional.toArray(user)).toEqual(['Flavio'])
   })
