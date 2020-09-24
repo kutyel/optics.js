@@ -2,7 +2,7 @@ import { OpticCreationError } from '../src/errors'
 import { get, set as assoc, toUpper } from '../src/functions'
 import { alter } from '../src/Lens'
 import { notFound } from '../src/notFound'
-import { optic, over, preview, set } from '../src/operations'
+import { optic, over, preview, set, toArray } from '../src/operations'
 import { maybe, optional, optionalIx, optionalProp } from '../src/Optional'
 
 const friends = ['Alejandro']
@@ -22,6 +22,12 @@ describe('Optional', () => {
   test('optionalProp should build an optional', () => {
     const nameL = optionalProp('name')
     expect(preview(nameL, user)).toBe('Flavio')
+  })
+
+  test('optionalProp should works as a traversal', () => {
+    const nameL = optionalProp('name')
+    expect(toArray(nameL, user)).toStrictEqual(['Flavio'])
+    expect(toArray(nameL.asTraversal, user)).toStrictEqual(['Flavio'])
   })
 
   test('optionalIndex should build an optional', () => {
@@ -53,6 +59,12 @@ describe('Optional', () => {
   test('optionals with non-existing key should return notFound', () => {
     const serventesioL = optionalProp('serventesio')
     expect(preview(serventesioL, user)).toBe(notFound)
+  })
+
+  test('optionals with non-existing as traversal should return []', () => {
+    const serventesioL = optionalProp('serventesio')
+    expect(toArray(serventesioL, user)).toStrictEqual([])
+    expect(toArray(serventesioL.asTraversal, user)).toStrictEqual([])
   })
 
   test('optionals with non-existing key should not change the value', () => {
