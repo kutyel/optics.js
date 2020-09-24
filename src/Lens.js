@@ -70,11 +70,13 @@ export const alter = (key) =>
     (obj) => (isNotFound(obj) ? notFound : obj[key] || notFound),
     (val, obj) => {
       if (isNotFound(val)) {
-        // eslint-disable-next-line no-unused-vars
-        const { [key]: _, ...newObj } = obj
-        return newObj
+        if (typeof obj === 'object') {
+          // eslint-disable-next-line no-unused-vars
+          const { [key]: _, ...newObj } = obj
+          return newObj
+        } else return obj
       } else {
-        return { ...obj, [key]: val }
+        return typeof obj === 'object' ? { ...obj, [key]: val } : { [key]: val }
       }
     },
   )

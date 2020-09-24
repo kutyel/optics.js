@@ -59,9 +59,7 @@
     "node": ">= 12"
   },
   "files": [
-    "dist",
-    "index.js",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "microbundle",

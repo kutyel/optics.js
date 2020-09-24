@@ -43,11 +43,13 @@ describe('Prism', () => {
 
   test('Prism.asTraversal -> works when value is found', () => {
     expect(toArray(has({ id: 1 }), user)).toEqual([user])
+    expect(toArray(has({ id: 1 }).asTraversal, user)).toEqual([user])
     expect(toArray(optic(has({ id: 1 }), 'name'), user)).toEqual(['Flavio'])
   })
 
   test('Prism.asTraversal -> works when value is not found', () => {
     expect(toArray(has({ id: 2 }), user)).toEqual([])
+    expect(toArray(has({ id: 2 }).asTraversal, user)).toEqual([])
     expect(toArray(optic(has({ id: 2 }), 'name'), user)).toEqual([])
   })
 })
