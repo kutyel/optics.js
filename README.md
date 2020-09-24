@@ -153,7 +153,7 @@ The different kinds of optics can be arranged into a hierarchy. Going up means w
 
 ## Know them all!
 
-### Lenses
+### Lenses (view, set)
 
 #### `alter : k -> Lens (Object | notFound) (a | notFound)`
 
@@ -161,23 +161,21 @@ The different kinds of optics can be arranged into a hierarchy. Going up means w
 
 #### `ix : number -> Lens Array a`
 
-### Optionals
+### Optionals (preview, set)
 
 #### `maybe : (string | number) -> Optional (Object | Array) a`
 
-### Prisms
+### Prisms (preview, set, review)
 
 #### `has : { ...obj } -> Prism { ...obj, ...rest } { ...obj }`
 
-### Traversals
+### Traversals (toArray, set)
 
 #### `values : Traversal Array a`
 
 #### `entries : Traversal Object [k, v]`
 
-####
-
-### Isos
+### Isos (view, set, review)
 
 #### `single : k -> Iso { k: a } a`
 
