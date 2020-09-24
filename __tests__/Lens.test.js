@@ -71,6 +71,21 @@ describe('Lens', () => {
     expect(set(nameL, 'flop', {})).toEqual({ flip: { mix: 'flop' } })
   })
 
+  test('set over alter at two level', () => {
+    const nameL = optic('flip', 'mix')
+    expect(set(nameL, 'flop', {})).toEqual({ flip: { mix: 'flop' } })
+  })
+
+  test('set over alter at two level', () => {
+    const nameL = optic('flip', 'mix')
+    expect(set(nameL, 'flop', { flip: 'A' })).toEqual({ flip: { mix: 'flop' } })
+  })
+
+  test('set over alter at two level', () => {
+    const nameL = optic('flip', 'mix')
+    expect(set(nameL, notFound, { flip: 'A' })).toEqual({ flip: 'A' })
+  })
+
   test('over over alter at two level', () => {
     const nameL = optic(alter('flip'), alter('mix'))
     expect(over(nameL, () => 1, {})).toEqual({ flip: { mix: 1 } })
