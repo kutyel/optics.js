@@ -1,6 +1,6 @@
 # optics.js
 
-![Last version](https://img.shields.io/github/tag/kutyel/optics.js.svg?style=flat-square)
+[![Last version](https://img.shields.io/github/tag/kutyel/optics.js.svg?style=flat-square)](https://www.npmjs.com/package/optics.js)
 [![bundlephobia](https://flat.badgen.net/bundlephobia/minzip/optics.js)](https://bundlephobia.com/result?p=optics.js)
 [![Build Status](https://img.shields.io/github/workflow/status/kutyel/optics.js/Node.js%20CI/master.svg?style=flat-square)](https://github.com/kutyel/optics.js/actions?query=workflow%3A%22Node.js+CI%22)
 [![Coverage Status](https://img.shields.io/coveralls/kutyel/optics.js.svg?style=flat-square)](https://coveralls.io/github/kutyel/optics.js)
@@ -130,12 +130,12 @@ Since we have three "levels of amounts" and two possibilities about setting (we 
 
 ### Builders
 
-The previous six kinds of optics can only access or modify values. There is one additional capability an optic may have: being able to _create_ values. Take for example the `Optional` which accesses a certain key `k`, `maybe(k)`. If we give this optic a value, it can create a new object with that single key:
+The previous six kinds of optics can only access or modify values. There is one additional capability an optic may have: being able to _create_ values. Take for example the `Optional` which accesses an object with a single key `k`. If we give this optic a value, it can create a new object with that single key:
 
 ```js
-import { optic, maybe, review } from 'optics.js'
+import { review, single } from 'optics.js'
 
-review(optic(maybe('say'), 'hi!')  // > { say: 'hi!' }
+review(single('say'), 'hi!') // > { say: 'hi!' }
 ```
 
 This adds yet another axis to our previous table, depending on whether when accessing you are guaranteed to have a value or not.

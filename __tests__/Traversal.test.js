@@ -1,10 +1,14 @@
 import { optic, over, reduce, toArray } from '../src/operations'
-import { values } from '../src/Traversal'
+import { entries, values } from '../src/Traversal'
 
 const doubleArray = [
   [1, 2],
   [3, 4],
 ]
+const exampleObject = {
+  one: 1,
+  two: 2,
+}
 
 describe('Traversal', () => {
   test('traversal from array reduces', () => {
@@ -31,5 +35,23 @@ describe('Traversal', () => {
       [2, 3],
       [4, 5],
     ])
+  })
+
+  test('traversal from entries reduces', () => {
+    expect(reduce(entries, (x, [_, y]) => x + y, 0, exampleObject)).toBe(3)
+  })
+
+  test('traversal from entries turns into array', () => {
+    expect(toArray(entries, exampleObject)).toStrictEqual([
+      ['one', 1],
+      ['two', 2],
+    ])
+  })
+
+  test('traversal from entries modified', () => {
+    expect(over(entries, ([k, v]) => [k, v + 1], exampleObject)).toStrictEqual({
+      one: 2,
+      two: 3,
+    })
   })
 })

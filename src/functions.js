@@ -25,5 +25,8 @@ export const get = curry((key, obj) => obj[key])
 // set : String -> a -> {k: v} -> {k: v}
 export const set = curry((key, val, obj) => (obj[key] ? { ...obj, [key]: val } : obj))
 
+// setIndex : Index -> a -> [a] -> [a]
+export const setIndex = curry((index, val, array) => array.map((v, i) => (i == index ? val : v)))
+
 // toUpper : String -> String
 export const toUpper = (str) => str.toUpperCase()

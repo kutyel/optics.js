@@ -75,3 +75,10 @@ class Iso {
 
 // iso : (s → a) → (a → s) → Iso s a
 export const iso = curry((get, review) => new Iso(get, review))
+
+// singleton : Key -> Iso { k: a } a
+export const single = (key) =>
+  iso(
+    (obj) => obj[key],
+    (val) => ({ [key]: val }),
+  )
