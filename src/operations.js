@@ -2,6 +2,7 @@ import { OpticComposeError, UnavailableOpticOperationError } from './errors'
 import { fold } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
+import { iso } from './Iso'
 import { alter, ix, lens } from './Lens'
 import { isNotFound, notFound } from './notFound'
 import { optional } from './Optional'
@@ -30,7 +31,14 @@ const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cu
  */
 const compose2Optics = (optic1, optic2) => {
   // start from most specific (iso) to less specific (fold, setter, reviewer)
-  if (optic1.asLens && optic2.asLens) {
+  if (optic1.asIso && optic2.asIso) {
+    const o1 = optic1.asIso
+    const o2 = optic2.asIso
+    return iso(
+      (x) => o2.get(o1.get(x)),
+      (x) => o1.review(o2.review(x)),
+    )
+  } else if (optic1.asLens && optic2.asLens) {
     const o1 = optic1.asLens
     const o2 = optic2.asLens
     return lens(
