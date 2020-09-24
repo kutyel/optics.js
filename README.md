@@ -24,6 +24,7 @@ Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) pac
   - [Amount of values](#amount-of-values)
   - [Builders](#builders)
   - [The whole hierarchy](#the-whole-hierarchy)
+- [Know them all!](#know-them-all)
 
 ## Get it!
 
@@ -149,6 +150,36 @@ This adds yet another axis to our previous table, depending on whether when acce
 The different kinds of optics can be arranged into a hierarchy. Going up means weakening the restrictions, either by set of operations or by amount of elements.
 
 > The image has been produced from the diagram in the [`optics`](https://hackage.haskell.org/package/optics) package.
+
+## Know them all!
+
+### Lenses
+
+#### `alter : k -> Lens (Object | notFound) (a | notFound)`
+
+#### `mustBePresent : k -> Lens { k: a, ... } a`
+
+#### `ix : number -> Lens Array a`
+
+### Optionals
+
+#### `maybe : (string | number) -> Optional (Object | Array) a`
+
+### Prisms
+
+#### `has : { ...obj } -> Prism { ...obj, ...rest } { ...obj }`
+
+### Traversals
+
+#### `values : Traversal Array a`
+
+#### `entries : Traversal Object [k, v]`
+
+####
+
+### Isos
+
+#### `single : k -> Iso { k: a } a`
 
 ## License
 
