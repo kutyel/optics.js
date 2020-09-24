@@ -1,6 +1,5 @@
 export * from './src/errors'
 export * from './src/Fold'
-export * from './src/functions'
 export * from './src/Getter'
 export * from './src/Iso'
 export * from './src/Lens'

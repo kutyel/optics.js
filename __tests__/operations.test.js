@@ -16,6 +16,16 @@ const theme = {
 }
 const fontLense = path(['styles', 'CodeSurfer', 'code', 'fontFamily'])
 
+const themeWithoutFontFamily = {
+  styles: {
+    CodeSurfer: {
+      code: {
+        color: 'red',
+      },
+    },
+  },
+}
+
 describe('Operations over Optics', () => {
   test('view should read from a lens', () => {
     const codeLens = path(['styles', 'CodeSurfer', 'code'])
@@ -31,6 +41,14 @@ describe('Operations over Optics', () => {
     const newTheme = set(fontLense, font)(theme)
 
     expect(theme.styles.CodeSurfer.code.fontFamily).toBe('monospaced')
+    expect(newTheme.styles.CodeSurfer.code.fontFamily).toBe(font)
+  })
+
+  test('set should create new keys', () => {
+    const font = '"Dank Mono", "Fira Code", Consolas, "Roboto Mono", monospace'
+    const newTheme = set(fontLense, font)(themeWithoutFontFamily)
+
+    expect(themeWithoutFontFamily.styles.CodeSurfer.code.fontFamily).toBeUndefined()
     expect(newTheme.styles.CodeSurfer.code.fontFamily).toBe(font)
   })
 
@@ -61,6 +79,15 @@ describe('Operations over Optics', () => {
     const hardLense = optic('styles', 'CodeSurfer', 'code', 'fontFamily')
 
     expect(set(hardLense, 'monospaced', {})).toStrictEqual(theme)
+  })
+
+  test('set should create new keys', () => {
+    const hardLense = optic('styles', 'CodeSurfer', 'code', 'fontFamily')
+    const font = '"Dank Mono", "Fira Code", Consolas, "Roboto Mono", monospace'
+    const newTheme = set(hardLense, font)(themeWithoutFontFamily)
+
+    expect(themeWithoutFontFamily.styles.CodeSurfer.code.fontFamily).toBeUndefined()
+    expect(newTheme.styles.CodeSurfer.code.fontFamily).toBe(font)
   })
 
   test('incompatible optics', () => {
