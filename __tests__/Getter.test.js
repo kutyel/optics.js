@@ -1,5 +1,6 @@
+import { get } from '../src/functions'
 import { getter } from '../src/Getter'
-import { toArray } from '../src/operations'
+import { preview, toArray } from '../src/operations'
 
 const obj = {
   foo: [1, 2, 3],
@@ -7,13 +8,19 @@ const obj = {
 }
 
 describe('Getter', () => {
-  test.skip('asFold', () => {
-    const fold = getter('foo').asFold
-    expect(toArray(fold, obj)).toEqual([1, 2, 3])
+  test('asFold', () => {
+    const fold = getter(get('foo')).asFold
+
+    expect(fold.toArray(obj)).toEqual([[1, 2, 3]])
+    expect(toArray(fold, obj)).toEqual([[1, 2, 3]])
   })
 
-  test.skip('asPartialGetter', () => {
-    const partial = getter('bar').asPartialGetter
+  test('asPartialGetter', () => {
+    const partial = getter(get('bar')).asPartialGetter
+
     expect(partial.preview(obj)).toBe('baz')
+    expect(preview(partial, obj)).toBe('baz')
+    expect(toArray(partial, obj)).toEqual(['baz'])
+    expect(partial.toArray(obj)).toEqual(['baz'])
   })
 })
