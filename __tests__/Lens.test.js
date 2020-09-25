@@ -3,7 +3,7 @@ import { alter, ix, lens, mustBePresent } from '../src/Lens'
 import { notFound } from '../src/notFound'
 import { optic, over, preview, set, toArray, view } from '../src/operations'
 
-const friends = ['Alejandro']
+const friends = ['Alejandro', 'Pepe']
 const user = { id: 1, name: 'Flavio' }
 const userWithFriends = { ...user, friends }
 

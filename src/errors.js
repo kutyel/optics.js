@@ -8,7 +8,7 @@ export class OpticCreationError extends Error {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, OpticComposeError)
+      Error.captureStackTrace(this, OpticCreationError)
     }
 
     this.name = 'OpticCreationError'
@@ -41,7 +41,7 @@ export class UnavailableOpticOperationError extends Error {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, OpticComposeError)
+      Error.captureStackTrace(this, UnavailableOpticOperationError)
     }
 
     this.name = 'UnavailableOpticOperationError'

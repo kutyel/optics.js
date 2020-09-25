@@ -21,6 +21,19 @@ describe('Prism', () => {
     expect(has({ id: 1 }).over(modifyUser, user)).toStrictEqual(modifiedUser)
   })
 
+  test('has works correctly in composition with itself', () => {
+    expect(optic(has({ id: 1 }), has({ name: 'Flavio' })).preview(user)).toStrictEqual(user)
+    expect(optic(has({ id: 1 }), has({ name: 'Flavio' })).preview({ id: 2, name: 'Flavio' })).toBe(
+      notFound,
+    )
+    expect(optic(has({ id: 1 }), has({ name: 'Flavio' })).preview({ name: 'Flavio' })).toBe(
+      notFound,
+    )
+    expect(optic(has({ id: 1 }), has({ name: 'Flavio' })).set(0, { name: 'Alex' })).toStrictEqual({
+      name: 'Alex',
+    })
+  })
+
   test('has works correctly in composition with lens', () => {
     expect(over(optic(has({ id: 1 }), 'name'), toUpper, user)).toStrictEqual({
       id: 1,
