@@ -24,6 +24,7 @@ Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) pac
   - [Amount of values](#amount-of-values)
   - [Builders](#builders)
   - [The whole hierarchy](#the-whole-hierarchy)
+- [Know them all!](#know-them-all)
 
 ## Get it!
 
@@ -44,20 +45,12 @@ import { has, maybe, optic, values } from 'optics.js'
 
 const people = [
   {
-    name: {
-      first: 'Alejandro',
-      last: 'Serrano',
-    },
-    birthmonth: 'april',
-    age: 32,
+    name: { first: 'Alejandro', last: 'Serrano' },
+    birthmonth: 'april', age: 32,
   },
   {
-    name: {
-      first: 'Flavio',
-      last: 'Corpa',
-    },
-    birthmonth: 'april',
-    age: 29,
+    name: { first: 'Flavio', last: 'Corpa' },
+    birthmonth: 'april', age: 29
   },
   { name: { first: 'Laura' }, birthmonth: 'august', age: 27 },
 ]
@@ -149,6 +142,154 @@ This adds yet another axis to our previous table, depending on whether when acce
 The different kinds of optics can be arranged into a hierarchy. Going up means weakening the restrictions, either by set of operations or by amount of elements.
 
 > The image has been produced from the diagram in the [`optics`](https://hackage.haskell.org/package/optics) package.
+
+## Know them all!
+
+`optics.js` ships with a bunch of predefined optics. Bear in mind that the `alter` and `ix` lenses are the default when you use the `optic` generator, so:
+
+```js
+optic(maybe('friends'), 0, 'name')
+```
+
+is equivalent to (the longer):
+
+```js
+optic(maybe('friends'), ix(0), alter('name'))
+```
+
+### _The_ `notFound` value
+
+Whenever an optic needs to indicate that there is no value to return, the special value `notFound` is used. This value is _different_ from `null`, `undefined`, and any other except itself. To check whether an optic returns no values, you can use one of the following versions:
+
+```js
+if (isNotFound(preview(maybe('age'), person))) ...
+if (maybe('age').preview(person) === notFound) ...
+```
+
+Note that `notFound` is _not_ [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy), so the following JavaScript idioms are _not_ available:
+
+```js
+if (!preview(maybe('age'), person)) ...
+maybe('age').preview(person) || defaultAge
+```
+
+### Lenses (view, set)
+
+#### `alter : k -> Lens (Object | notFound) (a | notFound)`
+
+Given a `key`, its `view` operation returns:
+
+- the value at that key if present in the object,
+- the special value `notFound` if not.
+
+The `set`/`over` operation can be used to modify, create, and remove keys in an object.
+
+```js
+set(optic('name'), 'Alex', { name: 'Flavio' })   // { name: 'Alex' }
+set(optic('name'), 'Alex', { } )                 // { name: 'Alex' }
+set(optic('name'), notFound, { name: 'Flavio' }) // { }
+```
+
+#### `mustBePresent : k -> Lens { k: a, ... } a`
+
+Given a key, both `view` and `set`/`over` operate on that key in an object. However, the key _must_ already be present, otherwise `undefined` is returned.
+
+#### `ix : number -> Lens Array a`
+
+Given an index, both `view` and `set`/`over` operate on that index in an array. This lens cannot be used to grow or shrink the array, you can only access or modify positions which are already available.
+
+### Optionals (preview, set)
+
+#### `maybe : (string | number) -> Optional (Object | Array) a`
+
+In a similar fashion to `alter`, the `view` operation returns:
+
+- the value at the key, or at the given index, if present in the object or array,
+- the special value `notFound` if not.
+
+However, `maybe` does _not_ create or remove keys from an object. The most common use is to modify only values which are already there.
+
+```js
+over(maybe('age'), (x) => x + 1, { name: 'Alex', age: 32 })
+  // { name: 'Alex', age: 33 }
+over(maybe('age'), (x) => x + 1, { name: 'Flavio' })
+  // { name: 'Flavio' }
+```
+
+### Prisms (preview, set, review)
+
+#### `has : { ...obj } -> Prism { ...obj, ...rest } { ...obj }`
+
+This prism targets only objects which contain a given "subobject". This might be seen more clearly with a few examples:
+
+```js
+preview(optic(has({ id: 1 }), 'name'), { id: 1, name: 'Alex' })  // 'Alex'
+preview(optic(has({ id: 1 }), 'name'), { id: 2, name: 'Alex' })  // notFound
+```
+
+This prism is quite useful when dealing with [discriminating unions](https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html#discriminating-unions), like those usually found in [Redux actions](https://redux.js.org/basics/actions):
+
+```js
+optic(has({ type: 'ADD_ITEM' }), ...)
+```
+
+Since it is a prism, `has` may also be used for constructing objects. In that case, it ensures that the subobject is part of the created:
+
+```js
+has({ type: 'ADD_ITEM' }).review({ item: 'Hello' })
+  // { type: 'ADD_ITEM', item: 'Hello' }
+```
+
+When combined with traversals like `values`, `has` can be used to filter out values.
+
+```js
+// return only people who were born in April
+toArray(optic(values, has({ birthmonth: 'april' })), people)
+```
+
+Note that when matching the optic itself returns the _whole_ object again:
+
+```js
+preview(has({ id: 1 })), { id: 1, name: 'Alex' })  // { id: 1, name: 'Alex' }
+```
+
+### Traversals (toArray, set)
+
+#### `values : Traversal Array a`
+
+Targets every position in an array.
+
+```js
+over(values, (x) => x + 1, [1, 2, 3])  // [2, 3, 4]
+```
+
+#### `entries : Traversal Object [k, v]`
+
+Targets every key-value pair in an object. As with the identically-named `entries` method in `Object`, those pairs are returned as two-element arrays:
+
+```js
+toArray(entries, { name: 'Alex', age: 32 })
+  // [ ['name', 'Alex'], ['age', 32] ]
+```
+
+When using `set`/`over` with `entries`, you _must_ always return the _same key_ that was given to you, or `BadThingWillHappen`.
+
+```js
+over(entries, ([k, v]) => [k, v + 1], numbers)  // right
+over(entries, ([k, v]) => v + 1, numbers)       // throws TypeError
+```
+
+### Isos (view, set, review)
+
+#### `single : k -> Iso { k: a } a`
+
+This optic matches may only focus on values with a _single_ key. Note that this is _not_ an `Optional` or `Prism`, so trying to use it on a value with a different shape raises an error instead of returning `notFound`.
+
+Since `Iso`s give you the `review`, you can use `single` to build objects too:
+
+```js
+review(single('name'), 'Flavio')  // { name: 'Flavio' }
+```
 
 ## License
 
