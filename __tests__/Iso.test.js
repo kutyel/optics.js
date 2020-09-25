@@ -42,6 +42,16 @@ describe('Iso', () => {
     expect(review(single('name'), 'Alex')).toStrictEqual({ name: 'Alex' })
   })
 
+  test('composition of isos obtains value', () => {
+    expect(view(optic(single('name'), single('first')), { name: { first: 'Alex' } })).toBe('Alex')
+  })
+
+  test('composition of isos obtains value', () => {
+    expect(review(optic(single('name'), single('first')), 'Alex')).toStrictEqual({
+      name: { first: 'Alex' },
+    })
+  })
+
   getterOptics.forEach((gopt) => {
     test('getter as ' + gopt, () => {
       const nm = `as${gopt}`
