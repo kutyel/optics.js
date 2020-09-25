@@ -39,7 +39,6 @@
     "@babel/plugin-transform-modules-commonjs": "^7.10.4",
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-    "conventional-github-releaser": "^3.1.5",
     "coveralls": "^3.1.0",
     "eslint": "^7.9.0",
     "eslint-plugin-simple-import-sort": "^5.0.3",
@@ -52,6 +51,7 @@
     "microbundle": "^0.12.3",
     "npm-check-updates": "^9.0.1",
     "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
     "semantic-release": "^17.1.1",
     "standard-version": "^9.0.0"
   },
@@ -59,20 +59,21 @@
     "node": ">= 12"
   },
   "files": [
-    "dist"
+    "dist",
+    "index.js",
+    "src"
   ],
   "scripts": {
     "build": "microbundle",
-    "clean": "rm -rf node_modules",
+    "clean": "rm -rf node_modules package-lock.json",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "lint": "eslint src/*.js",
-    "postrelease": "npm run release:tags && npm run release:github && npm publish",
-    "prelint": "npm run build",
-    "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors",
+    "postrelease": "npm run release:tags && npm publish",
+    "prebuild": "rimraf dist",
+    "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors && npm run build",
     "pretest": "npm run lint",
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",
-    "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin master",
     "semantic-release": "semantic-release",
     "test": "jest --coverage",
@@ -95,10 +96,10 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 80,
-        "functions": 83,
-        "lines": 91,
-        "statements": 85
+        "branches": 92,
+        "functions": 94,
+        "lines": 100,
+        "statements": 96
       }
     },
     "testEnvironment": "node"
