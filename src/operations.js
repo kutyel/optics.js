@@ -278,8 +278,7 @@ export const review = curry((optic, obj) => {
 
 // matches : Fold s a -> s -> Bool
 export const matches = curry((optic, obj) => {
-  if (optic.asGetter) return true
-  else if (optic.asPartialGetter) return preview(optic, obj) !== notFound
+  if (optic.asPartialGetter) return !isNotFound(preview(optic, obj))
   else if (optic.asFold) return reduce(optic, () => true, false, obj)
   else
     throw new UnavailableOpticOperationError(

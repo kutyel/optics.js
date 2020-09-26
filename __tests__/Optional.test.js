@@ -101,9 +101,19 @@ describe('Optional', () => {
     expect(never.set('A', [1, 2])).toStrictEqual([1, 2])
   })
 
-  test('first of works', () => {
+  test('first of works for viewing', () => {
     expect(preview(firstOf('name', 'toli'), user)).toBe('Flavio')
     expect(preview(firstOf('toli', 'name'), user)).toBe('Flavio')
+    expect(preview(firstOf('name', 'id'), user)).toBe('Flavio')
+    expect(preview(firstOf('id', 'name'), user)).toBe(1)
     expect(preview(firstOf('toli', 'moli'), user)).toBe(notFound)
+  })
+
+  test('first of works for setting', () => {
+    expect(over(firstOf('name', 'toli'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
+    expect(over(firstOf('toli', 'name'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
+    expect(over(firstOf('name', 'id'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
+    expect(over(firstOf('id', 'name'), (x) => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
+    expect(over(firstOf('toli', 'moli'), toUpper, user)).toStrictEqual(user)
   })
 })
