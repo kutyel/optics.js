@@ -10,7 +10,7 @@ import { partialGetter } from './PartialGetter'
 import { prism } from './Prism'
 import { reviewer } from './Reviewer'
 import { setter } from './Setter'
-import { traversal } from './Traversal'
+import { traversal, traversalFromToArray } from './Traversal'
 
 // COMBINATORS
 // ===========
@@ -121,11 +121,63 @@ export const path = composeOptics
 
 export const sequence = (...optics) => {
   const optics1 = optics.flat().map(toOptic)
-  if (optics1.every((o) => o.asFold)) {
+  if (optics1.every((o) => 'asFold' in o)) {
     return foldFromToArray((obj) => optics1.flatMap((o) => toArray(o, obj)))
   } else {
     throw new OpticComposeError(
       'sequence',
+      optics1.map((o) => o.constructor.name),
+      'incompatible optics',
+    )
+  }
+}
+
+const firstOfPreviews = (optics) => (obj) => {
+  for (const o of optics) {
+    const v = preview(o, obj)
+    if (!isNotFound(v)) return v
+  }
+  return notFound
+}
+
+const firstOfToArrays = (optics) => (obj) => {
+  for (const o of optics) {
+    const v = toArray(o, obj)
+    if (v.length > 0) return v
+  }
+  return []
+}
+
+const firstOfSets = (optics) => (v, obj) => {
+  for (const o of optics) {
+    if (matches(o, obj)) return set(o, v, obj)
+  }
+  return obj
+}
+
+const firstOfOvers = (optics) => (f, obj) => {
+  for (const o of optics) {
+    if (matches(o, obj)) return over(o, f, obj)
+  }
+  return obj
+}
+
+export const firstOf = (...optics) => {
+  const optics1 = optics.flat().map(toOptic)
+
+  if (optics1.every((o) => 'asOptional' in o)) {
+    return optional(firstOfPreviews(optics1), firstOfSets(optics1))
+  } else if (optics1.every((o) => 'asTraversal' in o)) {
+    return traversalFromToArray(firstOfToArrays(optics1), firstOfOvers(optics1))
+  } else if (optics1.every((o) => 'asGetter' in o)) {
+    return getter(firstOfOvers(optics1))
+  } else if (optics1.every((o) => 'asPartialGetter' in o)) {
+    return partialGetter(firstOfPreviews(optics1))
+  } else if (optics1.every((o) => 'asFold' in o)) {
+    return foldFromToArray(firstOfToArrays(optics1))
+  } else {
+    throw new OpticComposeError(
+      'firstOf',
       optics1.map((o) => o.constructor.name),
       'incompatible optics',
     )

@@ -2,7 +2,7 @@ import { OpticCreationError } from '../src/errors'
 import { get, set as assoc, toUpper } from '../src/functions'
 import { alter } from '../src/Lens'
 import { notFound } from '../src/notFound'
-import { matches, optic, over, preview, set, toArray } from '../src/operations'
+import { firstOf, matches, optic, over, preview, set, toArray } from '../src/operations'
 import { maybe, never, optional, optionalIx, optionalProp } from '../src/Optional'
 
 const friends = ['Alejandro']
@@ -99,5 +99,11 @@ describe('Optional', () => {
     expect(never.set('A', user)).toStrictEqual(user)
     expect(set(never, 'A', [1, 2])).toStrictEqual([1, 2])
     expect(never.set('A', [1, 2])).toStrictEqual([1, 2])
+  })
+
+  test('first of works', () => {
+    expect(preview(firstOf('name', 'toli'), user)).toBe('Flavio')
+    expect(preview(firstOf('toli', 'name'), user)).toBe('Flavio')
+    expect(preview(firstOf('toli', 'moli'), user)).toBe(notFound)
   })
 })

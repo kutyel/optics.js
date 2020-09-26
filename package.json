@@ -76,7 +76,7 @@
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",
     "release:tags": "git push --follow-tags origin master",
     "semantic-release": "semantic-release",
-    "test": "jest --coverage",
+    "test": "jest --coverage --silent=false",
     "test:watch": "jest --watch",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"
