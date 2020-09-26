@@ -1,7 +1,17 @@
 import { UnavailableOpticOperationError } from '../src/errors'
 import { toUpper } from '../src/functions'
 import { iso, single } from '../src/Iso'
-import { optic, over, preview, reduce, review, set, toArray, view } from '../src/operations'
+import {
+  matches,
+  optic,
+  over,
+  preview,
+  reduce,
+  review,
+  set,
+  toArray,
+  view,
+} from '../src/operations'
 
 const id = (x) => x
 const idIso = iso(id, id)
@@ -60,6 +70,8 @@ describe('Iso', () => {
       expect(toArray(o, { name: 'Alex' })).toStrictEqual(['Alex'])
       expect(o.toArray({ name: 'Alex' })).toStrictEqual(['Alex'])
       expect(reduce(o, (x, y) => x + y, 1, { name: 2 })).toBe(3)
+      expect(matches(o, { name: 'Alex' })).toBe(true)
+      expect(o.matches({ name: 'Alex' })).toBe(true)
 
       if (gopt === 'Fold') {
         expect(() => preview(o, { name: 'Alex' })).toThrow(UnavailableOpticOperationError)
@@ -100,6 +112,7 @@ describe('Iso', () => {
         expect(() => toArray(o, { name: 'Alex' })).toThrow(UnavailableOpticOperationError)
         expect(() => set(o, 'Flavio', { name: 'Alex' })).toThrow(UnavailableOpticOperationError)
         expect(() => over(o, toUpper, { name: 'Alex' })).toThrow(UnavailableOpticOperationError)
+        expect(() => matches(o, { name: 'Alex' })).toThrow(UnavailableOpticOperationError)
       }
     })
   })

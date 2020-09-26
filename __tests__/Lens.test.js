@@ -1,7 +1,7 @@
 import { get, set as assoc, toUpper } from '../src/functions'
 import { alter, ix, lens, mustBePresent } from '../src/Lens'
 import { notFound } from '../src/notFound'
-import { optic, over, preview, set, toArray, view } from '../src/operations'
+import { matches, optic, over, preview, sequence, set, toArray, view } from '../src/operations'
 
 const friends = ['Alejandro', 'Pepe']
 const user = { id: 1, name: 'Flavio' }
@@ -18,6 +18,7 @@ describe('Lens', () => {
     expect(lense.get(user)).toBe('Flavio')
     expect(preview(lense, user)).toBe('Flavio')
     expect(set(lense, 'Alejandro', user)).toEqual(alex)
+    expect(matches(lense, user)).toBe(true)
   })
 
   test('mustBePresent should build a lens', () => {
@@ -150,5 +151,9 @@ describe('Lens', () => {
     const nameOptional = mustBePresent('name').asFold
     expect(toArray(nameOptional, user)).toEqual(['Flavio'])
     expect(nameOptional.toArray(user)).toEqual(['Flavio'])
+  })
+
+  test('should sequence lenses correctly', () => {
+    expect(toArray(sequence('id', 'name'), user)).toEqual([1, 'Flavio'])
   })
 })

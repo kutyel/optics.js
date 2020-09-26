@@ -1,5 +1,5 @@
 import { OpticComposeError, UnavailableOpticOperationError } from './errors'
-import { fold } from './Fold'
+import { fold, foldFromToArray } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
 import { iso } from './Iso'
@@ -12,7 +12,9 @@ import { reviewer } from './Reviewer'
 import { setter } from './Setter'
 import { traversal } from './Traversal'
 
-// different combinations of operations
+// COMBINATORS
+// ===========
+
 const combineGets = (g1, g2) => (x) => g2(g1(x))
 const combineSets = (o1, s2) => (v, x) => o1((inner) => s2(v, inner), x)
 const combineOvers = (o1, o2) => (f, x) => o1((inner) => o2(f, inner), x)
@@ -86,8 +88,8 @@ const compose2Optics = (optic1, optic2) => {
   }
 
   throw new OpticComposeError(
-    optic1.constructor.name,
-    optic2.constructor.name,
+    'compose',
+    [optic1.constructor.name, optic2.constructor.name],
     'incompatible optics',
   )
 }
@@ -116,6 +118,22 @@ const toOptic = (optic) => {
 export const composeOptics = (...optics) => optics.flat().map(toOptic).reduce(compose2Optics)
 export const optic = composeOptics
 export const path = composeOptics
+
+export const sequence = (...optics) => {
+  const optics1 = optics.flat().map(toOptic)
+  if (optics1.every((o) => o.asFold)) {
+    return foldFromToArray((obj) => optics1.flatMap((o) => toArray(o, obj)))
+  } else {
+    throw new OpticComposeError(
+      'sequence',
+      optics1.map((o) => o.constructor.name),
+      'incompatible optics',
+    )
+  }
+}
+
+// OPERATIONS
+// ==========
 
 // reduce : Fold s a → (r -> a -> r) -> r -> s -> r
 export const reduce = curry((optic, f, i, obj) => {
@@ -203,5 +221,18 @@ export const review = curry((optic, obj) => {
       'review',
       optic.constructor.name,
       'review is not supported by ' + optic.constructor.name,
+    )
+})
+
+// matches : Fold s a -> s -> Bool
+export const matches = curry((optic, obj) => {
+  if (optic.asGetter) return true
+  else if (optic.asPartialGetter) return preview(optic, obj) !== notFound
+  else if (optic.asFold) return reduce(optic, () => true, false, obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'matches',
+      optic.constructor.name,
+      'matches is not supported by ' + optic.constructor.name,
     )
 })

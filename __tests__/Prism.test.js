@@ -1,6 +1,7 @@
+import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors'
 import { toUpper } from '../src/functions'
 import { notFound } from '../src/notFound'
-import { optic, over, preview, review, toArray } from '../src/operations'
+import { matches, optic, over, preview, review, sequence, toArray } from '../src/operations'
 import { has } from '../src/Prism'
 
 const user = { id: 1, name: 'Flavio' }
@@ -10,10 +11,14 @@ const modifyUser = (u) => ({ ...u, name: 'Alejandro' })
 describe('Prism', () => {
   test('has returns itself if ok', () => {
     expect(preview(has({ id: 1 }), user)).toEqual(user)
+    expect(matches(has({ id: 1 }), user)).toBe(true)
+    expect(() => matches(has({ id: 1 }).asReviewer, user)).toThrow(UnavailableOpticOperationError)
+    expect(() => sequence(has({ id: 1 }).asReviewer)).toThrow(OpticComposeError)
   })
 
   test('has returns nothing if not found', () => {
     expect(preview(has({ id: 2 }), user)).toEqual(notFound)
+    expect(matches(has({ id: 2 }), user)).toBe(false)
   })
 
   test('has works correctly when setting', () => {

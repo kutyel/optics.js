@@ -14,6 +14,7 @@ class Traversal {
 
     // derived operations
     this.set = (val, x) => this.over(() => val, x)
+    this.matches = (obj) => reduce(() => true, false, obj)
   }
 
   // setter = over + set

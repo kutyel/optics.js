@@ -21,6 +21,7 @@ class Optional {
     }
     this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
     this.toArray = (obj) => notFoundToList(this.preview(obj))
+    this.matches = (obj) => !isNotFound(preview(obj))
   }
 
   // setter = over + set
@@ -80,3 +81,9 @@ export const maybe = (optic) => {
   }
   throw new OpticCreationError('Optional', typeof optic + ' cannot be turned into optional')
 }
+
+// never : Optional s a
+export const never = optional(
+  () => notFound,
+  (_, obj) => obj,
+)

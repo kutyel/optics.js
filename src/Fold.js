@@ -7,6 +7,9 @@ class Fold {
 
     if (!toArray) this.toArray = (obj) => reduce((acc, cur) => acc.concat(cur), [], obj)
     else this.toArray = toArray
+
+    // derived operations
+    this.matches = (obj) => reduce(() => true, false, obj)
   }
 
   // itself

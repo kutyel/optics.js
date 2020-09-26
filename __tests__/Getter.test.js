@@ -1,6 +1,6 @@
 import { get } from '../src/functions'
-import { getter } from '../src/Getter'
-import { preview, toArray } from '../src/operations'
+import { always, getter } from '../src/Getter'
+import { preview, toArray, view } from '../src/operations'
 
 const obj = {
   foo: [1, 2, 3],
@@ -22,5 +22,9 @@ describe('Getter', () => {
     expect(preview(partial, obj)).toBe('baz')
     expect(toArray(partial, obj)).toEqual(['baz'])
     expect(partial.toArray(obj)).toEqual(['baz'])
+  })
+
+  test('always works as expected', () => {
+    expect(view(always('foo'), obj)).toBe('foo')
   })
 })
