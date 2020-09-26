@@ -12,16 +12,20 @@ import { reviewer } from './Reviewer'
 import { setter } from './Setter'
 import { traversal } from './Traversal'
 
-// combine two previews
+// different combinations of operations
+const combineGets = (g1, g2) => (x) => g2(g1(x))
+const combineSets = (o1, s2) => (v, x) => o1((inner) => s2(v, inner), x)
+const combineOvers = (o1, o2) => (f, x) => o1((inner) => o2(f, inner), x)
 const combinePreviews = (p1, p2) => (x) => {
   const v = p1(x)
   return isNotFound(v) ? notFound : p2(v)
 }
-
 // r1 comes from Fold a b => ((r -> b -> r) -> r -> a -> r)
 // r2 comes from Fold b c => ((r -> c -> r) -> r -> b -> r)
 // and we want to get Fold a c => ((r -> c -> r) -> r -> a -> r)
 const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cur), i, obj)
+const combineToArrays = (t1, t2) => (obj) => t1(obj).flatMap((x) => t2(x))
+const combineReviews = (r1, r2) => (x) => r1(r2(x))
 
 /**
  * Compose two optics
@@ -34,43 +38,35 @@ const compose2Optics = (optic1, optic2) => {
   if (optic1.asIso && optic2.asIso) {
     const o1 = optic1.asIso
     const o2 = optic2.asIso
-    return iso(
-      (x) => o2.get(o1.get(x)),
-      (x) => o1.review(o2.review(x)),
-    )
+    return iso(combineGets(o1.get, o2.get), combineReviews(o1.review, o2.review))
   } else if (optic1.asLens && optic2.asLens) {
     const o1 = optic1.asLens
     const o2 = optic2.asLens
-    return lens(
-      (x) => o2.get(o1.get(x)),
-      (v, x) => o1.over((inner) => o2.set(v, inner), x),
-    )
+    return lens(combineGets(o1.get, o2.get), combineSets(o1.over, o2.set))
   } else if (optic1.asPrism && optic2.asPrism) {
     const o1 = optic1.asPrism
     const o2 = optic2.asPrism
     return prism(
       combinePreviews(o1.preview, o2.preview),
-      (v, x) => o1.over((inner) => o2.set(v, inner), x),
-      (x) => o2.review(o1.review(x)),
+      combineSets(o1.over, o2.set),
+      combineReviews(o1.review, o2.review),
     )
   } else if (optic1.asOptional && optic2.asOptional) {
     const o1 = optic1.asOptional
     const o2 = optic2.asOptional
-    return optional(combinePreviews(o1.preview, o2.preview), (v, x) =>
-      o1.over((inner) => o2.set(v, inner), x),
-    )
+    return optional(combinePreviews(o1.preview, o2.preview), combineSets(o1.over, o2.set))
   } else if (optic1.asTraversal && optic2.asTraversal) {
     const o1 = optic1.asTraversal
     const o2 = optic2.asTraversal
     return traversal(
       combineReduces(o1.reduce, o2.reduce),
-      (obj) => o1.toArray(obj).flatMap((x) => o2.toArray(x)),
-      (f, x) => o1.over((inner) => o2.over(f, inner), x),
+      combineToArrays(o1.toArray, o2.toArray),
+      combineOvers(o1.over, o2.over),
     )
   } else if (optic1.asGetter && optic2.asGetter) {
     const o1 = optic1.asGetter
     const o2 = optic2.asGetter
-    return getter((x) => o2.get(o1.get(x)))
+    return getter(combineGets(o1.get, o2.get))
   } else if (optic1.asPartialGetter && optic2.asPartialGetter) {
     const o1 = optic1.asPartialGetter
     const o2 = optic2.asPartialGetter
@@ -78,17 +74,15 @@ const compose2Optics = (optic1, optic2) => {
   } else if (optic1.asFold && optic2.asFold) {
     const o1 = optic1.asFold
     const o2 = optic2.asFold
-    return fold(combineReduces(o1.reduce, o2.reduce), (obj) =>
-      o1.toArray(obj).flatMap((x) => o2.toArray(x)),
-    )
+    return fold(combineReduces(o1.reduce, o2.reduce), combineToArrays(o1.toArray, o2.toArray))
   } else if (optic1.asSetter && optic2.asSetter) {
     const o1 = optic1.asSetter
     const o2 = optic2.asSetter
-    return setter((f, x) => o1.over((inner) => o2.over(f, inner), x))
+    return setter(combineOvers(o1.over, o2.over))
   } else if (optic1.asReviewer && optic2.asReviewer) {
     const o1 = optic1.asReviewer
     const o2 = optic2.asReviewer
-    return reviewer((x) => o2.review(o1.review(x)))
+    return reviewer(combineReviews(o1.review, o2.review))
   }
 
   throw new OpticComposeError(
