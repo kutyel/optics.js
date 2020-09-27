@@ -1,4 +1,4 @@
-import { OpticCreationError } from '../src/errors'
+import { OpticComposeError, OpticCreationError } from '../src/errors'
 import { get, set as assoc, toUpper } from '../src/functions'
 import { alter } from '../src/Lens'
 import { notFound } from '../src/notFound'
@@ -109,11 +109,59 @@ describe('Optional', () => {
     expect(preview(firstOf('toli', 'moli'), user)).toBe(notFound)
   })
 
+  test('first of works for viewing as traversals', () => {
+    const nameL = optionalProp('name').asTraversal
+    const idL = optionalProp('id').asTraversal
+    const toliL = optionalProp('toli').asTraversal
+    const moliL = optionalProp('moli').asTraversal
+    expect(toArray(firstOf(nameL, toliL), user)).toStrictEqual(['Flavio'])
+    expect(toArray(firstOf(toliL, nameL), user)).toStrictEqual(['Flavio'])
+    expect(toArray(firstOf(nameL, idL), user)).toStrictEqual(['Flavio'])
+    expect(toArray(firstOf(idL, nameL), user)).toStrictEqual([1])
+    expect(toArray(firstOf(toliL, moliL), user)).toStrictEqual([])
+  })
+
   test('first of works for setting', () => {
     expect(over(firstOf('name', 'toli'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf('toli', 'name'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf('name', 'id'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf('id', 'name'), (x) => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
     expect(over(firstOf('toli', 'moli'), toUpper, user)).toStrictEqual(user)
+    expect(firstOf('toli', 'moli').set('chorizo', user)).toStrictEqual(user)
+  })
+
+  test('first of works for modifying as traversals', () => {
+    const nameL = optionalProp('name').asTraversal
+    const idL = optionalProp('id').asTraversal
+    const toliL = optionalProp('toli').asTraversal
+    const moliL = optionalProp('moli').asTraversal
+    expect(over(firstOf(nameL, toliL), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
+    expect(over(firstOf(toliL, nameL), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
+    expect(over(firstOf(nameL, idL), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
+    expect(over(firstOf(idL, nameL), (x) => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
+    expect(over(firstOf(toliL, moliL), toUpper, user)).toStrictEqual(user)
+  })
+
+  test('first of works for viewing as everything', () => {
+    const nameL = optionalProp('name')
+    const toliL = optionalProp('toli')
+    expect(toArray(firstOf(nameL.asTraversal, toliL.asTraversal), user)).toStrictEqual(['Flavio'])
+    expect(toArray(firstOf(nameL.asPartialGetter, toliL.asPartialGetter), user)).toStrictEqual([
+      'Flavio',
+    ])
+    expect(toArray(firstOf(nameL.asFold, toliL.asFold), user)).toStrictEqual(['Flavio'])
+  })
+
+  test('first of works for modifying as everything', () => {
+    const nameL = optionalProp('name')
+    const toliL = optionalProp('toli')
+    expect(over(firstOf(nameL.asTraversal, toliL.asTraversal), toUpper, user)).toStrictEqual({
+      id: 1,
+      name: 'FLAVIO',
+    })
+    // cannot compose setters this way
+    expect(() => over(firstOf(nameL.asSetter, toliL.asSetter), toUpper, user)).toThrow(
+      OpticComposeError,
+    )
   })
 })

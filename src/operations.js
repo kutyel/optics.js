@@ -169,8 +169,6 @@ export const firstOf = (...optics) => {
     return optional(firstOfPreviews(optics1), firstOfSets(optics1))
   } else if (optics1.every((o) => 'asTraversal' in o)) {
     return traversalFromToArray(firstOfToArrays(optics1), firstOfOvers(optics1))
-  } else if (optics1.every((o) => 'asGetter' in o)) {
-    return getter(firstOfOvers(optics1))
   } else if (optics1.every((o) => 'asPartialGetter' in o)) {
     return partialGetter(firstOfPreviews(optics1))
   } else if (optics1.every((o) => 'asFold' in o)) {
