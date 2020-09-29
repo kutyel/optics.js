@@ -7,7 +7,7 @@ class Traversal {
     if (!reduce) this.reduce = (f, i, obj) => toArray(obj).reduce(f, i)
     else this.reduce = reduce
 
-    if (!toArray) this.toArray = (obj) => reduce((acc, cur) => acc.concat(cur), [], obj)
+    if (!toArray) this.toArray = (obj) => reduce((acc, cur) => acc.concat([cur]), [], obj)
     else this.toArray = toArray
 
     this.over = over

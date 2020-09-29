@@ -26,7 +26,7 @@ const combinePreviews = (p1, p2) => (x) => {
 // r2 comes from Fold b c => ((r -> c -> r) -> r -> b -> r)
 // and we want to get Fold a c => ((r -> c -> r) -> r -> a -> r)
 const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cur), i, obj)
-const combineToArrays = (t1, t2) => (obj) => t1(obj).flatMap((x) => t2(x))
+const combineToArrays = (t1, t2) => (obj) => t1(obj).flatMap(t2)
 const combineReviews = (r1, r2) => (x) => r1(r2(x))
 
 /**

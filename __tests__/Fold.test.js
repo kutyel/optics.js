@@ -33,10 +33,8 @@ describe('Traversal', () => {
     expect(reduce(o, (x, y) => x + y, 0, doubleArray)).toBe(10)
   })
 
-  /*
   test('traversal from double reduce turns into array', () => {
     const o = optic(valuesReduceFold, valuesReduceFold)
     expect(toArray(o, doubleArray)).toStrictEqual(doubleArray.flat())
   })
-  */
 })

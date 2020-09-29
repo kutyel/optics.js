@@ -7,6 +7,7 @@ export class OpticCreationError extends Error {
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
+    /* istanbul ignore next */
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, OpticCreationError)
     }
@@ -23,6 +24,7 @@ export class OpticComposeError extends Error {
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
+    /* istanbul ignore next */
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, OpticComposeError)
     }
@@ -40,6 +42,7 @@ export class UnavailableOpticOperationError extends Error {
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
+    /* istanbul ignore next */
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, UnavailableOpticOperationError)
     }
