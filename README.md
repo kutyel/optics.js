@@ -145,7 +145,7 @@ The different kinds of optics can be arranged into a hierarchy. Going up means w
 
 ## Know them all!
 
-`optics.js` ships with a bunch of predefined optics. Bear in mind that the `alter` and `ix` lenses are the default when you use the `optic` generator, so:
+`optics.js` ships with a bunch of predefined optics. Bear in mind that the `alter` and `ix` lenses are the default when you use combinators, so:
 
 ```js
 optic(maybe('friends'), 0, 'name')
@@ -171,6 +171,35 @@ Note that `notFound` is _not_ [falsy](https://developer.mozilla.org/en-US/docs/G
 ```js
 if (!preview(maybe('age'), person)) ...
 maybe('age').preview(person) || defaultAge
+```
+
+### Combinators
+
+#### `optic : [Optic a b, Optic b c, ..., Optic y z] -> Optic a z`
+
+Creates a combined optic by applying each one on the result of the previous one. This is the most common way to combine optics.
+
+#### `sequence : [Fold s a] -> Fold s a`
+
+Joins the result of several optics into a single one. In other words, targets all values from each of the given optics.
+
+```js
+sequence('age', 'name').toArray({ name: 'Alex', age: 32 }) // [ 32, 'Alex' ]
+```
+
+#### `firstOf : [Optic s a] -> Optic s a`
+
+Tries each of the optics until one matches, that is, returns something different from `notFound` (when talking about optionals or partial getters) and `[]` (when talking about traversals and folds).
+
+```js
+view(firstOf('firstName', 'name'), { name: 'Alex', age: 32 }) // 'Alex'
+```
+
+In combination with `always` it can be used to provide a default value when an optic targets no elements.
+
+```js
+view(firstOf('name', always('Pepe')), { name: 'Alex', age: 32 }) // 'Alex'
+view(firstOf('name', always('Pepe')), { }}) // 'Pepe'
 ```
 
 ### Lenses (view, set)
@@ -215,6 +244,10 @@ over(maybe('age'), (x) => x + 1, { name: 'Alex', age: 32 })
 over(maybe('age'), (x) => x + 1, { name: 'Flavio' })
   // { name: 'Flavio' }
 ```
+
+#### `never : Optional s a`
+
+This optional _never_ matches: `view`ing through it always returns `notFound`, using it to set makes no changes to the given value. It can be useful when combined in `sequence`, as it adds no additional values.
 
 ### Prisms (preview, set, review)
 
@@ -277,6 +310,16 @@ When using `set`/`over` with `entries`, you _must_ always return the _same key_ 
 ```js
 over(entries, ([k, v]) => [k, v + 1], numbers)  // right
 over(entries, ([k, v]) => v + 1, numbers)       // throws TypeError
+```
+
+### Getters (view)
+
+#### `always : a -> Getter s a`
+
+Always return the given value. As described above, it can be used in combination with `firstOf` to provide a default value for a possibly-missing field.
+
+```js
+view(always('zoo'), 3) // 'zoo'
 ```
 
 ### Isos (view, set, review)
