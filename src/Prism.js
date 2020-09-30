@@ -20,6 +20,7 @@ class Prism {
     }
     this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
     this.toArray = (obj) => notFoundToList(this.preview(obj))
+    this.matches = (obj) => !isNotFound(preview(obj))
   }
 
   // setter = over + set

@@ -7,6 +7,7 @@ export class OpticCreationError extends Error {
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
+    /* istanbul ignore next */
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, OpticCreationError)
     }
@@ -18,19 +19,20 @@ export class OpticCreationError extends Error {
 }
 
 export class OpticComposeError extends Error {
-  constructor(optic1, optic2, ...params) {
+  constructor(combinator, optics, ...params) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
+    /* istanbul ignore next */
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, OpticComposeError)
     }
 
     this.name = 'OpticComposeError'
     // Custom debugging information
-    this.optic1 = optic1
-    this.optic2 = optic2
+    this.combinator = combinator
+    this.optics = optics
   }
 }
 
@@ -40,6 +42,7 @@ export class UnavailableOpticOperationError extends Error {
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
+    /* istanbul ignore next */
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, UnavailableOpticOperationError)
     }

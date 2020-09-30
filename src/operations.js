@@ -1,5 +1,5 @@
 import { OpticComposeError, UnavailableOpticOperationError } from './errors'
-import { fold } from './Fold'
+import { fold, foldFromToArray } from './Fold'
 import { curry } from './functions'
 import { getter } from './Getter'
 import { iso } from './Iso'
@@ -10,9 +10,11 @@ import { partialGetter } from './PartialGetter'
 import { prism } from './Prism'
 import { reviewer } from './Reviewer'
 import { setter } from './Setter'
-import { traversal } from './Traversal'
+import { traversal, traversalFromToArray } from './Traversal'
 
-// different combinations of operations
+// COMBINATORS
+// ===========
+
 const combineGets = (g1, g2) => (x) => g2(g1(x))
 const combineSets = (o1, s2) => (v, x) => o1((inner) => s2(v, inner), x)
 const combineOvers = (o1, o2) => (f, x) => o1((inner) => o2(f, inner), x)
@@ -24,7 +26,7 @@ const combinePreviews = (p1, p2) => (x) => {
 // r2 comes from Fold b c => ((r -> c -> r) -> r -> b -> r)
 // and we want to get Fold a c => ((r -> c -> r) -> r -> a -> r)
 const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cur), i, obj)
-const combineToArrays = (t1, t2) => (obj) => t1(obj).flatMap((x) => t2(x))
+const combineToArrays = (t1, t2) => (obj) => t1(obj).flatMap(t2)
 const combineReviews = (r1, r2) => (x) => r1(r2(x))
 
 /**
@@ -86,8 +88,8 @@ const compose2Optics = (optic1, optic2) => {
   }
 
   throw new OpticComposeError(
-    optic1.constructor.name,
-    optic2.constructor.name,
+    'compose',
+    [optic1.constructor.name, optic2.constructor.name],
     'incompatible optics',
   )
 }
@@ -116,6 +118,72 @@ const toOptic = (optic) => {
 export const composeOptics = (...optics) => optics.flat().map(toOptic).reduce(compose2Optics)
 export const optic = composeOptics
 export const path = composeOptics
+
+export const sequence = (...optics) => {
+  const optics1 = optics.flat().map(toOptic)
+  if (optics1.every((o) => 'asFold' in o)) {
+    return foldFromToArray((obj) => optics1.flatMap((o) => toArray(o, obj)))
+  } else {
+    throw new OpticComposeError(
+      'sequence',
+      optics1.map((o) => o.constructor.name),
+      'incompatible optics',
+    )
+  }
+}
+
+const firstOfPreviews = (optics) => (obj) => {
+  for (const o of optics) {
+    const v = preview(o, obj)
+    if (!isNotFound(v)) return v
+  }
+  return notFound
+}
+
+const firstOfToArrays = (optics) => (obj) => {
+  for (const o of optics) {
+    const v = toArray(o, obj)
+    if (v.length > 0) return v
+  }
+  return []
+}
+
+const firstOfSets = (optics) => (v, obj) => {
+  for (const o of optics) {
+    if (matches(o, obj)) return set(o, v, obj)
+  }
+  return obj
+}
+
+const firstOfOvers = (optics) => (f, obj) => {
+  for (const o of optics) {
+    if (matches(o, obj)) return over(o, f, obj)
+  }
+  return obj
+}
+
+export const firstOf = (...optics) => {
+  const optics1 = optics.flat().map(toOptic)
+
+  if (optics1.every((o) => 'asOptional' in o)) {
+    return optional(firstOfPreviews(optics1), firstOfSets(optics1))
+  } else if (optics1.every((o) => 'asTraversal' in o)) {
+    return traversalFromToArray(firstOfToArrays(optics1), firstOfOvers(optics1))
+  } else if (optics1.every((o) => 'asPartialGetter' in o)) {
+    return partialGetter(firstOfPreviews(optics1))
+  } else if (optics1.every((o) => 'asFold' in o)) {
+    return foldFromToArray(firstOfToArrays(optics1))
+  } else {
+    throw new OpticComposeError(
+      'firstOf',
+      optics1.map((o) => o.constructor.name),
+      'incompatible optics',
+    )
+  }
+}
+
+// OPERATIONS
+// ==========
 
 // reduce : Fold s a → (r -> a -> r) -> r -> s -> r
 export const reduce = curry((optic, f, i, obj) => {
@@ -203,5 +271,17 @@ export const review = curry((optic, obj) => {
       'review',
       optic.constructor.name,
       'review is not supported by ' + optic.constructor.name,
+    )
+})
+
+// matches : Fold s a -> s -> Bool
+export const matches = curry((optic, obj) => {
+  if (optic.asPartialGetter) return !isNotFound(preview(optic, obj))
+  else if (optic.asFold) return reduce(optic, () => true, false, obj)
+  else
+    throw new UnavailableOpticOperationError(
+      'matches',
+      optic.constructor.name,
+      'matches is not supported by ' + optic.constructor.name,
     )
 })

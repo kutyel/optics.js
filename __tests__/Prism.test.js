@@ -1,6 +1,7 @@
+import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors'
 import { toUpper } from '../src/functions'
 import { notFound } from '../src/notFound'
-import { optic, over, preview, review, toArray } from '../src/operations'
+import { matches, optic, over, preview, review, sequence, toArray } from '../src/operations'
 import { has } from '../src/Prism'
 
 const user = { id: 1, name: 'Flavio' }
@@ -10,15 +11,29 @@ const modifyUser = (u) => ({ ...u, name: 'Alejandro' })
 describe('Prism', () => {
   test('has returns itself if ok', () => {
     expect(preview(has({ id: 1 }), user)).toEqual(user)
+    expect(matches(has({ id: 1 }), user)).toBe(true)
+    expect(() => matches(has({ id: 1 }).asReviewer, user)).toThrow(UnavailableOpticOperationError)
+    expect(() => sequence(has({ id: 1 }).asReviewer)).toThrow(OpticComposeError)
   })
 
   test('has returns nothing if not found', () => {
     expect(preview(has({ id: 2 }), user)).toEqual(notFound)
+    expect(matches(has({ id: 2 }), user)).toBe(false)
   })
 
   test('has works correctly when setting', () => {
     expect(over(has({ id: 1 }), modifyUser, user)).toStrictEqual(modifiedUser)
     expect(has({ id: 1 }).over(modifyUser, user)).toStrictEqual(modifiedUser)
+  })
+
+  test('has sets nothing if not found', () => {
+    expect(over(has({ id: 2 }), modifyUser, user)).toStrictEqual(user)
+    expect(has({ id: 2 }).over(modifyUser, user)).toStrictEqual(user)
+  })
+
+  test('has works in review', () => {
+    expect(review(has({ id: 1 }), { name: 'Flavio' })).toStrictEqual(user)
+    expect(has({ id: 1 }).review({ name: 'Flavio' })).toStrictEqual(user)
   })
 
   test('has works correctly in composition with itself', () => {

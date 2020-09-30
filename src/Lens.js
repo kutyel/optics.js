@@ -17,6 +17,7 @@ class Lens {
     this.reduce = (f, i, obj) => f(i, this.get(obj))
     this.toArray = (obj) => [this.get(obj)]
     this.preview = this.get
+    this.matches = () => true
   }
 
   // setter = over + set

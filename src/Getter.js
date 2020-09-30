@@ -10,6 +10,7 @@ class Getter {
     this.reduce = (f, i, obj) => f(i, this.get(obj))
     this.toArray = (obj) => [this.get(obj)]
     this.preview = this.get
+    this.matches = () => true
   }
 
   // fold = reduce + toArray
@@ -30,3 +31,6 @@ class Getter {
 
 // getter : (s → a) → Getter s a
 export const getter = curry((get) => new Getter(get))
+
+// always : a -> Getter s a
+export const always = curry((v) => getter(() => v))
