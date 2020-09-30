@@ -5,11 +5,11 @@ class Fold {
     if (!reduce) this.reduce = (f, i, obj) => toArray(obj).reduce(f, i)
     else this.reduce = reduce
 
-    if (!toArray) this.toArray = (obj) => reduce((acc, cur) => acc.concat([cur]), [], obj)
+    if (!toArray) this.toArray = obj => reduce((acc, cur) => acc.concat([cur]), [], obj)
     else this.toArray = toArray
 
     // derived operations
-    this.matches = (obj) => reduce(() => true, false, obj)
+    this.matches = obj => reduce(() => true, false, obj)
   }
 
   // itself
@@ -19,8 +19,8 @@ class Fold {
 }
 
 // fold : ((b -> a -> b) -> b -> s -> b) → Fold s a
-export const foldFromReduce = curry((reduce) => new Fold(reduce, null))
+export const foldFromReduce = curry(reduce => new Fold(reduce, null))
 // fold : (s -> [a]) -> Fold s a
-export const foldFromToArray = curry((toArray) => new Fold(null, toArray))
+export const foldFromToArray = curry(toArray => new Fold(null, toArray))
 // fold : ((b -> a -> b) -> b -> s -> b) -> (s -> [a]) -> Fold s a
 export const fold = curry((reduce, toArray) => new Fold(reduce, toArray))

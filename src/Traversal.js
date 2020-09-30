@@ -7,14 +7,14 @@ class Traversal {
     if (!reduce) this.reduce = (f, i, obj) => toArray(obj).reduce(f, i)
     else this.reduce = reduce
 
-    if (!toArray) this.toArray = (obj) => reduce((acc, cur) => acc.concat([cur]), [], obj)
+    if (!toArray) this.toArray = obj => reduce((acc, cur) => acc.concat([cur]), [], obj)
     else this.toArray = toArray
 
     this.over = over
 
     // derived operations
     this.set = (val, x) => this.over(() => val, x)
-    this.matches = (obj) => reduce(() => true, false, obj)
+    this.matches = obj => reduce(() => true, false, obj)
   }
 
   // setter = over + set
@@ -44,12 +44,12 @@ export const traversal = curry((reduce, toArray, over) => new Traversal(reduce, 
 // values : Traversal [a] a
 export const values = traversal(
   (f, i, obj) => obj.reduce(f, i),
-  (obj) => [...obj],
+  obj => [...obj],
   (f, obj) => obj.map(f),
 )
 
 // entries : Traversal Object [K, V]
 export const entries = traversalFromToArray(
-  (obj) => [...Object.entries(obj)],
+  obj => [...Object.entries(obj)],
   (f, obj) => Object.fromEntries([...Object.entries(obj)].map(f)),
 )

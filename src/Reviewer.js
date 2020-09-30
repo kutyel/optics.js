@@ -12,4 +12,4 @@ class Reviewer {
 }
 
 // reviewer : (a → s) → Prism s a
-export const reviewer = curry((review) => new Reviewer(review))
+export const reviewer = curry(review => new Reviewer(review))

@@ -11,8 +11,8 @@ class PartialGetter {
 
     // derived operations
     this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
-    this.toArray = (obj) => notFoundToList(this.preview(obj))
-    this.matches = (obj) => !isNotFound(preview(obj))
+    this.toArray = obj => notFoundToList(this.preview(obj))
+    this.matches = obj => !isNotFound(preview(obj))
   }
 
   // fold = reduce + toArray
@@ -27,4 +27,4 @@ class PartialGetter {
 }
 
 // partialGetter : (s → Maybe a) → AffineFold s a
-export const partialGetter = curry((preview) => new PartialGetter(preview))
+export const partialGetter = curry(preview => new PartialGetter(preview))

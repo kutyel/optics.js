@@ -13,7 +13,7 @@ import {
   view,
 } from '../src/operations'
 
-const id = (x) => x
+const id = x => x
 const idIso = iso(id, id)
 const optics = [
   'Lens',
@@ -35,7 +35,7 @@ describe('Iso', () => {
     expect(idIso.asIso).toBe(idIso)
   })
 
-  optics.forEach((optic) => {
+  optics.forEach(optic => {
     test('conversion to ' + optic, () => {
       const nm = `as${optic}`
       const o = idIso[nm]
@@ -62,7 +62,7 @@ describe('Iso', () => {
     })
   })
 
-  getterOptics.forEach((gopt) => {
+  getterOptics.forEach(gopt => {
     test('getter as ' + gopt, () => {
       const nm = `as${gopt}`
       const o = optic(idIso[nm], single('name'))
@@ -86,7 +86,7 @@ describe('Iso', () => {
     })
   })
 
-  setterOptics.forEach((sopt) => {
+  setterOptics.forEach(sopt => {
     test('setter as ' + sopt, () => {
       const nm = `as${sopt}`
       const o = optic(idIso[nm], single('name'))
@@ -96,7 +96,7 @@ describe('Iso', () => {
     })
   })
 
-  reviewOptics.forEach((ropt) => {
+  reviewOptics.forEach(ropt => {
     test('review as ' + ropt, () => {
       const nm = `as${ropt}`
       const o = optic(idIso[nm], single('name'))

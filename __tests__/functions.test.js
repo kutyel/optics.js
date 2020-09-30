@@ -10,7 +10,7 @@ describe('Function Operators', () => {
   })
 
   test('compose -> should compose N functions correctly', () => {
-    const inc = (x) => x + 1
+    const inc = x => x + 1
 
     expect(compose(inc, exp(5))(1)).toBe(inc(exp(5, 1)))
   })

@@ -125,7 +125,7 @@ describe('Optional', () => {
     expect(over(firstOf('name', 'toli'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf('toli', 'name'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf('name', 'id'), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
-    expect(over(firstOf('id', 'name'), (x) => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
+    expect(over(firstOf('id', 'name'), x => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
     expect(over(firstOf('toli', 'moli'), toUpper, user)).toStrictEqual(user)
     expect(firstOf('toli', 'moli').set('chorizo', user)).toStrictEqual(user)
   })
@@ -138,7 +138,7 @@ describe('Optional', () => {
     expect(over(firstOf(nameL, toliL), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf(toliL, nameL), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
     expect(over(firstOf(nameL, idL), toUpper, user)).toStrictEqual({ id: 1, name: 'FLAVIO' })
-    expect(over(firstOf(idL, nameL), (x) => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
+    expect(over(firstOf(idL, nameL), x => x + 1, user)).toStrictEqual({ id: 2, name: 'Flavio' })
     expect(over(firstOf(toliL, moliL), toUpper, user)).toStrictEqual(user)
   })
 

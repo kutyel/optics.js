@@ -15,10 +15,10 @@ class Iso {
     this.review = review
 
     // derived operations
-    this.set = (x) => this.review(x)
+    this.set = x => this.review(x)
     this.over = (f, obj) => this.review(f(this.get(obj)))
     this.reduce = (f, i, obj) => f(i, this.get(obj))
-    this.toArray = (obj) => [this.get(obj)]
+    this.toArray = obj => [this.get(obj)]
     this.preview = this.get
     this.matches = () => true
   }
@@ -78,8 +78,8 @@ class Iso {
 export const iso = curry((get, review) => new Iso(get, review))
 
 // singleton : Key -> Iso { k: a } a
-export const single = (key) =>
+export const single = key =>
   iso(
-    (obj) => obj[key],
-    (val) => ({ [key]: val }),
+    obj => obj[key],
+    val => ({ [key]: val }),
   )

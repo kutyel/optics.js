@@ -15,7 +15,7 @@ class Lens {
     // derived operations
     this.over = (f, obj) => this.set(f(this.get(obj)), obj)
     this.reduce = (f, i, obj) => f(i, this.get(obj))
-    this.toArray = (obj) => [this.get(obj)]
+    this.toArray = obj => [this.get(obj)]
     this.preview = this.get
     this.matches = () => true
   }
@@ -60,15 +60,15 @@ class Lens {
 export const lens = curry((get, set) => new Lens(get, set))
 
 // ix : Number → Lens s a
-export const ix = (index) => lens(get(index), setIndex(index))
+export const ix = index => lens(get(index), setIndex(index))
 
 // mustBePresent : String → Lens s a
-export const mustBePresent = (key) => lens(get(key), set(key))
+export const mustBePresent = key => lens(get(key), set(key))
 
 // alter : String → Lens (Maybe s) (Maybe a)
-export const alter = (key) =>
+export const alter = key =>
   lens(
-    (obj) => (isNotFound(obj) ? notFound : obj[key] || notFound),
+    obj => (isNotFound(obj) ? notFound : obj[key] || notFound),
     (val, obj) => {
       if (isNotFound(val)) {
         if (typeof obj === 'object') {

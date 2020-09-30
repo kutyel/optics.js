@@ -21,7 +21,7 @@ describe('Traversal', () => {
   })
 
   test('traversal from array updates', () => {
-    expect(over(values, (x) => x + 1, [1, 2])).toStrictEqual([2, 3])
+    expect(over(values, x => x + 1, [1, 2])).toStrictEqual([2, 3])
   })
 
   test('traversal from double array reduces', () => {
@@ -36,7 +36,7 @@ describe('Traversal', () => {
 
   test('traversal from double array updates', () => {
     const o = optic(values, values)
-    expect(over(o, (x) => x + 1, doubleArray)).toStrictEqual([
+    expect(over(o, x => x + 1, doubleArray)).toStrictEqual([
       [2, 3],
       [4, 5],
     ])
@@ -47,7 +47,7 @@ describe('Traversal', () => {
   })
 
   test('traversal from double reduce updates', () => {
-    expect(over(valuesReduceTraversal, (x) => x + 1, [1, 2])).toStrictEqual([2, 3])
+    expect(over(valuesReduceTraversal, x => x + 1, [1, 2])).toStrictEqual([2, 3])
   })
 
   test('traversal from entries reduces', () => {

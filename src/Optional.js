@@ -20,8 +20,8 @@ class Optional {
       return isNotFound(v) ? obj : this.set(f(v), obj)
     }
     this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
-    this.toArray = (obj) => notFoundToList(this.preview(obj))
-    this.matches = (obj) => !isNotFound(preview(obj))
+    this.toArray = obj => notFoundToList(this.preview(obj))
+    this.matches = obj => !isNotFound(preview(obj))
   }
 
   // setter = over + set
@@ -54,21 +54,21 @@ class Optional {
 export const optional = curry((preview, set) => new Optional(preview, set))
 
 // optionalProp : String → Optional s a
-export const optionalProp = (key) =>
+export const optionalProp = key =>
   optional(
-    (obj) => obj[key] || notFound,
+    obj => obj[key] || notFound,
     (val, obj) => (obj[key] ? { ...obj, [key]: val } : obj),
   )
 
 // optionalIx : Number → Optional s a
-export const optionalIx = (index) =>
+export const optionalIx = index =>
   optional(
-    (obj) => obj[index] || notFound,
+    obj => obj[index] || notFound,
     (val, obj) => (obj[index] ? setIndex(index, val, obj) : obj),
   )
 
 // maybe : (String | Int | Lens s a) -> Optional s a
-export const maybe = (optic) => {
+export const maybe = optic => {
   if (typeof optic == 'string' || optic instanceof String) {
     return optionalProp(optic)
   }

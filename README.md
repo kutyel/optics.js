@@ -41,25 +41,27 @@ If you want to know more about the implementation, you can check this talk by [m
 ## Meet it!
 
 ```js
-import { has, maybe, optic, values } from 'optics.js'
+import { where, maybe, optic, values } from 'optics.js'
 
 const people = [
   {
     name: { first: 'Alejandro', last: 'Serrano' },
-    birthmonth: 'april', age: 32,
+    birthmonth: 'april',
+    age: 32,
   },
   {
     name: { first: 'Flavio', last: 'Corpa' },
-    birthmonth: 'april', age: 29
+    birthmonth: 'april',
+    age: 29,
   },
   { name: { first: 'Laura' }, birthmonth: 'august', age: 27 },
 ]
 
 const firstNameTraversal = optic(values, 'name', 'first').toArray(people)
 const lastNameOptional = optic(values, 'name', maybe('last')).toArray(people)
-const o = optic(values, has({ birthmonth: 'april' }), 'age')
+const o = optic(values, where({ birthmonth: 'april' }), 'age')
 const ageTraversal = o.toArray(people)
-const agePlus1Traversal = o.over((x) => x + 1, people)
+const agePlus1Traversal = o.over(x => x + 1, people)
 ```
 
 Optics provide a _language_ for data _access_ and _manipulation_ in a concise and compositional way. It excels when you want to code in an _immutable_ way.
@@ -82,7 +84,7 @@ Intuitively, optics simply point to one (or more) positions within your data. Yo
 const shoppingList = { pie: 3, milk: { whole: 6, skimmed: 3 } }
 
 view(wholeMilk, shoppingList) // > 6
-over(wholeMilk, (x) => x + 1, shoppingList)
+over(wholeMilk, x => x + 1, shoppingList)
 // > { pie: 3, milk: { whole: 7, skimmed: 3 } }
 ```
 
@@ -214,8 +216,8 @@ Given a `key`, its `view` operation returns:
 The `set`/`over` operation can be used to modify, create, and remove keys in an object.
 
 ```js
-set(optic('name'), 'Alex', { name: 'Flavio' })   // { name: 'Alex' }
-set(optic('name'), 'Alex', { } )                 // { name: 'Alex' }
+set(optic('name'), 'Alex', { name: 'Flavio' }) // { name: 'Alex' }
+set(optic('name'), 'Alex', {}) // { name: 'Alex' }
 set(optic('name'), notFound, { name: 'Flavio' }) // { }
 ```
 
@@ -239,10 +241,10 @@ In a similar fashion to `alter`, the `view` operation returns:
 However, `maybe` does _not_ create or remove keys from an object. The most common use is to modify only values which are already there.
 
 ```js
-over(maybe('age'), (x) => x + 1, { name: 'Alex', age: 32 })
-  // { name: 'Alex', age: 33 }
-over(maybe('age'), (x) => x + 1, { name: 'Flavio' })
-  // { name: 'Flavio' }
+over(maybe('age'), x => x + 1, { name: 'Alex', age: 32 })
+// { name: 'Alex', age: 33 }
+over(maybe('age'), x => x + 1, { name: 'Flavio' })
+// { name: 'Flavio' }
 ```
 
 #### `never : Optional s a`
@@ -251,39 +253,39 @@ This optional _never_ matches: `view`ing through it always returns `notFound`, u
 
 ### Prisms (preview, set, review)
 
-#### `has : { ...obj } -> Prism { ...obj, ...rest } { ...obj }`
+#### `where : { ...obj } -> Prism { ...obj, ...rest } { ...obj }`
 
 This prism targets only objects which contain a given "subobject". This might be seen more clearly with a few examples:
 
 ```js
-preview(optic(has({ id: 1 }), 'name'), { id: 1, name: 'Alex' })  // 'Alex'
-preview(optic(has({ id: 1 }), 'name'), { id: 2, name: 'Alex' })  // notFound
+preview(optic(where({ id: 1 }), 'name'), { id: 1, name: 'Alex' }) // 'Alex'
+preview(optic(where({ id: 1 }), 'name'), { id: 2, name: 'Alex' }) // notFound
 ```
 
 This prism is quite useful when dealing with [discriminating unions](https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html#discriminating-unions), like those usually found in [Redux actions](https://redux.js.org/basics/actions):
 
 ```js
-optic(has({ type: 'ADD_ITEM' }), ...)
+optic(where({ type: 'ADD_ITEM' }), ...)
 ```
 
-Since it is a prism, `has` may also be used for constructing objects. In that case, it ensures that the subobject is part of the created:
+Since it is a prism, `where` may also be used for constructing objects. In that case, it ensures that the subobject is part of the created:
 
 ```js
-has({ type: 'ADD_ITEM' }).review({ item: 'Hello' })
-  // { type: 'ADD_ITEM', item: 'Hello' }
+where({ type: 'ADD_ITEM' }).review({ item: 'Hello' })
+// { type: 'ADD_ITEM', item: 'Hello' }
 ```
 
-When combined with traversals like `values`, `has` can be used to filter out values.
+When combined with traversals like `values`, `where` can be used to filter out values.
 
 ```js
 // return only people who were born in April
-toArray(optic(values, has({ birthmonth: 'april' })), people)
+toArray(optic(values, where({ birthmonth: 'april' })), people)
 ```
 
 Note that when matching the optic itself returns the _whole_ object again:
 
 ```js
-preview(has({ id: 1 })), { id: 1, name: 'Alex' })  // { id: 1, name: 'Alex' }
+preview(where({ id: 1 })), { id: 1, name: 'Alex' })  // { id: 1, name: 'Alex' }
 ```
 
 ### Traversals (toArray, set)
@@ -293,7 +295,7 @@ preview(has({ id: 1 })), { id: 1, name: 'Alex' })  // { id: 1, name: 'Alex' }
 Targets every position in an array.
 
 ```js
-over(values, (x) => x + 1, [1, 2, 3])  // [2, 3, 4]
+over(values, x => x + 1, [1, 2, 3]) // [2, 3, 4]
 ```
 
 #### `entries : Traversal Object [k, v]`
@@ -302,14 +304,14 @@ Targets every key-value pair in an object. As with the identically-named `entrie
 
 ```js
 toArray(entries, { name: 'Alex', age: 32 })
-  // [ ['name', 'Alex'], ['age', 32] ]
+// [ ['name', 'Alex'], ['age', 32] ]
 ```
 
 When using `set`/`over` with `entries`, you _must_ always return the _same key_ that was given to you, or `BadThingWillHappen`.
 
 ```js
-over(entries, ([k, v]) => [k, v + 1], numbers)  // right
-over(entries, ([k, v]) => v + 1, numbers)       // throws TypeError
+over(entries, ([k, v]) => [k, v + 1], numbers) // right
+over(entries, ([k, v]) => v + 1, numbers) // throws TypeError
 ```
 
 ### Getters (view)
@@ -331,7 +333,7 @@ This optic matches may only focus on values with a _single_ key. Note that this 
 Since `Iso`s give you the `review`, you can use `single` to build objects too:
 
 ```js
-review(single('name'), 'Flavio')  // { name: 'Flavio' }
+review(single('name'), 'Flavio') // { name: 'Flavio' }
 ```
 
 ## License

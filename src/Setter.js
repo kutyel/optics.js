@@ -15,4 +15,4 @@ class Setter {
 }
 
 // setter : ((a → a, s) → s) → Setter s a
-export const setter = curry((over) => new Setter(over))
+export const setter = curry(over => new Setter(over))

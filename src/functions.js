@@ -17,7 +17,7 @@ export const curry = (f, arity = f.length, ...args) =>
  *
  * @param  {...any} fns - Comma-separated list of functions to be composed (right -> left)
  */
-export const compose = (...fns) => (args) => fns.reduceRight((x, f) => f(x), args)
+export const compose = (...fns) => args => fns.reduceRight((x, f) => f(x), args)
 
 // get : s -> {s: a} -> Maybe a
 export const get = curry((key, obj) => obj[key])
@@ -29,4 +29,4 @@ export const set = curry((key, val, obj) => (obj[key] ? { ...obj, [key]: val } :
 export const setIndex = curry((index, val, array) => array.map((v, i) => (i == index ? val : v)))
 
 // toUpper : String -> String
-export const toUpper = (str) => str.toUpperCase()
+export const toUpper = str => str.toUpperCase()

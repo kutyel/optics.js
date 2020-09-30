@@ -6,7 +6,7 @@ const doubleArray = [
   [3, 4],
 ]
 
-const valuesFold = foldFromToArray((obj) => [...obj])
+const valuesFold = foldFromToArray(obj => [...obj])
 const valuesReduceFold = foldFromReduce((f, i, obj) => obj.reduce(f, i))
 
 describe('Traversal', () => {

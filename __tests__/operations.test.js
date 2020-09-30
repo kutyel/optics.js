@@ -94,7 +94,7 @@ describe('Operations over Optics', () => {
     expect(() =>
       optic(
         setter((f, x) => f(x)),
-        getter((x) => x),
+        getter(x => x),
       ),
     ).toThrow(OpticComposeError)
   })
@@ -102,7 +102,7 @@ describe('Operations over Optics', () => {
   test('unavailable operations', () => {
     expect(() =>
       set(
-        getter((x) => x),
+        getter(x => x),
         1,
         1,
       ),

@@ -15,10 +15,10 @@ import { traversal, traversalFromToArray } from './Traversal'
 // COMBINATORS
 // ===========
 
-const combineGets = (g1, g2) => (x) => g2(g1(x))
-const combineSets = (o1, s2) => (v, x) => o1((inner) => s2(v, inner), x)
-const combineOvers = (o1, o2) => (f, x) => o1((inner) => o2(f, inner), x)
-const combinePreviews = (p1, p2) => (x) => {
+const combineGets = (g1, g2) => x => g2(g1(x))
+const combineSets = (o1, s2) => (v, x) => o1(inner => s2(v, inner), x)
+const combineOvers = (o1, o2) => (f, x) => o1(inner => o2(f, inner), x)
+const combinePreviews = (p1, p2) => x => {
   const v = p1(x)
   return isNotFound(v) ? notFound : p2(v)
 }
@@ -26,8 +26,8 @@ const combinePreviews = (p1, p2) => (x) => {
 // r2 comes from Fold b c => ((r -> c -> r) -> r -> b -> r)
 // and we want to get Fold a c => ((r -> c -> r) -> r -> a -> r)
 const combineReduces = (r1, r2) => (f, i, obj) => r2((acc, cur) => r1(f, acc, cur), i, obj)
-const combineToArrays = (t1, t2) => (obj) => t1(obj).flatMap(t2)
-const combineReviews = (r1, r2) => (x) => r1(r2(x))
+const combineToArrays = (t1, t2) => obj => t1(obj).flatMap(t2)
+const combineReviews = (r1, r2) => x => r1(r2(x))
 
 /**
  * Compose two optics
@@ -94,7 +94,7 @@ const compose2Optics = (optic1, optic2) => {
   )
 }
 
-const toOptic = (optic) => {
+const toOptic = optic => {
   if (typeof optic == 'string' || optic instanceof String) {
     return alter(optic)
   }
@@ -121,18 +121,18 @@ export const path = composeOptics
 
 export const sequence = (...optics) => {
   const optics1 = optics.flat().map(toOptic)
-  if (optics1.every((o) => 'asFold' in o)) {
-    return foldFromToArray((obj) => optics1.flatMap((o) => toArray(o, obj)))
+  if (optics1.every(o => o.asFold)) {
+    return foldFromToArray(obj => optics1.flatMap(o => toArray(o, obj)))
   } else {
     throw new OpticComposeError(
       'sequence',
-      optics1.map((o) => o.constructor.name),
+      optics1.map(o => o.constructor.name),
       'incompatible optics',
     )
   }
 }
 
-const firstOfPreviews = (optics) => (obj) => {
+const firstOfPreviews = optics => obj => {
   for (const o of optics) {
     const v = preview(o, obj)
     if (!isNotFound(v)) return v
@@ -140,7 +140,7 @@ const firstOfPreviews = (optics) => (obj) => {
   return notFound
 }
 
-const firstOfToArrays = (optics) => (obj) => {
+const firstOfToArrays = optics => obj => {
   for (const o of optics) {
     const v = toArray(o, obj)
     if (v.length > 0) return v
@@ -148,14 +148,14 @@ const firstOfToArrays = (optics) => (obj) => {
   return []
 }
 
-const firstOfSets = (optics) => (v, obj) => {
+const firstOfSets = optics => (v, obj) => {
   for (const o of optics) {
     if (matches(o, obj)) return set(o, v, obj)
   }
   return obj
 }
 
-const firstOfOvers = (optics) => (f, obj) => {
+const firstOfOvers = optics => (f, obj) => {
   for (const o of optics) {
     if (matches(o, obj)) return over(o, f, obj)
   }
@@ -165,18 +165,18 @@ const firstOfOvers = (optics) => (f, obj) => {
 export const firstOf = (...optics) => {
   const optics1 = optics.flat().map(toOptic)
 
-  if (optics1.every((o) => 'asOptional' in o)) {
+  if (optics1.every(o => o.asOptional)) {
     return optional(firstOfPreviews(optics1), firstOfSets(optics1))
-  } else if (optics1.every((o) => 'asTraversal' in o)) {
+  } else if (optics1.every(o => o.asTraversal)) {
     return traversalFromToArray(firstOfToArrays(optics1), firstOfOvers(optics1))
-  } else if (optics1.every((o) => 'asPartialGetter' in o)) {
+  } else if (optics1.every(o => o.asPartialGetter)) {
     return partialGetter(firstOfPreviews(optics1))
-  } else if (optics1.every((o) => 'asFold' in o)) {
+  } else if (optics1.every(o => o.asFold)) {
     return foldFromToArray(firstOfToArrays(optics1))
   } else {
     throw new OpticComposeError(
       'firstOf',
-      optics1.map((o) => o.constructor.name),
+      optics1.map(o => o.constructor.name),
       'incompatible optics',
     )
   }

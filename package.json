@@ -51,6 +51,7 @@
     "microbundle": "^0.12.3",
     "npm-check-updates": "^9.0.1",
     "nyc": "^15.1.0",
+    "prettier": "^2.1.2",
     "rimraf": "^3.0.2",
     "semantic-release": "^17.1.1",
     "standard-version": "^9.0.0"
@@ -68,9 +69,11 @@
     "clean": "rm -rf node_modules package-lock.json",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "format": "prettier --write '(__tests__|src)/*.js|index.js'",
     "lint": "eslint src/*.js",
     "postrelease": "npm run release:tags && npm publish",
     "prebuild": "rimraf dist",
+    "prelint": "npm run format",
     "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors && npm run build",
     "pretest": "npm run lint",
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",
@@ -96,10 +99,10 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 92,
-        "functions": 94,
+        "branches": 98,
+        "functions": 95,
         "lines": 100,
-        "statements": 96
+        "statements": 97
       }
     },
     "testEnvironment": "node"

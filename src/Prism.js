@@ -19,8 +19,8 @@ class Prism {
       return isNotFound(v) ? obj : this.set(f(v), obj)
     }
     this.reduce = (f, i, obj) => notFoundToList(this.preview(obj)).reduce(f, i)
-    this.toArray = (obj) => notFoundToList(this.preview(obj))
-    this.matches = (obj) => !isNotFound(preview(obj))
+    this.toArray = obj => notFoundToList(this.preview(obj))
+    this.matches = obj => !isNotFound(preview(obj))
   }
 
   // setter = over + set
@@ -63,18 +63,18 @@ class Prism {
 export const prism = curry((preview, set, review) => new Prism(preview, set, review))
 
 const checkPresence = (mustBePresent, obj) =>
-  Object.keys(mustBePresent).every((k) => obj && obj[k] && obj[k] === mustBePresent[k])
+  Object.keys(mustBePresent).every(k => obj && obj[k] && obj[k] === mustBePresent[k])
 
 /**
- * Check that a subset of properties with their values are present.
+ * Checks that a subset of properties with their values are present.
  * Useful for working with Redux actions, or variants in general.
  *
  * @param {object} mustBePresent
  */
-export const has = (mustBePresent) =>
+export const where = mustBePresent =>
   prism(
-    (obj) => (checkPresence(mustBePresent, obj) ? { ...obj } : notFound),
+    obj => (checkPresence(mustBePresent, obj) ? { ...obj } : notFound),
     (newObj, obj) =>
       checkPresence(mustBePresent, obj) ? { ...newObj, ...mustBePresent } : { ...obj },
-    (newObj) => ({ ...newObj, ...mustBePresent }),
+    newObj => ({ ...newObj, ...mustBePresent }),
   )
