@@ -203,7 +203,7 @@ This can be very useful in combination with `collect`.
 optic(
   collect({ first: optic('firstName'), last: optic('lastName')}),
   transform(x => x.first + ' ' + x.last)
-).view({ first: 'Alex', last: 'Smith'}) // 'Alex Smith'
+).view({ first: 'Alex', last: 'Smith' }) // 'Alex Smith'
 ```
 
 #### `sequence : [Fold s a] -> Fold s a`
