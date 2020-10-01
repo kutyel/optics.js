@@ -101,6 +101,9 @@ const toOptic = optic => {
   if (typeof optic == 'number' && !isNaN(optic)) {
     return ix(optic)
   }
+  if (typeof optic == 'function') {
+    return transform(optic)
+  }
   // any other case means it was already an optic
   return optic
 }
@@ -181,6 +184,25 @@ export const firstOf = (...optics) => {
     )
   }
 }
+
+export const collect = template =>
+  getter(obj =>
+    Object.fromEntries(
+      Object.entries(template).map(([k, o]) => {
+        if (o.asGetter) {
+          return [k, view(o, obj)]
+        } else if (o.asPartialGetter) {
+          return [k, preview(o, obj)]
+        } else if (o.asFold) {
+          return [k, toArray(o, obj)]
+        } else {
+          throw new OpticComposeError('collect', o.constructor.name, 'non-getter optic')
+        }
+      }),
+    ),
+  )
+
+export const transform = getter
 
 // OPERATIONS
 // ==========

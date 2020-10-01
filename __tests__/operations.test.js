@@ -2,7 +2,7 @@ import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors
 import { toUpper } from '../src/functions'
 import { getter } from '../src/Getter'
 import { alter } from '../src/Lens'
-import { optic, over, path, set, view } from '../src/operations'
+import { collect, optic, over, path, set, view } from '../src/operations'
 import { setter } from '../src/Setter'
 
 const theme = {
@@ -107,5 +107,11 @@ describe('Operations over Optics', () => {
         1,
       ),
     ).toThrow(UnavailableOpticOperationError)
+  })
+
+  test('collect + transform', () => {
+    const o = optic(collect({ a: optic('one'), b: optic('two') }), x => x.a + x.b)
+    const obj = { one: 1, two: 2 }
+    expect(view(o, obj)).toBe(3)
   })
 })

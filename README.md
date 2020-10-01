@@ -66,7 +66,7 @@ const agePlus1Traversal = o.over(x => x + 1, people)
 
 Optics provide a _language_ for data _access_ and _manipulation_ in a concise and compositional way. It excels when you want to code in an _immutable_ way.
 
-[![intro](https://img.youtube.com/vi/tbNi-ykYev8/0.jpg)](https://www.youtube.com/watch?v=tbNi-ykYev8)
+[![intro](https://img.youtube.com/vi/pZ-ELcxYwVc/0.jpg)](https://www.youtube.com/watch?v=pZ-ELcxYwVc)
 
 There are very few moving parts in `optics.js`, the power comes from the ability to create long combinations or _paths_ by composing small primitive optics. Let's look at an example:
 
@@ -180,6 +180,31 @@ maybe('age').preview(person) || defaultAge
 #### `optic : [Optic a b, Optic b c, ..., Optic y z] -> Optic a z`
 
 Creates a combined optic by applying each one on the result of the previous one. This is the most common way to combine optics.
+
+#### `collect : { k: Getter s a | PartialGetter s a | Fold s a } -> Getter s { k: v }`
+
+Generates a new object whose keys are based on the given optics. Depending on the type of optic, a single value, optional value, or array is collected.
+
+```js
+collect({ edad: optic('age') }).view({ name: 'Alex', age: 32 }) // { edad: 32 }
+```
+
+#### `transform : (s -> a) -> Getter s a`
+
+Applies a transformation to the values targetted up to then. Since the transformation may not be reversible, after composing with `transform` you lose the ability to set or modify the value.
+
+```js
+transform(x => x + 1).view(2) // 3
+```
+
+This can be very useful in combination with `collect`.
+
+```js
+optic(
+  collect({ first: optic('firstName'), last: optic('lastName')}),
+  transform(x => x.first + ' ' + x.last)
+).view({ first: 'Alex', last: 'Smith'}) // 'Alex Smith'
+```
 
 #### `sequence : [Fold s a] -> Fold s a`
 
