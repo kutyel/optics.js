@@ -24,6 +24,8 @@ describe('Prism', () => {
   test('where works correctly when setting', () => {
     expect(over(where({ id: 1 }), modifyUser, user)).toStrictEqual(modifiedUser)
     expect(where({ id: 1 }).over(modifyUser, user)).toStrictEqual(modifiedUser)
+    expect(where({ id: 1 }).set(modifiedUser, user)).toStrictEqual(modifiedUser)
+    expect(where({ id: 2 }).set(modifiedUser, user)).toStrictEqual(user)
   })
 
   test('where sets nothing if not found', () => {
