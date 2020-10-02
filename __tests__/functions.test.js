@@ -1,8 +1,9 @@
-import { compose, curry, get, set, toUpper } from '../src/functions'
+import { compose, curry, get, set, setIndex, toUpper } from '../src/functions'
 
 const cubed = (num, exp) => num ** exp
 const exp = curry(cubed)
 const obj = { foo: 'bar' }
+const arr = [1, 2, 3]
 
 describe('Function Operators', () => {
   test('curry -> should curry functions', () => {
@@ -35,5 +36,20 @@ describe('Function Operators', () => {
     const newObj = { foo: 'baz' }
 
     expect(set('foo', 'baz', obj)).toEqual(newObj)
+  })
+
+  test(`setIndex -> should set new value if the index is in array's range`, () => {
+    const index = 0
+    const newValue = 2
+    const newArr = [newValue, 2, 3]
+
+    expect(setIndex(index, newValue, arr)).toEqual(newArr)
+  })
+
+  test(`setIndex -> should do nothing if the index is out of array's range`, () => {
+    const index = 3
+    const newValue = 2
+
+    expect(setIndex(index, newValue, arr)).toEqual(arr)
   })
 })
