@@ -69,6 +69,7 @@
     "clean": "rm -rf node_modules package-lock.json",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "jest --coverage --coverageReporters=text-lcov | coveralls",
+    "coverage:dev": "jest --coverage",
     "format": "prettier --write '(__tests__|src)/*.js|index.js'",
     "lint": "eslint src/*.js",
     "postrelease": "npm run release:tags && npm publish",
