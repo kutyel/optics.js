@@ -254,6 +254,10 @@ Given a key, both `view` and `set`/`over` operate on that key in an object. Howe
 
 Given an index, both `view` and `set`/`over` operate on that index in an array. This lens cannot be used to grow or shrink the array, you can only access or modify positions which are already available.
 
+#### `duo : [v, (v) => nothing] -> Lens s v`
+
+Wraps a two-element pair `[current value, setter for the value]` as a lens. This is useful in combination with React's [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate). Note that in this case the last argument of `view` or `set`, the element you are chaning, is irrelevant.
+
 ### Optionals (preview, set)
 
 #### `maybe : (string | number) -> Optional (Object | Array) a`

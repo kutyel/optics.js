@@ -1,5 +1,5 @@
 import { get, set as assoc, toUpper } from '../src/functions'
-import { alter, ix, lens, mustBePresent } from '../src/Lens'
+import { alter, duo, ix, lens, mustBePresent } from '../src/Lens'
 import { notFound } from '../src/notFound'
 import { matches, optic, over, preview, sequence, set, toArray, view } from '../src/operations'
 
@@ -155,5 +155,13 @@ describe('Lens', () => {
 
   test('should sequence lenses correctly', () => {
     expect(toArray(sequence('id', 'name'), user)).toEqual([1, 'Flavio'])
+  })
+
+  test('useState-like lens works', () => {
+    var x = 1
+    const duoLens = duo([x, v => (x = v)])
+    expect(view(duoLens, {})).toBe(1)
+    expect(set(duoLens, 2, {})).toStrictEqual({})
+    expect(x).toBe(2)
   })
 })
