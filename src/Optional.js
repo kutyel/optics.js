@@ -1,6 +1,6 @@
 import { OpticCreationError } from './errors'
 import { fold } from './Fold'
-import { curry, setIndex } from './functions'
+import { curry, isNil, setIndex } from './functions'
 import { isNotFound, notFound, notFoundToList } from './notFound'
 import { partialGetter } from './PartialGetter'
 import { setter } from './Setter'
@@ -56,14 +56,14 @@ export const optional = curry((preview, set) => new Optional(preview, set))
 // optionalProp : String → Optional s a
 export const optionalProp = key =>
   optional(
-    obj => obj[key] ?? notFound,
+    obj => (isNil(obj[key]) ? notFound : obj[key]),
     (val, obj) => (obj[key] ? { ...obj, [key]: val } : obj),
   )
 
 // optionalIx : Number → Optional s a
 export const optionalIx = index =>
   optional(
-    obj => obj[index] ?? notFound,
+    obj => (isNil(obj[index]) ? notFound : obj[index]),
     (val, obj) => (obj[index] ? setIndex(index, val, obj) : obj),
   )
 

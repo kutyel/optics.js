@@ -1,4 +1,4 @@
-import { curry, get, set, setIndex, toUpper } from '../src/functions'
+import { curry, get, isNil, set, setIndex, toUpper } from '../src/functions'
 
 const obj = { foo: 'bar' }
 const arr = [1, 2, 3]
@@ -13,6 +13,16 @@ describe('Function Operators', () => {
 
   test('toUpper -> should do what is expected ehem', () => {
     expect(toUpper('yeah!')).toBe('YEAH!')
+  })
+
+  test('isNil -> should work better than falsy values', () => {
+    expect(isNil(null)).toBe(true)
+    expect(isNil(undefined)).toBe(true)
+    expect(isNil(0)).toBe(false)
+    expect(isNil(-0)).toBe(false)
+    expect(isNil('')).toBe(false)
+    expect(isNil(NaN)).toBe(false)
+    expect(isNil(false)).toBe(false)
   })
 
   test('get -> should retrieve the value of the property if it exists', () => {

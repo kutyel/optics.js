@@ -1,5 +1,5 @@
 import { fold } from './Fold'
-import { curry, get, set, setIndex } from './functions'
+import { curry, get, isNil, set, setIndex } from './functions'
 import { getter } from './Getter'
 import { isNotFound, notFound } from './notFound'
 import { optional } from './Optional'
@@ -68,7 +68,7 @@ export const mustBePresent = key => lens(get(key), set(key))
 // alter : String → Lens (Maybe s) (Maybe a)
 export const alter = key =>
   lens(
-    obj => (isNotFound(obj) ? notFound : obj[key] ?? notFound),
+    obj => (isNotFound(obj) || isNil(obj[key]) ? notFound : obj[key]),
     (val, obj) => {
       if (isNotFound(val)) {
         if (typeof obj === 'object') {

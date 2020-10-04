@@ -23,3 +23,5 @@ export const setIndex = curry((index, val, array) => array.map((v, i) => (i == i
 
 // toUpper : String -> String
 export const toUpper = str => str.toUpperCase()
+
+export const isNil = x => x === null || x === undefined
