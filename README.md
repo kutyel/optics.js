@@ -315,9 +315,9 @@ preview(where({ id: 1 })), { id: 1, name: 'Alex' })  // { id: 1, name: 'Alex' 
 
 ### Traversals (toArray, set)
 
-#### `values : Traversal Array a`
+#### `values : Traversal collection a`
 
-Targets every position in an array.
+Targets every position in an [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) and most of [Immutable.js](https://immutable-js.github.io/immutable-js/) collections. You can also use it to access the values in a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) or [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map), but should _not_ be used to modify them with `set`/`over`.
 
 ```js
 over(values, x => x + 1, [1, 2, 3]) // [2, 3, 4]

@@ -68,4 +68,8 @@ describe('Traversal', () => {
       two: 3,
     })
   })
+
+  test('traversal works with Set', () => {
+    expect(toArray(values, new Set([1, 2]))).toStrictEqual([1, 2])
+  })
 })
