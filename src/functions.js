@@ -12,13 +12,6 @@
 export const curry = (f, arity = f.length, ...args) =>
   arity <= args.length ? f(...args) : (...argz) => curry(f, arity, ...args, ...argz)
 
-/**
- * Function composition!
- *
- * @param  {...any} fns - Comma-separated list of functions to be composed (right -> left)
- */
-export const compose = (...fns) => args => fns.reduceRight((x, f) => f(x), args)
-
 // get : s -> {s: a} -> Maybe a
 export const get = curry((key, obj) => obj[key])
 
