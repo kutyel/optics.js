@@ -56,14 +56,14 @@ export const optional = curry((preview, set) => new Optional(preview, set))
 // optionalProp : String → Optional s a
 export const optionalProp = key =>
   optional(
-    obj => obj[key] || notFound,
+    obj => obj[key] ?? notFound,
     (val, obj) => (obj[key] ? { ...obj, [key]: val } : obj),
   )
 
 // optionalIx : Number → Optional s a
 export const optionalIx = index =>
   optional(
-    obj => obj[index] || notFound,
+    obj => obj[index] ?? notFound,
     (val, obj) => (obj[index] ? setIndex(index, val, obj) : obj),
   )
 

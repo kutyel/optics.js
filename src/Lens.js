@@ -68,7 +68,7 @@ export const mustBePresent = key => lens(get(key), set(key))
 // alter : String → Lens (Maybe s) (Maybe a)
 export const alter = key =>
   lens(
-    obj => (isNotFound(obj) ? notFound : obj[key] || notFound),
+    obj => (isNotFound(obj) ? notFound : obj[key] ?? notFound),
     (val, obj) => {
       if (isNotFound(val)) {
         if (typeof obj === 'object') {
