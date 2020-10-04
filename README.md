@@ -256,7 +256,7 @@ Given an index, both `view` and `set`/`over` operate on that index in an array. 
 
 #### `duo : [v, (v) => nothing] -> Lens s v`
 
-Wraps a two-element pair `[current value, setter for the value]` as a lens. This is useful in combination with React's [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate). Note that in this case the last argument of `view` or `set`, the element you are chaning, is irrelevant.
+Wraps a two-element pair `[current value, setter for the value]` as a lens. This is useful in combination with React's [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate). Note that in this case the last argument of `view` or `set`, the element you are changing, is irrelevant.
 
 ### Optionals (preview, set)
 
