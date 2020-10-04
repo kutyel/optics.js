@@ -158,7 +158,7 @@ describe('Lens', () => {
   })
 
   test('useState-like lens works', () => {
-    var x = 1
+    let x = 1
     const duoLens = duo([x, v => (x = v)])
     expect(view(duoLens, {})).toBe(1)
     expect(set(duoLens, 2, {})).toStrictEqual({})
