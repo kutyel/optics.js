@@ -1,19 +1,14 @@
-import { compose, curry, get, set, setIndex, toUpper } from '../src/functions'
+import { curry, get, set, setIndex, toUpper } from '../src/functions'
 
-const cubed = (num, exp) => num ** exp
-const exp = curry(cubed)
 const obj = { foo: 'bar' }
 const arr = [1, 2, 3]
 
 describe('Function Operators', () => {
   test('curry -> should curry functions', () => {
+    const cubed = (num, exp) => num ** exp
+    const exp = curry(cubed)
+
     expect(exp(5)(3)).toBe(125)
-  })
-
-  test('compose -> should compose N functions correctly', () => {
-    const inc = x => x + 1
-
-    expect(compose(inc, exp(5))(1)).toBe(inc(exp(5, 1)))
   })
 
   test('toUpper -> should do what is expected ehem', () => {

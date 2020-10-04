@@ -204,6 +204,13 @@ export const collect = template =>
 
 export const transform = getter
 
+/**
+ * Function composition!
+ *
+ * @param  {...any} fns - Comma-separated list of functions to be composed (right -> left)
+ */
+export const compose = (...fns) => args => fns.reduceRight((x, f) => f(x), args)
+
 // OPERATIONS
 // ==========
 

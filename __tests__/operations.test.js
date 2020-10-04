@@ -1,8 +1,8 @@
 import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors'
-import { toUpper } from '../src/functions'
+import { curry, toUpper } from '../src/functions'
 import { getter } from '../src/Getter'
 import { alter } from '../src/Lens'
-import { collect, optic, over, path, set, view } from '../src/operations'
+import { collect, compose, optic, over, path, set, view } from '../src/operations'
 import { setter } from '../src/Setter'
 
 const theme = {
@@ -27,6 +27,14 @@ const themeWithoutFontFamily = {
 }
 
 describe('Operations over Optics', () => {
+  test('compose -> should compose N functions correctly', () => {
+    const inc = x => x + 1
+    const cubed = (num, exp) => num ** exp
+    const exp = curry(cubed)
+
+    expect(compose(inc, exp(5))(1)).toBe(inc(exp(5, 1)))
+  })
+
   test('view should read from a lens', () => {
     const codeLens = path(['styles', 'CodeSurfer', 'code'])
     const codeSurferLens = path(['styles', 'CodeSurfer'])
