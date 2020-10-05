@@ -15,7 +15,6 @@ const theme = {
   },
 }
 const fontLense = path(['styles', 'CodeSurfer', 'code', 'fontFamily'])
-
 const themeWithoutFontFamily = {
   styles: {
     CodeSurfer: {
@@ -64,6 +63,15 @@ describe('Operations over Optics', () => {
     const newTheme = over(fontLense, toUpper, theme)
 
     expect(view(fontLense, newTheme)).toBe('MONOSPACED')
+  })
+
+  test('over should work with boolean functions', () => {
+    const neg = x => !x
+    const liked = { liked: true }
+    const lens = optic('liked')
+
+    expect(view(lens, liked)).toBe(true)
+    expect(view(lens, over(lens, neg, liked))).toBe(false)
   })
 
   test('path should create the same lense as a manually defined one', () => {
