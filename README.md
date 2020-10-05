@@ -254,6 +254,10 @@ Given a key, both `view` and `set`/`over` operate on that key in an object. Howe
 
 Given an index, both `view` and `set`/`over` operate on that index in an array. This lens cannot be used to grow or shrink the array, you can only access or modify positions which are already available.
 
+#### `duo : [v, (v) => nothing] -> Lens s v`
+
+Wraps a two-element pair `[current value, setter for the value]` as a lens. This is useful in combination with React's [`useState`](https://reactjs.org/docs/hooks-reference.html#usestate). Note that in this case the last argument of `view` or `set`, the element you are changing, is irrelevant.
+
 ### Optionals (preview, set)
 
 #### `maybe : (string | number) -> Optional (Object | Array) a`
@@ -315,9 +319,9 @@ preview(where({ id: 1 })), { id: 1, name: 'Alex' })  // { id: 1, name: 'Alex' 
 
 ### Traversals (toArray, set)
 
-#### `values : Traversal Array a`
+#### `values : Traversal collection a`
 
-Targets every position in an array.
+Targets every position in an [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) and most of [Immutable.js](https://immutable-js.github.io/immutable-js/) collections. You can also use it to access the values in a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) or [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map), but should _not_ be used to modify them with `set`/`over`.
 
 ```js
 over(values, x => x + 1, [1, 2, 3]) // [2, 3, 4]

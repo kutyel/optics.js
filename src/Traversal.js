@@ -44,7 +44,7 @@ export const traversal = curry((reduce, toArray, over) => new Traversal(reduce, 
 // values : Traversal [a] a
 export const values = traversal(
   (f, i, obj) => obj.reduce(f, i),
-  obj => [...obj],
+  obj => [...obj.values()],
   (f, obj) => obj.map(f),
 )
 

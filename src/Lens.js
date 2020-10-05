@@ -81,3 +81,13 @@ export const alter = key =>
       }
     },
   )
+
+// duo : [v, v -> ()] -> Lens s v
+export const duo = ([value, setValue]) =>
+  lens(
+    () => value,
+    (newVal, obj) => {
+      setValue(newVal)
+      return obj
+    },
+  )
