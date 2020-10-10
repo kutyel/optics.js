@@ -206,12 +206,7 @@ export const collect = template => {
   const computeSetter = () => (newVal, obj) =>
     t.reduce((acc, [k, o]) => set(o, newVal[k], acc), obj)
 
-  // eslint-disable-next-line no-unused-vars
-  if (t.every(([_, o]) => o.asLens)) {
-    return lens(computeGetter(), computeSetter())
-  } else {
-    return getter(computeGetter())
-  }
+  return t.every(([, o]) => o.asLens) ? lens(computeGetter(), computeSetter()) : getter(computeGetter())
 }
 
 export const transform = getter
