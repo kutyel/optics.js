@@ -130,4 +130,16 @@ describe('Operations over Optics', () => {
     const obj = { one: 1, two: 2 }
     expect(view(o, obj)).toBe(3)
   })
+
+  test('collect + over', () => {
+    const o = optic(collect({ a: optic('one'), b: optic('two') }))
+    const obj = { one: 1, two: 2 }
+    expect(set(o, { a: 2, b: 3 }, obj)).toStrictEqual({ one: 2, two: 3 })
+  })
+
+  test('collect + over', () => {
+    const o = optic(collect({ a: optic('one'), b: optic('two') }))
+    const obj = { one: 1, two: 2 }
+    expect(over(o, ({ a, b }) => ({ a, b: a + b }), obj)).toStrictEqual({ one: 1, two: 3 })
+  })
 })

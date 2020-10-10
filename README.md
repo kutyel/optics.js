@@ -189,6 +189,13 @@ Generates a new object whose keys are based on the given optics. Depending on th
 collect({ edad: optic('age') }).view({ name: 'Alex', age: 32 }) // { edad: 32 }
 ```
 
+In addition, if *every* optic is a lens (or can be turned into one), then the result is also a lens. This makes `over` able to change part of a data structure depending on the value of other elements.
+
+```js
+collect({ month: optic('birthmonth'), age: optic('age') })
+  .over(x => { ...x, age: x.month === 'april' ? x.age + 1 : x.age }, person)
+```
+
 #### `transform : (s -> a) -> Getter s a`
 
 Applies a transformation to the values targetted up to then. Since the transformation may not be reversible, after composing with `transform` you lose the ability to set or modify the value.

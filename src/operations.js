@@ -185,10 +185,12 @@ export const firstOf = (...optics) => {
   }
 }
 
-export const collect = template =>
-  getter(obj =>
+export const collect = template => {
+  const t = Object.entries(template)
+
+  const computeGetter = () => obj =>
     Object.fromEntries(
-      Object.entries(template).map(([k, o]) => {
+      t.map(([k, o]) => {
         if (o.asGetter) {
           return [k, view(o, obj)]
         } else if (o.asPartialGetter) {
@@ -199,8 +201,13 @@ export const collect = template =>
           throw new OpticComposeError('collect', o.constructor.name, 'non-getter optic')
         }
       }),
-    ),
-  )
+    )
+
+  const computeSetter = () => (newVal, obj) =>
+    t.reduce((acc, [k, o]) => set(o, newVal[k], acc), obj)
+
+  return t.every(([, o]) => o.asLens) ? lens(computeGetter(), computeSetter()) : getter(computeGetter())
+}
 
 export const transform = getter
 
