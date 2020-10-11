@@ -2,8 +2,9 @@ import { OpticComposeError, UnavailableOpticOperationError } from '../src/errors
 import { curry, toUpper } from '../src/functions'
 import { getter } from '../src/Getter'
 import { alter } from '../src/Lens'
-import { collect, compose, optic, over, path, set, view } from '../src/operations'
+import { collect, compose, optic, over, path, set, toArray, view } from '../src/operations'
 import { setter } from '../src/Setter'
+import { values } from '../src/Traversal'
 
 const theme = {
   styles: {
@@ -141,5 +142,31 @@ describe('Operations over Optics', () => {
     const o = optic(collect({ a: optic('one'), b: optic('two') }))
     const obj = { one: 1, two: 2 }
     expect(over(o, ({ a, b }) => ({ a, b: a + b }), obj)).toStrictEqual({ one: 1, two: 3 })
+  })
+
+  test('collect + values', () => {
+    const o = optic(values, collect({ a: optic('one'), b: optic('two') }), x => x.a + x.b)
+    const obj = [
+      { one: 1, two: 2 },
+      { one: 3, two: 4 },
+    ]
+    expect(toArray(o, obj)).toStrictEqual([3, 7])
+  })
+
+  test('collect + values + over', () => {
+    const o = optic(values, collect({ a: optic('one'), b: optic('two') }))
+    const obj = [
+      { one: 1, two: 2 },
+      { one: 3, two: 4 },
+    ]
+    expect(over(o, ({ a, b }) => ({ a, b: a + b }), obj)).toStrictEqual([
+      { one: 1, two: 3 },
+      { one: 3, two: 7 },
+    ])
+    const teller = 1
+    expect(over(o, x => ({ ...x, b: x.a === teller ? 0 : x.a + x.b }), obj)).toStrictEqual([
+      { one: 1, two: 0 },
+      { one: 3, two: 7 },
+    ])
   })
 })
