@@ -206,7 +206,9 @@ export const collect = template => {
   const computeSetter = () => (newVal, obj) =>
     t.reduce((acc, [k, o]) => set(o, newVal[k], acc), obj)
 
-  return t.every(([, o]) => o.asLens) ? lens(computeGetter(), computeSetter()) : getter(computeGetter())
+  return t.every(([, o]) => o.asLens)
+    ? lens(computeGetter(), computeSetter())
+    : getter(computeGetter())
 }
 
 export const transform = getter
