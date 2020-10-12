@@ -18,12 +18,12 @@
 Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) package
 
 - [Get it!](#get-it)
-- [How it is made!](#how-it-is-made)
 - [Meet it!](#meet-it)
 - [Use it!](#use-it)
   - [Amount of values](#amount-of-values)
   - [Builders](#builders)
   - [The whole hierarchy](#the-whole-hierarchy)
+- [How it is made!](#how-it-is-made)
 - [Know them all!](#know-them-all)
 
 ## Get it!
@@ -32,13 +32,9 @@ Inspired by Haskell's [`optics`](https://hackage.haskell.org/package/optics) pac
 $ npm install optics.js --save
 ```
 
-## How it is made!
-
-If you want to know more about the implementation, you can check this talk by [myself](https://twitter.com/FlavioCorpa) at [Lambda World](https://cadiz.lambda.world/).
-
-[![lw](https://img.youtube.com/vi/IoVaArsh6tM/0.jpg)](https://www.youtube.com/watch?v=IoVaArsh6tM)
-
 ## Meet it!
+
+[![yt](https://img.youtube.com/vi/vf3P_i1IMtU/0.jpg)](https://www.youtube.com/watch?v=vf3P_i1IMtU)
 
 ```js
 import { where, maybe, optic, values } from 'optics.js'
@@ -145,6 +141,12 @@ The different kinds of optics can be arranged into a hierarchy. Going up means w
 
 > The image has been produced from the diagram in the [`optics`](https://hackage.haskell.org/package/optics) package.
 
+## How it is made!
+
+If you want to know more about the implementation, you can check this talk by [myself](https://twitter.com/FlavioCorpa) at [Lambda World](https://cadiz.lambda.world/).
+
+[![lw](https://img.youtube.com/vi/IoVaArsh6tM/0.jpg)](https://www.youtube.com/watch?v=IoVaArsh6tM)
+
 ## Know them all!
 
 `optics.js` ships with a bunch of predefined optics. Bear in mind that the `alter` and `ix` lenses are the default when you use combinators, so:
@@ -181,7 +183,7 @@ maybe('age').preview(person) || defaultAge
 
 Creates a combined optic by applying each one on the result of the previous one. This is the most common way to combine optics.
 
-#### `collect : { k: Getter s a | PartialGetter s a | Fold s a } -> Getter s { k: v }`
+#### `collect : { k: Getter s a | PartialGetter s a | Fold s a } -> Getter s { k: v }`
 
 Generates a new object whose keys are based on the given optics. Depending on the type of optic, a single value, optional value, or array is collected.
 
@@ -189,7 +191,7 @@ Generates a new object whose keys are based on the given optics. Depending on th
 collect({ edad: optic('age') }).view({ name: 'Alex', age: 32 }) // { edad: 32 }
 ```
 
-In addition, if *every* optic is a lens (or can be turned into one), then the result is also a lens. This makes `over` able to change part of a data structure depending on the value of other elements.
+In addition, if _every_ optic is a lens (or can be turned into one), then the result is also a lens. This makes `over` able to change part of a data structure depending on the value of other elements.
 
 ```js
 collect({ month: optic('birthmonth'), age: optic('age') })
@@ -208,8 +210,8 @@ This can be very useful in combination with `collect`.
 
 ```js
 optic(
-  collect({ first: optic('firstName'), last: optic('lastName')}),
-  transform(x => x.first + ' ' + x.last)
+  collect({ first: optic('firstName'), last: optic('lastName') }),
+  transform(x => x.first + ' ' + x.last),
 ).view({ first: 'Alex', last: 'Smith' }) // 'Alex Smith'
 ```
 
