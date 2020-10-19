@@ -13,10 +13,25 @@ export const curry = (f, arity = f.length, ...args) =>
   arity <= args.length ? f(...args) : (...argz) => curry(f, arity, ...args, ...argz)
 
 // get : s -> {s: a} -> Maybe a
-export const get = curry((key, obj) => obj[key])
+export const get = curry((key, obj) => {
+  return obj instanceof Map ? obj.get(key) : obj[key]
+})
 
 // set : String -> a -> {k: v} -> {k: v}
-export const set = curry((key, val, obj) => (obj[key] ? { ...obj, [key]: val } : obj))
+export const set = curry((key, val, obj) => {
+  if (obj instanceof Map) {
+    if (obj.has(key)) {
+      const newMap = new Map(obj)
+      const keyVal = newMap.get(key)
+      newMap.delete(key)
+      newMap.set(val, keyVal)
+
+      return newMap
+    }
+    return obj
+  }
+  return obj[key] ? { ...obj, [key]: val } : obj
+})
 
 // setIndex : Index -> a -> [a] -> [a]
 export const setIndex = curry((index, val, array) => array.map((v, i) => (i == index ? val : v)))

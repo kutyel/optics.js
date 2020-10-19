@@ -6,6 +6,7 @@ import { matches, optic, over, preview, sequence, set, toArray, view } from '../
 const friends = ['Alejandro', 'Pepe']
 const user = { id: 1, name: 'Flavio' }
 const userWithFriends = { ...user, friends }
+const userMap = new Map([['Flavio', { id: user.id }]])
 
 describe('Lens', () => {
   test('lens should build a lens', () => {
@@ -163,5 +164,17 @@ describe('Lens', () => {
     expect(view(duoLens, {})).toBe(1)
     expect(set(duoLens, 2, {})).toStrictEqual({})
     expect(x).toBe(2)
+  })
+
+  test('should work with Map', () => {
+    const getByName = get('Flavio')
+    const setByName = assoc('Flavio')
+    const lense = lens(getByName, setByName)
+    const alexMap = new Map([['Alejandro', { id: 1 }]])
+
+    expect(view(lense, userMap)).toStrictEqual({ id: 1 })
+    expect(set(lense, 'Alejandro', userMap)).toEqual(alexMap)
+    // Check that the the map is not mutated
+    expect(userMap).not.toEqual(alexMap)
   })
 })
